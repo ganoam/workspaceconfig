@@ -1,0 +1,23 @@
+[submodule "deps/dwl"]
+	path = deps/dwl
+	url = git@github.com:Koalemo/dwl.git
+	branch = origin/dev
+[submodule "deps/dwl-patches"]
+	path = deps/dwl-patches
+	url = https://codeberg.org/dwl/dwl-patches.git
+[submodule "deps/qutebrowser"]
+	path = deps/qutebrowser
+	url = git@github.com:qutebrowser/qutebrowser.git
+[submodule "deps/scripts"]
+	path = deps/scripts
+	url = git@github.com:koalemo/scripts
+[submodule "deps/tpm"]
+	path = deps/tpm
+	url = https://github.com/tmux-plugins/tpm.git
+[submodule "deps/wlock"]
+	path = deps/wlock
+	url = https://codeberg.org/sewn/wlock.git
+[submodule "deps/verilator"]
+	path = deps/verilator
+	url = git@github.com:ganoam/verilator.git
+	branch = fix-vif-calls
