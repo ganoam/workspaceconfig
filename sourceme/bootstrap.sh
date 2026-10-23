@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # sourceme/bootstrap.sh [-y|--yes]
+# Run manually. Ensures deps/scripts is available, then delegates
+# submodule/tarball fetching to deps/scripts/setup/*.sh (or fetches
+# fetch-repos.sh remotely if deps/scripts isn't present yet).
 
-# --- nvr (neovim-remote), in a local venv ---
+set -uo pipefail
 
 ASSUME_YES=0
 for arg in "$@"; do
@@ -10,35 +13,30 @@ for arg in "$@"; do
     esac
 done
 
-# Get repo root
 ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT="$ROOT/.."
+mkdir -p "$ROOT/deps"
 
 # Generic helper: check -> prompt -> install
 ensure_tool() {
-    local name="$1"          # human-readable name, e.g. "nvr"
-    local check_cmd="$2"     # shell command/test string; success = already installed
-    local install_cmd="$3"   # shell command string to run if user agrees
-
-    if eval "$check_cmd"; then
+    local name="$1" check_fn="$2" install_fn="$3"
+    if "$check_fn"; then
         echo "[bootstrap] $name already present, skipping."
         return
     fi
-
     local answer="n"
     if [ "$ASSUME_YES" -eq 1 ]; then
         answer="y"
     else
-        read -p "$name not found. Install it now? [y/N] " answer < /dev/tty
+        read -p "$name not found. Install it now? [y/N] " answer
     fi
-
     case "$answer" in
         y|Y|yes|Yes)
             echo "[bootstrap] Installing $name ..."
-            if eval "$install_cmd"; then
+            if "$install_fn"; then
                 echo "[bootstrap] $name installed."
             else
-                echo "[bootstrap] ERROR: failed to install $name." >&2
+                echo "[bootstrap] ERROR: failed to install $name."
             fi
             ;;
         *)
@@ -47,38 +45,38 @@ ensure_tool() {
     esac
 }
 
-# Ensure deps/ exists before any submodule/tool checks run
-mkdir -p "$ROOT/deps"
-
-# --- git submodules ---
-while IFS= read -r name; do
-    submodule_dirty() {
-        [ -n "$(git -C "$ROOT/$1" status --porcelain 2>/dev/null)" ]
-    }
-    submodule_check() {
-        local status_output
-        status_output=$(git -C "$ROOT" submodule status -- "$1" 2>/dev/null) || return 1   # git itself failed (unknown pathspec)
-        [ -n "$status_output" ] || return 1                                                  # no output at all
-        ! echo "$status_output" | grep -qE '^[+-]'
-    }
-    submodule_install() {
-        if submodule_dirty "$1"; then
-            echo "[bootstrap] WARNING: submodule '$1' has uncommitted changes, skipping update."
-            return 1
-        fi
-
-        git -C "$ROOT" submodule update --init --recursive -- "$1"
-    }
-    ensure_tool "submodule:$name" "submodule_check $name" "submodule_install $name"
-done < <(git -C "$ROOT" config --file "$ROOT/.gitmodules" --get-regexp path | awk '{print $2}')
-
-# --- nvr ---
+# --- nvr (neovim-remote), in a local venv ---
 NVR_VENV="$ROOT/envs/main"
 nvr_check() { [ -x "$NVR_VENV/bin/nvr" ]; }
 nvr_install() {
-    python3 -m venv "$NVR_VENV"
-    "$NVR_VENV/bin/pip" install --quiet --upgrade pip
+    python3 -m venv "$NVR_VENV" &&
+    "$NVR_VENV/bin/pip" install --quiet --upgrade pip &&
     "$NVR_VENV/bin/pip" install --quiet neovim-remote
 }
 ensure_tool "nvr" nvr_check nvr_install
 
+# --- deps/scripts: fetch remotely if not yet present, then delegate ---
+FETCH_REPOS="$ROOT/deps/scripts/setup/fetch-repos.sh"
+if [ ! -f "$FETCH_REPOS" ]; then
+    SHA=$(git -C "$ROOT" ls-tree HEAD -- deps/scripts | awk '{print $3}')
+    if [ -z "$SHA" ]; then
+        echo "[bootstrap] : WARNING: no pinned commit found for deps/scripts in the index."
+        SHA="master"
+    fi
+    tmp=$(mktemp)
+    curl -fsSL "https://raw.githubusercontent.com/koalemo/scripts/$SHA/setup/fetch-repos.sh" -o "$tmp"
+    pushd $ROOT
+    bash "$tmp" "$ROOT" $([ "$ASSUME_YES" -eq 1 ] && echo -y)
+    popd
+    rm -f "$tmp"
+else
+    bash "$FETCH_REPOS" "$ROOT" $([ "$ASSUME_YES" -eq 1 ] && echo -y)
+fi
+
+# --- tarballs, once deps/scripts is present ---
+FETCH_TARBALLS="$ROOT/deps/scripts/setup/fetch-tarballs.sh"
+if [ -f "$FETCH_TARBALLS" ]; then
+    pushd $ROOT
+    bash "$FETCH_TARBALLS" "$ROOT" $([ "$ASSUME_YES" -eq 1 ] && echo -y)
+    popd
+fi
