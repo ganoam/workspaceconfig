@@ -5,7 +5,6 @@
 # fetch-repos.sh remotely if deps/scripts isn't present yet).
 
 set -uo pipefail
-SCRIPT_NAME="$(basename "$0")"
 
 # Note: The bootstrap function will be overwritten by the version in lib.sh.
 bootstrap_script() {
@@ -54,22 +53,6 @@ LIB="setup/lib.sh"
 bootstrap_script "$LIB" "source"
 parse_common_args "$@"
 
-ASSUME_YES=0
-for arg in "$@"; do
-    case "$arg" in
-        -y|--yes) ASSUME_YES=1 ;;
-    esac
-done
-
-# find root of containing repo
-find_repo_root() {
-    local dir=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-    while [ "$dir" != "/" ]; do
-        [ -e "$dir/.git" ] && { echo "$dir"; return 0; }
-        dir=$(dirname "$dir")
-    done
-    return 1
-}
 
 ROOT=$(find_repo_root) || { log "ERROR: could not find repo root."; exit 1; }
 log "ROOT: $ROOT"
