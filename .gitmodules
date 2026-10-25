@@ -10,7 +10,7 @@
 	url = git@github.com:qutebrowser/qutebrowser.git
 [submodule "deps/scripts"]
 	path = deps/scripts
-	url = git@github.com:koalemo/scripts
+	url = git@github.com:ganoam/scripts
 [submodule "deps/tpm"]
 	path = deps/tpm
 	url = https://github.com/tmux-plugins/tpm.git
