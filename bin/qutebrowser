@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 # Inject config file flag
-$CONFIGROOT/../deps/qutebrowser/.venv/bin/qutebrowser -C $CONFIGROOT/qutebrowser/config.py
+$CONFIGROOT/../envs/qb/bin/qutebrowser -C $CONFIGROOT/qutebrowser/config.py
