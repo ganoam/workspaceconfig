@@ -1,5 +1,4 @@
-version: 3
-layout: ""
+Yet unused:
 dependencies:
   OpenROAD-flow-scripts:
     url: git@github.com:The-OpenROAD-Project/OpenROAD-flow-scripts.git
@@ -11,21 +10,6 @@ dependencies:
     version: origin/master
     hash: 67667792db29c5edd41fa26c9201b25bbddb9f91
     type: git
-  dbt-rules:
-    url: https://github.com/daedaleanai/dbt-rules.git
-    version: origin/master
-    hash: 8e01e748f95ad38a2dd7fc03dd14d54eb6f6e0ad
-    type: ""
-  dwl:
-    url: git@github.com:Koalemo/dwl.git
-    version: origin/dev
-    hash: 67249b41dbe2fdfa7d1a6c106fcd98a4ab6fc476
-    type: ""
-  dwl-patches:
-    url: https://codeberg.org/dwl/dwl-patches.git
-    version: origin/main
-    hash: 5d2f27a9f96bb6c6a73e217f9278ff317b7c9b42
-    type: ""
   neovim:
     url: https://github.com/neovim/neovim/releases/download/v0.12.5/nvim-linux-x86_64.tar.gz
     version: origin/main
@@ -36,39 +20,14 @@ dependencies:
     version: origin/master
     hash: 1f562852b52c103e18f9d259524cbef0f77f7add73bb64503006e69aa5e9f0db
     type: tar.gz
-  qutebrowser:
-    url: git@github.com:qutebrowser/qutebrowser.git
-    version: origin/main
-    hash: c9e03ae5db592c03254d4eca196062d2ce358dc8
-    type: git
   ripgrep:
     url: https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
     version: origin/master
     hash: ee4e0751ab108b6da4f47c52da187d5177dc371f0f512a7caaec5434e711c091
     type: ""
-  scripts:
-    url: git@github.com:koalemo/scripts
-    version: origin/master
-    hash: df603d5e7cfaf0957873105af33e416413c1b2aa
-    type: git
   sv2v:
     url: git@github.com:zachjs/sv2v.git
     version: origin/master
     hash: 6662fa5da71f87797598060f17728b284b99a9fc
     type: git
-  tpm:
-    url: https://github.com/tmux-plugins/tpm.git
-    version: origin/master
-    hash: 99469c4a9b1ccf77fade25842dc7bafbc8ce9946
-    type: ""
-  verilator:
-    url: git@github.com:verilator/verilator.git
-    version: origin/master
-    hash: f9427c6d5f7a1d16e13b90bad4ca39367d88592a
-    type: git
-  wlock:
-    url: https://codeberg.org/sewn/wlock.git
-    version: origin/master
-    hash: c1d159a83391b11efbd85e76c30e8d39ae66e2dd
-    type: ""
 flags: {}
