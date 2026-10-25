@@ -1,0 +1,12 @@
+neovim:
+  url: https://github.com/neovim/neovim/releases/download/v0.12.5/nvim-linux-x86_64.tar.gz
+  hash: bce0f56eda1f1b1db6eee8f4133d7a38813ea07933837dd1777411ca384c6875
+ripgrep:
+  url: https://github.com/BurntSushi/ripgrep/releases/download/13.0.0/ripgrep-13.0.0-x86_64-unknown-linux-musl.tar.gz
+  hash: ee4e0751ab108b6da4f47c52da187d5177dc371f0f512a7caaec5434e711c091
+tpm:
+  url: https://github.com/tmux-plugins/tpm.git
+  hash: 99469c4a9b1ccf77fade25842dc7bafbc8ce9946
+wlock:
+  url: https://codeberg.org/sewn/wlock.git
+  hash: c1d159a83391b11efbd85e76c30e8d39ae66e2dd

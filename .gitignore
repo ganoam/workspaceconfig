@@ -1,1 +1,5 @@
-DEPS
+# Tarball dependencies need to be ignored, so they are not accidentally commited.
+deps/neovim
+deps/ripgrep
+deps/wlock
+deps/tpm

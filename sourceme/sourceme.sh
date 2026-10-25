@@ -1,5 +1,38 @@
 #!/usr/bin/env bash
 
+# Set repo root variable
+ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+ROOT="$ROOT/.."
+echo "Sourcing workspace config from $ROOT"
+
+# Export configuration paths
+export CONFIGROOT=$ROOT/config
+export SCREENRC=$CONFIGROOT/screen/screenrc
+export NVIMCONFIG=$CONFIGROOT # nvim specs its own subdir.
+export TMUX_HOME=$CONFIGROOT/tmux
+export XDG_CONFIG_HOME=$CONFIGROOT
+export XDG_DATA_HOME=$CONFIGROOT/share
+
+source
+
+
+# --- Tool presence checks (warnings only, no interactive prompts) ---
+#
+# nvr (neovim-remote)
+if [ ! -x "$ROOT/envs/main/bin/nvr" ]; then
+    echo "WARNING: nvr not found. Run bootstrap.sh to install it."
+fi
+
+# git submodules
+if [ -f "$ROOT/.gitmodules" ]; then
+    OUT_OF_DATE=$(git -C "$ROOT" submodule status 2>/dev/null | grep -E '^[+-]' || true)
+    if [ -n "$OUT_OF_DATE" ]; then
+        echo "WARNING: some git submodules are missing or out of date:"
+        echo "$OUT_OF_DATE"
+        echo "WARNING: Run bootstrap.sh to sync them."
+    fi
+fi
+
 # TODO (ng): This is just hacked in here. MAy depend on the terminal emulator if this works or not
 # Function to extract the last 2 levels from the current path
 function CustomPWD {
@@ -27,8 +60,6 @@ xterm*|rxvt*)
     ;;
 esac
 
-ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-echo "Sourcing workspace config from $ROOT"
 
 # Make history available across all console
 # Avoid duplicates
@@ -37,14 +68,12 @@ HISTCONTROL=ignoredups:erasedups
 # After each command, append to the history file and reread it
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
-# Set repo root variable
-ROOT="$ROOT/.."
 
 # Enable dbt command competion
 #. $ROOT/sourceme/dbt-completion.sh
 
 # Run in place verilator
-export VERILATOR_ROOT=$ROOT/DEPS/verilator
+export VERILATOR_ROOT=$ROOT/deps/verilator
 # Put this verilator at the top of the path
 export PATH=$VERILATOR_ROOT/bin:$PATH
 
@@ -79,12 +108,12 @@ if [[ -z "$WORKSPACE_SET" ]]; then
     export PATH=$CARGOPATH/bin:$PATH
     #
     # Export binaries from workspaceconfig repo to path
-    export  PATH=$ROOT/bin:$ROOT/DEPS/neovim/bin:$PATH
+    export  PATH=$ROOT/bin:$ROOT/deps/neovim/bin:$PATH
 
     # Export dmenu scripts to path
     # TODO: find a better solution
-    export PATH=$ROOT/DEPS/scripts/shortcut-menus:$PATH
-    export PATH=$ROOT/DEPS/scripts/bin:$PATH
+    export PATH=$ROOT/deps/scripts/shortcut-menus:$PATH
+    export PATH=$ROOT/deps/scripts/bin:$PATH
 
     #export PATH="$(find "$ROOT" -type d -name bin -printf '%p:')"$PATH
 fi
