@@ -79,7 +79,7 @@ nvr_install() {
     ensure_venv &&
     "$MAIN_VENV/bin/pip" install neovim-remote
 }
-ensure_tool "nvr" "tool_check nvr $MAIN_VENV" "nvr_install" "tool_describe nvr"
+ensure_tool "nvr" "tool_check nvr $MAIN_VENV" "nvr_install" "tool_describe nvr $MAIN_VENV"
 
 # --- qutebrowser ---
 QB_VENV="$ROOT/envs/qb"
