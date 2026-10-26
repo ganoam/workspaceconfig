@@ -54,7 +54,7 @@ bootstrap_script "$LIB" "source"
 parse_common_args "$@"
 
 
-ROOT=$(find_repo_root) || { log "ERROR: could not find repo root."; exit 1; }
+ROOT="$CONFIGROOT/.."
 log "ROOT: $ROOT"
 # exit 0
 mkdir -p "$ROOT/deps"
