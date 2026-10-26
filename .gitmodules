@@ -21,3 +21,6 @@
 	path = deps/verilator
 	url = git@github.com:ganoam/verilator.git
 	branch = fix-vif-calls
+[submodule "deps/waybar"]
+	path = deps/waybar
+	url = git@github.com:Alexays/Waybar.git
