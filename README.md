@@ -19,7 +19,7 @@ cd path/to/workspaceconfig/
 See `install.sh` for manual steps (xpra, tmux builds).
 
 ### waybar
-#### [System Dependencies](https://github.com/Alexays/Waybar#building-from-source)
+#### Build from source: [System Dependencies](https://github.com/Alexays/Waybar#building-from-source)
 Bootstrap installation depends on the following system tools:
 
 **Runtime dependencies**:
@@ -44,6 +44,13 @@ sudo apt install \
   libinput-dev libjsoncpp-dev libmpdclient-dev libnl-3-dev libnl-genl-3-dev \
   libpulse-dev libsigc++-2.0-dev libspdlog-dev libwayland-dev scdoc upower \
   libxkbregistry-dev libiniparser-dev libfftw3-dev
+```
+
+and let `bootstrap.sh` build it.
+
+#### Or use your package manager:
+```
+sudo apt install waybar
 ```
 
 ## Activate
