@@ -66,7 +66,7 @@ bootstrap_script "$FETCH_REPOS" "run"
 # --- tarballs, once deps/scripts is present ---
 FETCH_TARBALLS="$ROOT/deps/scripts/setup/fetch-tarballs.sh"
 if [ -f "$FETCH_TARBALLS" ]; then
-    pushd $ROOT > /dev/null
+    pushd "$ROOT" > /dev/null
     bash "$FETCH_TARBALLS" "$ROOT" $([ "$ASSUME_YES" -eq 1 ] && echo -y)
     popd > /dev/null
 fi
@@ -79,7 +79,7 @@ nvr_install() {
     ensure_venv &&
     "$MAIN_VENV/bin/pip" install neovim-remote
 }
-ensure_tool "nvr" "tool_check nvr" "nvr_install" "tool_describe nvr"
+ensure_tool "nvr" "tool_check nvr $MAIN_VENV" "nvr_install" "tool_describe nvr"
 
 # --- qutebrowser ---
 QB_VENV="$ROOT/envs/qb"
@@ -88,4 +88,15 @@ qb_install() {
     ensure_venv $QB_VENV &&
     $QB_DIR/scripts/mkvenv.py --venv-dir $QB_VENV
 }
-ensure_tool "qutebrowser" "tool_check qutebrowser  $QB_VENV" "qb_install" "tool_describe qutebrowser"
+ensure_tool "qutebrowser" "tool_check qutebrowser $QB_VENV" "qb_install" "tool_describe qutebrowser $QB_VENV"
+
+# --- waybar ---
+WB_BIN=$ROOT/deps/waybar/build/waybar
+wb_install() {
+    pushd "$ROOT/deps/waybar" > /dev/null
+    meson setup build &&
+    ninja -C build
+    popd > /dev/null
+}
+ensure_tool "waybar" "tool_check $WB_BIN" "wb_install" "tool_describe waybar"
+

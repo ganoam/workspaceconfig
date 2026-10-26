@@ -18,6 +18,34 @@ cd path/to/workspaceconfig/
 
 See `install.sh` for manual steps (xpra, tmux builds).
 
+### waybar
+#### [System Dependencies](https://github.com/Alexays/Waybar#building-from-source)
+Bootstrap installation depends on the following system tools:
+
+**Runtime dependencies**:
+```
+gtkmm3       jsoncpp      libsigc++    fmt          wayland
+chrono-date  spdlog       xkbregistry  libgtk-3-dev upower
+
+sudo apt install
+    libpulse-dev libnl-3-dev  libappindicator3-dev  libdbusmenu-gtk3-dev \
+    libmpdclient-dev libsndio-dev libevdev-dev
+```
+
+**build dependencies**:
+```
+sudo apt install cmake meson scdoc wayland-protocol
+```
+**Install Dependencies**:
+```
+sudo apt install \
+  clang-tidy gobject-introspection libdbusmenu-gtk3-dev libevdev-dev \
+  libfmt-dev libgirepository1.0-dev libgtk-3-dev libgtkmm-3.0-dev \
+  libinput-dev libjsoncpp-dev libmpdclient-dev libnl-3-dev libnl-genl-3-dev \
+  libpulse-dev libsigc++-2.0-dev libspdlog-dev libwayland-dev scdoc upower \
+  libxkbregistry-dev libiniparser-dev libfftw3-dev
+```
+
 ## Activate
 
 Add to `~/.bashrc`:
