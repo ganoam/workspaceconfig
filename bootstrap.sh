@@ -91,7 +91,7 @@ qb_install() {
 ensure_tool "qutebrowser" "tool_check qutebrowser $QB_VENV" "qb_install" "tool_describe qutebrowser $QB_VENV"
 
 # --- waybar ---
-WB_BIN=$ROOT/deps/waybar/build/waybar
+WB_BIN="$ROOT/deps/waybar/build/waybar"
 wb_install() {
     pushd "$ROOT/deps/waybar" > /dev/null
     meson setup build &&
