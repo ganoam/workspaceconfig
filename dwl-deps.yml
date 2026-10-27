@@ -1,0 +1,11 @@
+- libinput-dev
+- libwayland-dev
+- libxkbcommon-dev
+- libxkbcommon-x11-dev
+- libxkbcommon0
+- libxkbregistry-dev
+- libwlroots-0.19-dev
+- wayland-protocols
+- pkg-config
+- libxcb1-dev
+- libxcb1
