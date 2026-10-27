@@ -100,3 +100,13 @@ wb_install() {
 }
 ensure_tool "waybar" "tool_check $WB_BIN" "wb_install" "tool_describe waybar"
 
+# --- dwl ---
+DWL_BIN="/usr/local/bin/dwl"
+dwl_install() {
+  pushd "$ROOT/deps/dwl" > /dev/null
+  make clean && make &&
+  sudo cp -f dwl.desktop /usr/local/share/wayland-sessions/dwl.desktop &&
+  sudo chmod 644 /usr/local/share/wayland-sessions/dwl.desktop
+}
+
+ensure_tool "dwl" "tool_check $DWL_BIN" "dwl_install" "tool_describe dwl"
