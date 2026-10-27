@@ -55,6 +55,7 @@ bootstrap_script() {
 LIB="setup/lib.sh"
 bootstrap_script "$LIB" "source"
 parse_common_args "$@"
+export -f bootstrap_script
 
 
 ROOT="$CONFIGROOT/.."
