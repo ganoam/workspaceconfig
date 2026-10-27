@@ -24,3 +24,15 @@
 [submodule "deps/waybar"]
 	path = deps/waybar
 	url = git@github.com:Alexays/Waybar.git
+[submodule "deps/mako"]
+	path = deps/mako
+	url = https://github.com/emersion/mako.git
+[submodule "deps/swaybg"]
+	path = deps/swaybg
+	url = https://github.com/swaywm/swaybg.git
+[submodule "deps/wmenu"]
+	path = deps/wmenu
+	url = https://codeberg.org/rycwo/wmenu.git
+[submodule "deps/foot"]
+	path = deps/foot
+	url = https://codeberg.org/foot/foot.git
