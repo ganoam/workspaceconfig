@@ -7,6 +7,9 @@
 set -uo pipefail
 
 # Note: The bootstrap function will be overwritten by the version in lib.sh.
+log() {
+    echo "[$SCRIPT_NAME] $*" >&2
+}
 bootstrap_script() {
     local RELPATH="$1"
     local MODE="${2:-run}" # source or run
