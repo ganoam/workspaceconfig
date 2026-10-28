@@ -109,8 +109,17 @@ DWL_BIN="/usr/local/bin/dwl"
 dwl_install() {
   pushd "$ROOT/deps/dwl" > /dev/null
   make clean && make &&
-  sudo cp -f dwl.desktop /usr/local/share/wayland-sessions/dwl.desktop &&
-  sudo chmod 644 /usr/local/share/wayland-sessions/dwl.desktop
+  mkdir -p ~/.local/share/wayland-sessions &&
+  cat > ~/.local/share/wayland-sessions/dwl.desktop << 'EOF'
+[Desktop Entry]
+Name=dwl
+Comment=dwm for Wayland
+Exec=bash -c 'source /home/ng/workspaceconfig/sourceme/sourceme.sh; /home/ng/workspaceconfig/deps/dwl/dwl -d -s /home/ng/workspaceconfig/deps/scripts/shell/dwl-startup.sh 2>>"$HOME/dw
+l.log"'
+Type=Application
+EOF
+  chmod 644 ~/.local/share/wayland-sessions/dwl.desktop
+  popd > /dev/null
 }
 
 ensure_tool "dwl" "tool_check $DWL_BIN" "dwl_install" "tool_describe dwl"
