@@ -156,3 +156,11 @@ foot_install() {
     popd > /dev/null
 }
 ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot"
+
+# --- vrilator ---
+VERILATOR_BIN="$ROOT/deps/verilator/bin/verilator_bin"
+verilator_install() {
+  pushd "$ROOT/deps/verilator" > /dev/null
+  make clean && make
+  popd > /dev/null
+}
