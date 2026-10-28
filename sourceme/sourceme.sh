@@ -15,18 +15,9 @@ add_to_path() {
 
 # Export configuration paths (do this once, at the top)
 export CONFIGROOT=$ROOT/config
-export SCREENRC=$CONFIGROOT/screen/screenrc
-export NVIMCONFIG=$CONFIGROOT # nvim specs its own subdir.
 export TMUX_HOME=$CONFIGROOT/tmux
 export XDG_CONFIG_HOME=$CONFIGROOT
 export XDG_DATA_HOME=$CONFIGROOT/share
-
-# --- Tool presence checks (warnings only, no interactive prompts) ---
-#
-# nvr (neovim-remote)
-if [ ! -x "$ROOT/envs/main/bin/nvr" ]; then
-    echo "WARNING: nvr not found. Run bootstrap.sh to install it."
-fi
 
 # git submodules
 if [ -f "$ROOT/.gitmodules" ]; then
@@ -38,7 +29,7 @@ if [ -f "$ROOT/.gitmodules" ]; then
     fi
 fi
 
-# TODO (ng): This is just hacked in here. MAy depend on the terminal emulator if this works or not
+# TODO (ng): This is just hacked in here. May depend on the terminal emulator if this works or not
 # Function to extract the last 2 levels from the current path
 function CustomPWD {
     # Remove from $PWD the shortest part of /*/* that matches the back end of $var
@@ -74,10 +65,6 @@ export HISTFILESIZE=10000000
 
 # After each command, append to the history file and reread it
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
-
-
-# Enable dbt command competion
-#. $ROOT/sourceme/dbt-completion.sh
 
 #Update path only if we haven't done that yet.
 if [[ -z "$WORKSPACE_SET" ]]; then
@@ -116,19 +103,11 @@ if [[ -z "$WORKSPACE_SET" ]]; then
 
     # Export binaries from workspaceconfig repo to path
     add_to_path $ROOT/bin
-    add_to_path $ROOT/deps/neovim/bin
 
     # Export dmenu scripts to path
     # TODO: find a better solution
     add_to_path $ROOT/deps/scripts/shortcut-menus
     add_to_path $ROOT/deps/scripts/bin
-
-    # Add Wayland tools to PATH (built by bootstrap.sh)
-    add_to_path $ROOT/deps/waybar/build
-    add_to_path $ROOT/deps/mako/build
-    add_to_path $ROOT/deps/swaybg/build
-    add_to_path $ROOT/deps/wmenu/build
-    add_to_path $ROOT/deps/foot/build
 
     #export PATH="$(find "$ROOT" -type d -name bin -printf '%p:')"$PATH
 fi
