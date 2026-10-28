@@ -164,3 +164,4 @@ verilator_install() {
   make clean && make
   popd > /dev/null
 }
+ensure_tool "verilator" "tool_check $VERILATOR_BIN" "verilator_install" "tool_describe verilator"
