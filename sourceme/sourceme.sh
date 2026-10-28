@@ -5,16 +5,21 @@ ROOT=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT="$ROOT/.."
 echo "Sourcing workspace config from $ROOT"
 
-# Export configuration paths
+add_to_path() {
+    local dir="$1"
+    case ":$PATH:" in
+        *":$dir:"*) ;;                 # already present, do nothing
+        *) export PATH="$dir:$PATH" ;; # not present, prepend
+    esac
+}
+
+# Export configuration paths (do this once, at the top)
 export CONFIGROOT=$ROOT/config
 export SCREENRC=$CONFIGROOT/screen/screenrc
 export NVIMCONFIG=$CONFIGROOT # nvim specs its own subdir.
 export TMUX_HOME=$CONFIGROOT/tmux
 export XDG_CONFIG_HOME=$CONFIGROOT
 export XDG_DATA_HOME=$CONFIGROOT/share
-
-source
-
 
 # --- Tool presence checks (warnings only, no interactive prompts) ---
 #
@@ -64,6 +69,8 @@ esac
 # Make history available across all console
 # Avoid duplicates
 HISTCONTROL=ignoredups:erasedups
+export HISTSIZE=10000000
+export HISTFILESIZE=10000000
 
 # After each command, append to the history file and reread it
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
@@ -72,14 +79,10 @@ PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 # Enable dbt command competion
 #. $ROOT/sourceme/dbt-completion.sh
 
-# Run in place verilator
-export VERILATOR_ROOT=$ROOT/deps/verilator
-# Put this verilator at the top of the path
-export PATH=$VERILATOR_ROOT/bin:$PATH
-
 #Update path only if we haven't done that yet.
 if [[ -z "$WORKSPACE_SET" ]]; then
 
+    # Set default tool paths if not already set
     if [[ -z $TOOLS_PATH ]]; then
       echo WARNING: variable TOOLS_PATH is not set. using default: ~/tools
 	    export TOOLS_PATH=$HOME/tools
@@ -93,27 +96,39 @@ if [[ -z "$WORKSPACE_SET" ]]; then
 	    export GOPATH=$HOME/go
     fi
 
-
-    if [[ -z $VERILATOR_ROOT ]]; then
-        echo "WARNING: variable VERILATOR_ROOT is not set."
-    else
-        export PATH=$VERILATOR_ROOT/bin:$PATH
-    fi
-
     if [[ -z $CARGOPATH ]]; then
-        echo "WARNING: variable CARGOPATH is not set. usign default: ~/.cargo"
+        echo "WARNING: variable CARGOPATH is not set. using default: ~/.cargo"
         export CARGOPATH=$HOME/.cargo
     fi
 
-    export PATH=$CARGOPATH/bin:$PATH
-    #
+    if [[ -z $USRBIN ]]; then
+        echo WARNING: variable USRBIN is not set. setting default: /usr/bin
+        export USRBIN=/usr/bin
+    fi
+
+    # Add tool paths to PATH
+    add_to_path $CARGOPATH/bin
+    add_to_path $GOPATH/bin
+
+    # Run in place verilator
+    export VERILATOR_ROOT=$ROOT/deps/verilator
+    add_to_path $VERILATOR_ROOT/bin
+
     # Export binaries from workspaceconfig repo to path
-    export  PATH=$ROOT/bin:$ROOT/deps/neovim/bin:$PATH
+    add_to_path $ROOT/bin
+    add_to_path $ROOT/deps/neovim/bin
 
     # Export dmenu scripts to path
     # TODO: find a better solution
-    export PATH=$ROOT/deps/scripts/shortcut-menus:$PATH
-    export PATH=$ROOT/deps/scripts/bin:$PATH
+    add_to_path $ROOT/deps/scripts/shortcut-menus
+    add_to_path $ROOT/deps/scripts/bin
+
+    # Add Wayland tools to PATH (built by bootstrap.sh)
+    add_to_path $ROOT/deps/waybar/build
+    add_to_path $ROOT/deps/mako/build
+    add_to_path $ROOT/deps/swaybg/build
+    add_to_path $ROOT/deps/wmenu/build
+    add_to_path $ROOT/deps/foot/build
 
     #export PATH="$(find "$ROOT" -type d -name bin -printf '%p:')"$PATH
 fi
@@ -124,14 +139,6 @@ else
   export menu='dmenu'
 fi
 
-
-# Export configuration paths
-export CONFIGROOT=$ROOT/config
-export SCREENRC=$CONFIGROOT/screen/screenrc
-export NVIMCONFIG=$CONFIGROOT # nvim specs its own subdir.
-export TMUX_HOME=$CONFIGROOT/tmux
-export XDG_CONFIG_HOME=$CONFIGROOT
-export XDG_DATA_HOME=$CONFIGROOT/share
 
 # Replace oldvim
 echo "Setting aliases"
@@ -146,11 +153,14 @@ alias h='nvr -o'
 alias v='nvr -O'
 alias t='nvr --remote-tab'
 
-# Pipe Highlight to less
-export LESSOPEN="| $(which highlight) %s --out-format xterm256 --quiet --force --style solarized-light -D /scratch/msc20f1/highlight_data"
-export LESS=" -R"
-alias less='less -m -N -g -i -J --line-numbers --underline-special'
-#alias less='less -N -m -g -i -J --line-numbers --underline-special'
+# Pipe Highlight to less (if highlight is available)
+if command -v highlight &> /dev/null; then
+    export LESSOPEN="| $(which highlight) %s --out-format xterm256 --quiet --force --style solarized-light"
+    export LESS=" -R"
+    alias less='less -m -N -g -i -J --line-numbers --underline-special'
+else
+    alias less='less -m -N -g -i -J --line-numbers --underline-special'
+fi
 alias more='less'
 
 # Make tmux use conf file from workspaceconfig:
@@ -171,9 +181,6 @@ alias vvfi="verible-verilog-format --inplace"
 alias vvmts="vivado -mode tcl -source "
 alias vvmbs="vivado -mode batch -source "
 
-export HISTSIZE=10000000
-export HISTFILESIZE=10000000
-
 
 if [[ -z $LM_LICENSE_FILE ]]; then
     echo "WARNING: variable LM_LICENSE_FILE is not set."
@@ -183,20 +190,12 @@ if [[ -z $XILINXD_LICENSE_FILE ]]; then
     echo WARNING: variable XILINXD_LICENSE_FILE is not set.
 fi
 
-if [[ -z $USRBIN ]]; then
-    echo WARNING: variable usrbin is not set. setting default: /usr/bin
-    export USRBIN=/usr/bin
-fi
-
 if [[ -z $LIBERO_PATH && -z LIBERO_LIC_PATH ]]; then
     echo WARNING: variable LIBERO_PATH and / or LIBERO_LIC_PATH is not set.
 else
     # Alias for Libero launch command
-    alias libefire='pkill -f lmgrd ; $LIBERO_PATH/lic/lmgrd -c $LIBERO_LIC_PATH/License.dat
-
-    Microchip/Libero/bin/libero'
+    alias libefire='pkill -f lmgrd ; $LIBERO_PATH/lic/lmgrd -c $LIBERO_LIC_PATH/License.dat && $LIBERO_PATH/Libero/bin/libero'
     alias libedone='pkill -f lmgrd ; pkill -f libero'
-
     alias libelic='$LIBERO_PATH/lic/lmgrd -c $LIBERO_LIC_PATH/License.dat'
 fi
 
