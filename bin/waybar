@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# Chose binary from build directory
+$CONFIGROOT/../deps/waybar/build/waybar "$@"
+
