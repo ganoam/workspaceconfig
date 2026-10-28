@@ -1,6 +1,6 @@
 [submodule "deps/dwl"]
 	path = deps/dwl
-	url = git@github.com:Koalemo/dwl.git
+	url = git@github.com:ganoam/dwl.git
 	branch = origin/dev
 [submodule "deps/dwl-patches"]
 	path = deps/dwl-patches
