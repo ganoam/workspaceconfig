@@ -161,7 +161,7 @@ ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot"
 VERILATOR_BIN="$ROOT/deps/verilator/bin/verilator_bin"
 verilator_install() {
   pushd "$ROOT/deps/verilator" > /dev/null
-  make clean && make
+  autoconf && ./configure && make clean && make
   popd > /dev/null
 }
 ensure_tool "verilator" "tool_check $VERILATOR_BIN" "verilator_install" "tool_describe verilator"
