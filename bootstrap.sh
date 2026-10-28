@@ -51,6 +51,11 @@ bootstrap_script() {
     fi
 }
 
+# helper variable for make multithreading.
+jobs=$(nproc)
+(( jobs > 1 )) && jobs=$((jobs-1))
+log "jobs: $jobs"
+
 # --- deps/scripts: fetch remotely if not yet present, then delegate ---
 LIB="setup/lib.sh"
 bootstrap_script "$LIB" "source"
@@ -108,7 +113,7 @@ ensure_tool "waybar" "tool_check $WB_BIN" "wb_install" "tool_describe waybar"
 DWL_BIN="$ROOT/deps/dwl/dwl"
 dwl_install() {
   pushd "$ROOT/deps/dwl" > /dev/null
-  make clean && make &&
+  make clean && make -j"$jobs" &&
   sudo mkdir -p /usr/local/share/wayland-sessions &&
   sudo cp -r $ROOT/deps/dwl/dwl.desktop /usr/local/share/wayland-sessions/dwl.desktop
   sudo chmod 644 /usr/local/share/wayland-sessions/dwl.desktop
@@ -161,7 +166,7 @@ ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot"
 VERILATOR_BIN="$ROOT/deps/verilator/bin/verilator_bin"
 verilator_install() {
   pushd "$ROOT/deps/verilator" > /dev/null
-  autoconf && ./configure && make clean && make
+  autoconf && ./configure && make clean && make -j"$jobs"
   popd > /dev/null
 }
 ensure_tool "verilator" "tool_check $VERILATOR_BIN" "verilator_install" "tool_describe verilator"
