@@ -1,0 +1,4 @@
+- libpango1.0-dev
+- libwayland-dev
+- meson
+- ninja-build

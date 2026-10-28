@@ -7,6 +7,7 @@
 - libevdev-dev
 - cmake
 - meson
+- ninja-build
 - scdoc
 - wayland-protocols
 - clang-tidy

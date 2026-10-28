@@ -34,7 +34,7 @@ bootstrap_script() {
         local SHA
         SHA=$(git -C "$CONFIGROOT" ls-tree HEAD -- deps/scripts | awk '{print $2}')
         if [ -z "$SHA" ]; then
-            log ": WARNING: no pinned commit found for deps/scripts in the index."
+            log ": WARNING: no pinned commit found for deps/scripts in the index. Using master."
             SHA="master"
         fi
         local tmp
@@ -114,3 +114,43 @@ dwl_install() {
 }
 
 ensure_tool "dwl" "tool_check $DWL_BIN" "dwl_install" "tool_describe dwl"
+
+# --- mako ---
+MAKO_BIN="$ROOT/deps/mako/build/mako"
+mako_install() {
+    pushd "$ROOT/deps/mako" > /dev/null
+    meson setup build &&
+    ninja -C build
+    popd > /dev/null
+}
+ensure_tool "mako" "tool_check $MAKO_BIN" "mako_install" "tool_describe mako"
+
+# --- swaybg ---
+SWAYBG_BIN="$ROOT/deps/swaybg/build/swaybg"
+swaybg_install() {
+    pushd "$ROOT/deps/swaybg" > /dev/null
+    meson setup build &&
+    ninja -C build
+    popd > /dev/null
+}
+ensure_tool "swaybg" "tool_check $SWAYBG_BIN" "swaybg_install" "tool_describe swaybg"
+
+# --- wmenu ---
+WMENU_BIN="$ROOT/deps/wmenu/build/wmenu"
+wmenu_install() {
+    pushd "$ROOT/deps/wmenu" > /dev/null
+    meson setup build &&
+    ninja -C build
+    popd > /dev/null
+}
+ensure_tool "wmenu" "tool_check $WMENU_BIN" "wmenu_install" "tool_describe wmenu"
+
+# --- foot ---
+FOOT_BIN="$ROOT/deps/foot/build/foot"
+foot_install() {
+    pushd "$ROOT/deps/foot" > /dev/null
+    meson setup build &&
+    ninja -C build
+    popd > /dev/null
+}
+ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot"
