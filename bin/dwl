@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Chose binary from source directory
+$CONFIGROOT/../deps/dwl/dwl "$@"

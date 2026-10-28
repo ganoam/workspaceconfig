@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Chose binary from build directory
+$CONFIGROOT/../deps/wmenu/build/wmenu "$@"

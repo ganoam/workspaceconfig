@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+# Chose binary from neovim tarball
+$CONFIGROOT/../deps/neovim/bin/nvim "$@"
