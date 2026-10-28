@@ -14,6 +14,9 @@ If building from source, ensure `meson` and `ninja` are installed:
 sudo apt install meson ninja-build
 ```
 
+All tools are available via wrapper scripts in `bin/` which point to the build directories.
+No system-wide installation required. (Except for build- and runtime dependencies of the projects.)
+
 The following sections document the tools for which you have to take action yourself.
 They are not needed for terminal configuration only.
 
@@ -65,7 +68,7 @@ sudo apt install waybar
 ### [mako](https://github.com/emersion/mako)
 Wayland notification daemon.
 #### Build from source: [System Dependencies](https://github.com/emersion/mako#building)
-Bootstrap installation depends on the following system tools (see `mako-deps.yml`):
+Bootstrap installation depends on the following system tools:
 ```
 sudo apt install libpango1.0-dev libwayland-dev
 ```
@@ -73,15 +76,15 @@ sudo apt install libpango1.0-dev libwayland-dev
 ### [swaybg](https://github.com/swaywm/swaybg)
 Wallpaper utility for Wayland compositors.
 #### Build from source: [System Dependencies](https://github.com/swaywm/swaybg#building)
-Bootstrap installation depends on the following system tools (see `swaybg-deps.yml`):
+Bootstrap installation depends on the following system tools:
 ```
 sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev
 ```
 
-### [wmenu](https://codeberg.org/rycwo/wmenu)
+### [wmenu](https://codeberg.org/adnano/wmenu)
 Wayland menu launcher (dmenu alternative).
-#### Build from source: [System Dependencies](https://codeberg.org/rycwo/wmenu)
-Bootstrap installation depends on the following system tools (see `wmenu-deps.yml`):
+#### Build from source: [System Dependencies](https://codeberg.org/adnano/wmenu)
+Bootstrap installation depends on the following system tools:
 ```
 sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev libxkbcommon-dev
 ```
@@ -89,7 +92,7 @@ sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev libxkbcommon-dev
 ### [foot](https://codeberg.org/foot/foot)
 Fast, lightweight Wayland terminal emulator.
 #### Build from source: [System Dependencies](https://codeberg.org/foot/foot#building)
-Bootstrap installation depends on the following system tools (see `foot-deps.yml`):
+Bootstrap installation depends on the following system tools:
 ```
 sudo apt install libwayland-dev libxkbcommon-dev libfontconfig1-dev libpixman-1-dev
 ```
@@ -158,11 +161,6 @@ One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than 
 | neovim | binary tarball | editor (`v0.12.5`), added to PATH |
 | ripgrep | binary tarball | `rg`, symlinked into `bin/` |
 | verilator | git | HDL simulator; `VERILATOR_ROOT` set, `bin/` prepended to PATH |
-| oss-cad-suite-build | tar.gz | FPGA/EDA toolchain bundle |
-| OpenSTA | git | static timing analysis |
-| OpenROAD-flow-scripts | git | RTL-to-GDS flow |
-| sv2v | git | SystemVerilog→Verilog converter |
-| dbt-rules | git | build rules for `dbt` |
 | dwl + dwl-patches | git | Wayland compositor |
 | waybar | git | Wayland statusbar |
 | mako | git | Wayland notification daemon |
@@ -182,8 +180,7 @@ Repo config dirs (`config/`): `nvim/`, `tmux/` (incl. tmux-powerline),
 Not provisioned by this repo — must exist on the system:
 
 - `bash`, `git`, `sed`
-- `python3-pip` / `pip3` (installed by `install.sh`)
-- `golang` / `go` (for `dbt`)
+- `python3-pip` / `pip3` (install manually if needed)
 - `highlight` — used by `LESSOPEN` for syntax-highlighted `less`
 - `tmux`, `nvim` runtime deps; `nvr` (neovim-remote) for the `h`/`v`/`t` aliases
 - `dmenu` or `wmenu` (selected via `$XDG_SESSION_DESKTOP`)
@@ -196,13 +193,14 @@ Not provisioned by this repo — must exist on the system:
 - `VERILATOR_ROOT=$ROOT/deps/verilator`
 - `TOOLS_PATH` (default `~/tools`), `GOPATH` (default `~/go`),
   `CARGOPATH` (default `~/.cargo`), `USRBIN` (default `/usr/bin`)
+  (GOPATH/CARGOPATH are for general Go/Rust development, not required by workspace tools)
 - `CONFIGROOT=$ROOT/config`, `XDG_CONFIG_HOME`, `XDG_DATA_HOME`,
   `NVIMCONFIG`, `TMUX_HOME`, `SCREENRC`
 - `EDITOR=nvim`, `menu=dmenu|wmenu`, `WORKSPACE_SET=1`
 - `HISTSIZE`/`HISTFILESIZE=10000000`, shared history via `PROMPT_COMMAND`
 - `LESSOPEN` pipes through `highlight` (solarized-light)
-- PATH prepends: `$VERILATOR_ROOT/bin`, `$CARGOPATH/bin`, `$ROOT/bin`,
-  `$ROOT/deps/neovim/bin`, `$ROOT/deps/scripts/shortcut-menus`
+- PATH prepends: `$VERILATOR_ROOT/bin`, `$CARGOPATH/bin`, `$GOPATH/bin`,
+  `$ROOT/bin`, `$ROOT/deps/scripts/shortcut-menus`, `$ROOT/deps/scripts/bin`
 
 ## Aliases
 
@@ -246,10 +244,10 @@ tmux-powerline. Default terminal: `st-256color`.
 | Key | Mode | Action | Source |
 |---|---|---|---|
 | `a` | normal | Enter insert mode | custom |
-| `K` / `J` | normal | Next / prev tab | custom [2](#21-1)  |
-| `H` / `L` | normal | Back / forward | custom [3](#21-2)  |
-| `Q` | normal | Close tab | custom [4](#21-3)  |
-| `<Ctrl-n>` / `<Ctrl-p>` | command | Completion item next / prev | custom [5](#21-4)  |
+| `K` / `J` | normal | Next / prev tab | custom |
+| `H` / `L` | normal | Back / forward | custom |
+| `Q` | normal | Close tab | custom |
+| `<Ctrl-n>` / `<Ctrl-p>` | command | Completion item next / prev | custom |
 
 All other qutebrowser bindings are upstream defaults (e.g. `o` open, `d` close tab, `gg`/`G` scroll, `f` hint-follow, `yy` yank URL, `i` insert mode, `:` command mode).
 
@@ -260,7 +258,7 @@ All other qutebrowser bindings are upstream defaults (e.g. `o` open, `d` close t
 and `config/nvim/lua/plugins/` for the full list of custom keymaps and plugin
 specs.
 
-`mapleader = " "` (space) [1](#19-0)
+`mapleader = " "` (space)
 
 #### Core config (builtin, `keymaps.lua`)
 
@@ -300,7 +298,8 @@ specs.
 | `<leader>k` / `<leader>j` | n | Loclist next / prev | keymaps.lua |
 | `[d` / `]d` | n | Prev / next diagnostic | keymaps.lua |
 | `<leader>e` | n | Diagnostic float | keymaps.lua |
-| `<leader>q` | n | Diagnostics to loclist toggle| keymaps.lua |
+| `<leader>l` | n | Toggle Location List (diagnostics) | keymaps.lua |
+| `<leader>q` | n | Toggle Quickfix List | keymaps.lua |
 | `<leader>cd` | n | `cd` to file's directory | keymaps.lua |
 | `<leader>bc` / `<leader>bd` | n | Close / force-close buffer | keymaps.lua |
 | `<leader>o` / `<leader>O` | n | Blank line below / above | keymaps.lua |
@@ -324,7 +323,7 @@ specs.
 | `<leader>fmt` | n | `vim.lsp.buf.format()` — format buffer | keymaps.lua |
 | `[d` / `]d` | n | Prev / next diagnostic | keymaps.lua - shadows the 0.11 builtin pair |
 | `<leader>e` | n | `vim.diagnostic.open_float()` — line diagnostics popup | keymaps.lua |
-| `<leader>q` | n | `vim.diagnostic.setloclist()` — buffer diagnostics to loclist | keymaps.lua |
+| `<leader>q` | n | Toggle Quickfix List | keymaps.lua |
 | `<C-k>` / `<C-j>` | n | Quickfix next / prev (used to walk grep/LSP results) | keymaps.lua |
 | `K` | n | Hover documentation (`vim.lsp.buf.hover`) | builtin |
 | `grn` | n | Rename symbol | builtin |
@@ -349,8 +348,7 @@ specs.
 | `<leader>/` / `<leader>sg` | Grep | custom |
 | `<leader>:` / `<leader>sc` | Command history | custom |
 | `<leader>sC` | Commands | custom |
-| `<leader>no` | Notification history (defined twice; notifier wins) | custom |
-| `<leader>e` | File explorer (`explorer` module disabled — likely dead) | custom [4](#19-3)  |
+| `<leader>no` | Notification history | custom |
 | `<leader>fc` | Find config file | custom |
 | `<leader>ff` / `<leader>fo` | Find files | custom |
 | `<leader>fg` | Git files | custom |
@@ -362,7 +360,7 @@ specs.
 | `<leader>gd` | Diff hunks | custom |
 | `<leader>gi` / `<leader>gI` | GitHub issues open / all | custom |
 | `<leader>gp` / `<leader>gP` | GitHub PRs open / all | custom |
-| `<leader>sb` | Buffer lines (declared twice) | custom |
+| `<leader>sb` | Buffer lines | custom |
 | `<leader>sB` | Grep open buffers | custom |
 | `<leader>sw` | Grep word/selection (n, x) | custom |
 | `<leader>s"` / `<leader>s/` | Registers / search history | custom |
@@ -395,7 +393,7 @@ specs.
 | `<leader>ftn` `ftk` `ftt` | New / kill / toggle | custom |
 | `<leader>fh` / `<leader>fl` | Prev / next | custom |
 | `<leader>fts` / `<leader>ftv` | Send line / send selection | custom |
-| `<C-\><C-n>` | Exit terminal mode | Neovim builtin (not plugin) | [6](#19-5)
+| `<C-\><C-n>` | Exit terminal mode | Neovim builtin (not plugin) |
 
 ### vim-mundo (`plugins/vim-mundo.lua`)
 
@@ -440,7 +438,7 @@ Empty `setup({})` → all defaults [8](#19-7) .
 
 | Key | Action | Source |
 |---|---|---|
-| `<leader>ni` | Icon picker | plugin default — `add_default_keybindings = true`; lhs from upstream, verify locally [10](#19-9)  |
+| `<leader>ni` | Icon picker | plugin default — `add_default_keybindings = true` |
 
 
 ### render-markdown.nvim (`plugins/render-markdown.lua`)
@@ -455,8 +453,7 @@ Empty `setup({})` → all defaults [8](#19-7) .
 ```
 bin/        # symlinked/wrapped binaries (on PATH)
 config/     # nvim, tmux, waybar, qutebrowser, fusesoc configs (XDG_CONFIG_HOME)
-sourceme/   # sourceme.sh + dbt-completion.sh
+sourceme/   # sourceme.sh
 deps/       # fetched dependencies (gitignored)
-DEPS/       # pinned EDA toolchain versions (OpenROAD, OpenSTA, sv2v, etc.)
 envs/       # environment configurations
 ```
