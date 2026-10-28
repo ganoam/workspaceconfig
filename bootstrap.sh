@@ -105,17 +105,16 @@ wb_install() {
 ensure_tool "waybar" "tool_check $WB_BIN" "wb_install" "tool_describe waybar"
 
 # --- dwl ---
-DWL_BIN="/usr/local/bin/dwl"
+DWL_BIN="$ROOT/deps/dwl/dwl"
 dwl_install() {
   pushd "$ROOT/deps/dwl" > /dev/null
   make clean && make &&
   mkdir -p ~/.local/share/wayland-sessions &&
-  cat > ~/.local/share/wayland-sessions/dwl.desktop << 'EOF'
+  cat > ~/.local/share/wayland-sessions/dwl.desktop << EOF
 [Desktop Entry]
 Name=dwl
 Comment=dwm for Wayland
-Exec=bash -c 'source /home/ng/workspaceconfig/sourceme/sourceme.sh; /home/ng/workspaceconfig/deps/dwl/dwl -d -s /home/ng/workspaceconfig/deps/scripts/shell/dwl-startup.sh 2>>"$HOME/dw
-l.log"'
+Exec=bash -c 'source $ROOT/sourceme/sourceme.sh; $ROOT/deps/dwl/dwl -d -s $ROOT/deps/scripts/shell/dwl-startup.sh 2>>"\$HOME/dwl.log"'
 Type=Application
 EOF
   chmod 644 ~/.local/share/wayland-sessions/dwl.desktop
