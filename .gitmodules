@@ -13,7 +13,7 @@
 	url = git@github.com:ganoam/scripts
 [submodule "deps/tpm"]
 	path = deps/tpm
-	url = https://github.com/tmux-plugins/tpm.git
+	url = git@github.com:tmux-plugins/tpm.git
 [submodule "deps/wlock"]
 	path = deps/wlock
 	url = https://codeberg.org/sewn/wlock.git
@@ -26,13 +26,17 @@
 	url = git@github.com:Alexays/Waybar.git
 [submodule "deps/mako"]
 	path = deps/mako
-	url = https://github.com/emersion/mako.git
+	url = git@github.com:emersion/mako.git
+	branch = master
 [submodule "deps/swaybg"]
 	path = deps/swaybg
-	url = https://github.com/swaywm/swaybg.git
+	url = git@github.com:swaywm/swaybg.git
+	branch = master
 [submodule "deps/wmenu"]
 	path = deps/wmenu
-	url = https://codeberg.org/rycwo/wmenu.git
+	url = https://codeberg.org/adnano/wmenu.git
+	branch = main
 [submodule "deps/foot"]
 	path = deps/foot
-	url = https://codeberg.org/foot/foot.git
+	url = https://codeberg.org/dnkl/foot.git
+	branch = main
