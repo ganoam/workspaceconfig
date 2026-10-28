@@ -5,22 +5,32 @@ Wayland desktop (dwl/waybar/wlock), qutebrowser, and a pinned EDA toolchain.
 
 ## Install
 
+Most tools are automatically bootstrapped by the bootstrap.sh script, without any system changes.
+Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
+
+Note: The following Wayland tools (dwl, waybar, mako, swaybg, wmenu, foot) use meson for building.
+If building from source, ensure `meson` and `ninja` are installed:
 ```
-cd path/to/workspaceconfig/
-./install.sh
+sudo apt install meson ninja-build
 ```
 
-`install.sh` performs:
-- `apt install python3-pip` + `pip3 install neovim-remote` (provides `nvr`)
-- `apt install golang` + `go install github.com/daedaleanai/dbt@latest`
-- `dbt sync` — fetches all pinned dependencies from `MODULE` into `DEPS/`
-- creates `bin/` and symlinks `DEPS/ripgrep/rg` → `bin/rg`
+The following sections document the tools for which you have to take action yourself.
+They are not needed for terminal configuration only.
 
-See `install.sh` for manual steps (xpra, tmux builds).
 
-### waybar
+### [dwl](https://github.com/ganoam/dwl)
+Suckless minimalist wayland window manager.
+Intro/Instructions: [dwl-deep-dive](https://codeberg.org/julmajustus/dwl-deep-dive)
+#### Build from source
+Bootstrap installation depends on the following system tools (see `dwl-deps.yml`):
+```
+sudo apt install libwlroots-0.19-dev
+```
+
+### [waybar](https://github.com/Alexays/Waybar)
+Lightweight dwl statusbar.
 #### Build from source: [System Dependencies](https://github.com/Alexays/Waybar#building-from-source)
-Bootstrap installation depends on the following system tools:
+Bootstrap installation depends on the following system tools (see `waybar-deps.yml`):
 
 **Runtime dependencies**:
 ```
@@ -52,6 +62,43 @@ and let `bootstrap.sh` build it.
 ```
 sudo apt install waybar
 ```
+### [mako](https://github.com/emersion/mako)
+Wayland notification daemon.
+#### Build from source: [System Dependencies](https://github.com/emersion/mako#building)
+Bootstrap installation depends on the following system tools (see `mako-deps.yml`):
+```
+sudo apt install libpango1.0-dev libwayland-dev
+```
+
+### [swaybg](https://github.com/swaywm/swaybg)
+Wallpaper utility for Wayland compositors.
+#### Build from source: [System Dependencies](https://github.com/swaywm/swaybg#building)
+Bootstrap installation depends on the following system tools (see `swaybg-deps.yml`):
+```
+sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev
+```
+
+### [wmenu](https://codeberg.org/rycwo/wmenu)
+Wayland menu launcher (dmenu alternative).
+#### Build from source: [System Dependencies](https://codeberg.org/rycwo/wmenu)
+Bootstrap installation depends on the following system tools (see `wmenu-deps.yml`):
+```
+sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev libxkbcommon-dev
+```
+
+### [foot](https://codeberg.org/foot/foot)
+Fast, lightweight Wayland terminal emulator.
+#### Build from source: [System Dependencies](https://codeberg.org/foot/foot#building)
+Bootstrap installation depends on the following system tools (see `foot-deps.yml`):
+```
+sudo apt install libwayland-dev libxkbcommon-dev libfontconfig1-dev libpixman-1-dev
+```
+
+#### Or use your package manager:
+```
+sudo apt install foot
+```
+
 
 ## Activate
 
@@ -104,7 +151,7 @@ One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than 
 
 ## Provided tools
 
-Pinned via `MODULE` (fetched into `DEPS/` by `dbt`):
+(fetched into `deps/`):
 
 | Dependency | Type | Purpose |
 |---|---|---|
@@ -117,13 +164,15 @@ Pinned via `MODULE` (fetched into `DEPS/` by `dbt`):
 | sv2v | git | SystemVerilog→Verilog converter |
 | dbt-rules | git | build rules for `dbt` |
 | dwl + dwl-patches | git | Wayland compositor |
+| waybar | git | Wayland statusbar |
+| mako | git | Wayland notification daemon |
+| swaybg | git | Wayland wallpaper utility |
+| wmenu | git | Wayland menu launcher |
+| foot | git | Wayland terminal emulator |
 | wlock | git | Wayland screen locker |
 | qutebrowser | git | keyboard-driven browser |
 | tpm | git | tmux plugin manager |
 | scripts | git | `shortcut-menus` dmenu/wmenu scripts added to PATH |
-
-
-
 
 Repo config dirs (`config/`): `nvim/`, `tmux/` (incl. tmux-powerline),
 `waybar/`, `qutebrowser/`, `fusesoc/`.
@@ -144,7 +193,7 @@ Not provisioned by this repo — must exist on the system:
 
 ## Environment variables set by `sourceme.sh`
 
-- `VERILATOR_ROOT=$ROOT/DEPS/verilator`
+- `VERILATOR_ROOT=$ROOT/deps/verilator`
 - `TOOLS_PATH` (default `~/tools`), `GOPATH` (default `~/go`),
   `CARGOPATH` (default `~/.cargo`), `USRBIN` (default `/usr/bin`)
 - `CONFIGROOT=$ROOT/config`, `XDG_CONFIG_HOME`, `XDG_DATA_HOME`,
@@ -153,7 +202,7 @@ Not provisioned by this repo — must exist on the system:
 - `HISTSIZE`/`HISTFILESIZE=10000000`, shared history via `PROMPT_COMMAND`
 - `LESSOPEN` pipes through `highlight` (solarized-light)
 - PATH prepends: `$VERILATOR_ROOT/bin`, `$CARGOPATH/bin`, `$ROOT/bin`,
-  `$ROOT/DEPS/neovim/bin`, `$ROOT/DEPS/scripts/shortcut-menus`
+  `$ROOT/deps/neovim/bin`, `$ROOT/deps/scripts/shortcut-menus`
 
 ## Aliases
 
@@ -407,8 +456,7 @@ Empty `setup({})` → all defaults [8](#19-7) .
 bin/        # symlinked/wrapped binaries (on PATH)
 config/     # nvim, tmux, waybar, qutebrowser, fusesoc configs (XDG_CONFIG_HOME)
 sourceme/   # sourceme.sh + dbt-completion.sh
-MODULE      # pinned dependency manifest (dbt)
-DEPS/       # fetched dependencies (gitignored)
-BUILD/      # build output (gitignored)
-r``
+deps/       # fetched dependencies (gitignored)
+DEPS/       # pinned EDA toolchain versions (OpenROAD, OpenSTA, sv2v, etc.)
+envs/       # environment configurations
 ```
