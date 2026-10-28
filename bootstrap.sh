@@ -109,15 +109,15 @@ DWL_BIN="$ROOT/deps/dwl/dwl"
 dwl_install() {
   pushd "$ROOT/deps/dwl" > /dev/null
   make clean && make &&
-  mkdir -p ~/.local/share/wayland-sessions &&
-  cat > ~/.local/share/wayland-sessions/dwl.desktop << EOF
+  sudo mkdir -p /usr/local/share/wayland-sessions &&
+  sudo cat > /usr/local/share/wayland-sessions/dwl.desktop << EOF
 [Desktop Entry]
 Name=dwl
 Comment=dwm for Wayland
-Exec=bash -c 'source $ROOT/sourceme/sourceme.sh; $ROOT/deps/dwl/dwl -d -s $ROOT/deps/scripts/shell/dwl-startup.sh 2>>"\$HOME/dwl.log"'
+Exec=bash -c 'source ~/workspaceconfig/sourceme/sourceme.sh; ~/workspaceconfig/deps/dwl/dwl -d -s ~/workspaceconfig/deps/scripts/shell/dwl-startup.sh 2>> "\$HOME/dwl.log"'
 Type=Application
 EOF
-  chmod 644 ~/.local/share/wayland-sessions/dwl.desktop
+  sudo chmod 644 /usr/local/share/wayland-sessions/dwl.desktop
   popd > /dev/null
 }
 
