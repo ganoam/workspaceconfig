@@ -5,11 +5,32 @@ Wayland desktop (dwl/waybar/wlock), qutebrowser, and a pinned EDA toolchain.
 
 ## Install
 
-Most tools are automatically bootstrapped by the bootstrap.sh script, without any system changes.
+Most tools are automatically bootstrapped by the bootstrap.sh script.
+Run `./bootstrap.sh` to start the installation process.
+
 Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
 
-Note: The following Wayland tools (dwl, waybar, mako, swaybg, wmenu, foot) use meson for building.
-If building from source, ensure `meson` and `ninja` are installed:
+### Installation Modes
+
+The bootstrap script prompts you to choose between two installation modes:
+
+1. **Terminal tools only** - Installs tools that require no sudo privileges:
+   - neovim, ripgrep, verilator, fusesoc, neovim-remote (nvr)
+   - Suitable for remote development or environments without sudo access
+
+2. **Full wayland experience** - Includes terminal tools plus Wayland desktop components:
+   - dwl, waybar, mako, swaybg, wmenu, foot, qutebrowser
+   - Requires sudo for installing dwl desktop file to `/usr/local/share/wayland-sessions/`
+
+**Flags:**
+- `-t` or `--terminal`: Install terminal tools only (skip prompt)
+- `-y` or `--yes`: Skip prompts (default to full wayland experience when used alone)
+- Combine flags: `./bootstrap.sh -y -t` for automated terminal-only installation
+
+### Wayland Tools Build Dependencies
+
+The following Wayland tools (dwl, waybar, mako, swaybg, wmenu, foot) use meson for building.
+If building from source with the full wayland experience, ensure `meson` and `ninja` are installed:
 ```
 sudo apt install meson ninja-build
 ```
