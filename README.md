@@ -22,7 +22,7 @@ envs/       # environment configurations (gitignored)
 | Dependency | Type | Purpose |
 |---|---|---|
 | neovim | binary tarball | editor, added to PATH |
-| ripgrep | binary tarball | Fast grep |
+| ripgrep | binary tarball | Fast grep; editor plugins |
 | tmux | binary tarball | Terminal multiplexer |
 | verilator | git | HDL simulator; `VERILATOR_ROOT` set, `bin/` prepended to PATH |
 | qutebrowser | git | keyboard-driven browser |
