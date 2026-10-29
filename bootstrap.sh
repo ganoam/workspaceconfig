@@ -244,7 +244,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
 fi
 
 # --- foot ---
-if [ "$INSTALL_MOE" == "full" ]; then
+if [ "$INSTALL_MODE" == "full" ]; then
     FOOT_BIN="$ROOT/deps/foot/build/foot"
     foot_install() {
         pushd "$ROOT/deps/foot" > /dev/null
