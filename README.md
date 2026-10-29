@@ -29,6 +29,8 @@ Bootstrap installation depends on the following system tools (see `dwl-deps.yml`
 ```
 sudo apt install libwlroots-0.19-dev
 ```
+#### Configuration
+Built with patches from `deps/dwl-patches`. Desktop file installed to `/usr/local/share/wayland-sessions/`.
 
 ### [waybar](https://github.com/Alexays/Waybar)
 Lightweight dwl statusbar.
@@ -65,6 +67,17 @@ and let `bootstrap.sh` build it.
 ```
 sudo apt install waybar
 ```
+
+#### Configuration
+Custom configuration in `config/waybar/`:
+- `config.jsonc`: Module layout (dwl/tags, media, MPD, idle inhibitor, pulseaudio, network, power profiles, CPU, memory, temperature, backlight, keyboard state, language, battery, clock, tray, power menu)
+- `style.css`: Custom styling with color-coded modules (transparent background, color-coded status indicators)
+
+#### Modules
+Left: dwl/tags, custom/media
+Center: sway/window
+Right: MPD, idle_inhibitor, pulseaudio, network, power-profiles-daemon, cpu, memory, temperature, backlight, keyboard-state, sway/language, battery, clock, tray, custom/power
+
 ### [mako](https://github.com/emersion/mako)
 Wayland notification daemon.
 #### Build from source: [System Dependencies](https://github.com/emersion/mako#building)
@@ -72,6 +85,8 @@ Bootstrap installation depends on the following system tools:
 ```
 sudo apt install libpango1.0-dev libwayland-dev
 ```
+#### Configuration
+Uses default mako configuration. No custom config provided in this repo.
 
 ### [swaybg](https://github.com/swaywm/swaybg)
 Wallpaper utility for Wayland compositors.
@@ -80,6 +95,8 @@ Bootstrap installation depends on the following system tools:
 ```
 sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev
 ```
+#### Configuration
+Uses default swaybg configuration. No custom config provided in this repo.
 
 ### [wmenu](https://codeberg.org/adnano/wmenu)
 Wayland menu launcher (dmenu alternative).
@@ -88,6 +105,8 @@ Bootstrap installation depends on the following system tools:
 ```
 sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev libxkbcommon-dev
 ```
+#### Configuration
+Uses default wmenu configuration. No custom config provided in this repo.
 
 ### [foot](https://codeberg.org/foot/foot)
 Fast, lightweight Wayland terminal emulator.
@@ -101,7 +120,80 @@ sudo apt install libwayland-dev libxkbcommon-dev libfontconfig1-dev libpixman-1-
 ```
 sudo apt install foot
 ```
+#### Configuration
+Uses default foot configuration. No custom config provided in this repo.
 
+### [qutebrowser](https://github.com/qutebrowser/qutebrowser)
+keyboard-driven browser.
+#### Build from source: [System Dependencies](https://github.com/qutebrowser/qutebrowser#building-from-source)
+Bootstrap installation depends on the following system tools:
+```
+sudo apt install libpython3-dev
+```
+
+#### Or use your package manager:
+```
+sudo apt install qutebrowser
+```
+
+#### Configuration
+Custom configuration in `config/qutebrowser/config.py`:
+- `<Ctrl-n>` / `<Ctrl-p>`: Next/prev completion item in command mode
+- `a`: Enter insert mode
+- `K` / `J`: Next/prev tab
+- `H` / `L`: Back/forward
+- `Q`: Close tab
+
+### [fusesoc](https://github.com/olofk/fusesoc)
+FPGA build system for managing IP cores and dependencies.
+#### Installation
+Fusesoc is installed into the `envs/main` virtual environment via `bootstrap.sh`.
+#### Configuration
+Custom configuration in `config/fusesoc/fusesoc.conf`:
+- Library location: `~/code/`
+- Auto-sync: disabled
+
+### [ripgrep](https://github.com/BurntSushi/ripgrep)
+Fast text search tool (alternative to grep).
+#### Installation
+Binary tarball fetched and symlinked into `bin/`.
+#### Configuration
+Uses default ripgrep configuration. No custom config provided in this repo.
+
+### [wlock](https://codeberg.org/sewn/wlock)
+Simple Wayland screen locker.
+#### Installation
+Git submodule fetched into `deps/wlock`. Built with make.
+#### Configuration
+Uses default wlock configuration. No custom config provided in this repo.
+
+### [tpm](https://github.com/tmux-plugins/tpm)
+Tmux Plugin Manager for managing tmux plugins.
+#### Installation
+Git submodule fetched into `deps/tpm`. Plugins are installed via tmux prefix+I.
+#### Configuration
+See tmux section below for plugin configuration.
+
+### [scripts](https://github.com/ganoam/scripts)
+Collection of utility scripts including shortcut-menus.
+#### Installation
+Git submodule fetched into `deps/scripts`. Scripts added to PATH.
+#### Configuration
+Utility scripts for dmenu/wmenu integration. No additional configuration required.
+
+### [neovim](https://neovim.io)
+Extensible Vim-based text editor.
+#### Installation
+Binary tarball fetched and added to PATH.
+#### Configuration
+See Neovim section below for detailed keymaps and plugin configuration.
+
+### [verilator](https://github.com/ganoam/verilator)
+HDL simulator (Verilog to SystemVerilog).
+#### Installation
+Git submodule fetched into `deps/verilator`. Built with autoconf/make.
+#### Configuration
+`VERILATOR_ROOT` environment variable set to `$ROOT/deps/verilator`. `bin/` prepended to PATH.
 
 ## Activate
 
@@ -171,6 +263,8 @@ One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than 
 | qutebrowser | git | keyboard-driven browser |
 | tpm | git | tmux plugin manager |
 | scripts | git | `shortcut-menus` dmenu/wmenu scripts added to PATH |
+| fusesoc | git | FPGA build system; installed into `envs/main` venv |
+| neovim-remote (nvr) | pip | Neovim remote control for tmux integration |
 
 Repo config dirs (`config/`): `nvim/`, `tmux/` (incl. tmux-powerline),
 `waybar/`, `qutebrowser/`, `fusesoc/`.
@@ -238,6 +332,35 @@ Status line keys are vi-style; plugins: tpm, tmux-sensible,
 tmux-powerline. Default terminal: `st-256color`.
 `SSH_AUTH_SOCK` is forced to `~/.ssh/ssh_auth_sock` (see `~/.ssh/rc` above).
 
+#### Configuration Details
+- **Terminal**: `st-256color` (suckless terminal)
+- **Shell**: Non-login shell for proper environment
+- **Status keys**: vi-style
+- **Aggressive resize**: enabled
+- **Window rename format**: Shows pane current path
+
+#### Plugins (via tpm)
+- `tmux-plugins/tpm`: Plugin manager
+- `tmux-plugins/tmux-sensible`: Sensible defaults
+- `Koalemo/tmux-resurrect`: Session restoration with nvim/vim session strategy and pane contents capture
+- `erikw/tmux-powerline`: Powerline-style status bar
+
+Install plugins: `prefix + I` (install), `prefix + U` (update)
+
+### waybar (`config/waybar/`)
+
+No custom keybindings (uses default waybar interactions).
+
+#### Configuration
+Custom configuration in `config/waybar/`:
+- **config.jsonc**: Module layout and settings
+  - Left: dwl/tags, custom/media
+  - Center: sway/window
+  - Right: MPD, idle_inhibitor, pulseaudio, network, power-profiles-daemon, cpu, memory, temperature, backlight, keyboard-state, sway/language, battery, clock, tray, custom/power
+- **style.css**: Custom styling with color-coded modules
+  - Transparent background with color-coded status indicators
+  - Module-specific colors (e.g., battery critical animation, power profile colors)
+  - Custom tag colors for dwl integration
 
 ### qutebrowser (`config/qutebrowser/config.py`)
 
@@ -250,6 +373,67 @@ tmux-powerline. Default terminal: `st-256color`.
 | `<Ctrl-n>` / `<Ctrl-p>` | command | Completion item next / prev | custom |
 
 All other qutebrowser bindings are upstream defaults (e.g. `o` open, `d` close tab, `gg`/`G` scroll, `f` hint-follow, `yy` yank URL, `i` insert mode, `:` command mode).
+
+### fusesoc (`config/fusesoc/fusesoc.conf`)
+
+No custom keybindings (CLI tool).
+
+#### Configuration
+Custom configuration in `config/fusesoc/fusesoc.conf`:
+- Library location: `~/code/`
+- Auto-sync: disabled
+
+### dwl (`deps/dwl/config.def.h`)
+
+| Binding | Action | Source |
+|---|---|---|
+| `MOD + p` | Spawn menu (wmenu) | custom |
+| `MOD + Shift + Return` | Spawn terminal (foot) | custom |
+| `MOD + w` | Spawn browser (qutebrowser) | custom |
+| `MOD + b` | Toggle bar | custom |
+| `MOD + h` / `MOD + l` / `MOD + k` / `MOD + j` | Focus window (left/right/up/down) | custom |
+| `MOD + i` / `MOD + d` | Increase/decrease master area | custom |
+| `MOD + Shift + h` / `MOD + Shift + l` | Decrease/increase master factor | custom |
+| `MOD + Return` | Zoom to focused window | custom |
+| `MOD + Tab` | View last tag | custom |
+| `MOD + Shift + c` | Kill focused client | custom |
+| `MOD + t` / `MOD + f` / `MOD + m` / `MOD + u` / `MOD + o` | Set layout (tile/floating/monocle/bstack/bstackhoriz) | custom |
+| `MOD + space` | Cycle layout | custom |
+| `MOD + e` | Toggle fullscreen | custom |
+| `MOD + 0` | View all tags | custom |
+| `MOD + Shift + 0` | Tag with all tags | custom |
+| `MOD + ,` / `MOD + .` | Focus monitor (left/right) | custom |
+| `MOD + Shift + <` / `MOD + Shift + >` | Tag to monitor (left/right) | custom |
+| `MOD + 1-9` | View tag | custom |
+| `MOD + Shift + 1-9` | Tag with tag | custom |
+| `MOD + Ctrl + 1-9` | Toggle view of tag | custom |
+| `MOD + Ctrl + Shift + 1-9` | Toggle tag on client | custom |
+| `MOD + Shift + q` | Quit dwl | custom |
+| XF86MonBrightnessUp/Down | Increase/decrease backlight | custom |
+| XF86AudioRaiseVolume/LowerVolume/Mute | Audio volume control | custom |
+| XF86AudioMicMute | Microphone mute | custom |
+| XF86Calculator | Lock and suspend | custom |
+| `Ctrl + Alt + Backspace` | Quit dwl | custom |
+| `Ctrl + Alt + F1-F12` | Switch VT | custom |
+
+**Note**: MODKEY is defined as WLR_MODIFIER_LOGO (Windows/Super key)
+
+#### Configuration
+Built with patches from `deps/dwl-patches`. Desktop file installed to `/usr/local/share/wayland-sessions/`.
+- **Keyboard layout**: us/ch(de) with caps lock toggle
+- **Terminal**: foot
+- **Menu**: wmenu-run
+- **Browser**: qutebrowser
+- **Layouts**: tile, floating, monocle, bstack, bstackhoriz
+- **Colors**: Custom border, focus, and urgent colors
+
+### mako, swaybg, wmenu, foot, wlock
+
+No custom keybindings or configurations provided in this repo. These tools use their default configurations.
+
+### ripgrep, tpm, scripts
+
+No custom keybindings (CLI tools/utility scripts). Configuration is minimal or defaults are used.
 
 ### Neovim (`config/nvim/`)
 
