@@ -104,7 +104,7 @@ if [[ -z "$WORKSPACE_SET" ]]; then
     # Export binaries from workspaceconfig repo to path
     add_to_path $ROOT/bin
 
-    # Export dmenu scripts to path
+    # Export wmenu scripts to path
     # TODO: find a better solution
     add_to_path $ROOT/deps/scripts/shortcut-menus
     add_to_path $ROOT/deps/scripts/bin
@@ -112,11 +112,7 @@ if [[ -z "$WORKSPACE_SET" ]]; then
     #export PATH="$(find "$ROOT" -type d -name bin -printf '%p:')"$PATH
 fi
 
-if [ "$XDG_SESSION_DESKTOP" == "dwl" ]; then
-  export menu='wmenu'
-else
-  export menu='dmenu'
-fi
+export menu='wmenu'
 
 
 # Replace oldvim
