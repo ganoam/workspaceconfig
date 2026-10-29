@@ -152,6 +152,14 @@ fusesoc_install() {
 }
 ensure_tool "fusesoc" "tool_check fusesoc $MAIN_VENV" "fusesoc_install" "tool_describe fusesoc $MAIN_VENV"
 
+edalize_install() {
+    ensure_venv &&
+    pushd "$ROOT/deps/edalize" > /dev/null
+    "$MAIN_VENV/bin/pip" install .
+    popd > /dev/null
+}
+ensure_tool "edalize" "tool_check edalize $MAIN_VENV" "edalize_install" "tool_describe edalize $MAIN_VENV"
+
 # --- verilator ---
 VERILATOR_BIN="$ROOT/deps/verilator/bin/verilator_bin"
 verilator_install() {

@@ -44,3 +44,6 @@
 	path = deps/fusesoc
 	url = https://github.com/olofk/fusesoc.git
 	branch = master
+[submodule "deps/edalize"]
+	path = deps/edalize
+	url = git@github.com:olofk/edalize.git

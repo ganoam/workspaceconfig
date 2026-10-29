@@ -29,6 +29,7 @@ envs/       # environment configurations (gitignored)
 | tpm | git | tmux plugin manager |
 | scripts | git | `shortcut-menus` wmenu scripts added to PATH |
 | fusesoc | git | SOC build system; installed into `envs/main` venv |
+| edalize | git | An abstraction library for interfacing EDA tools; installed into `envs/main` venv |
 | neovim-remote (nvr) | pip | Neovim remote control for tmux integration; installed into `envs/main` venv |
 
 **Wayland tools (full mode only, requires sudo for dwl and build/runtime dependencies (see: `tool-deps.yml`.):**
@@ -214,11 +215,13 @@ Built with patches from `deps/dwl-patches`. Desktop file installed to `/usr/loca
 
 ### mako, swaybg, wmenu, foot, wlock
 
-No custom keybindings or configurations provided in this repo. These tools use their default configurations.
+No custom keybindings or configurations provided in this repo.
+These tools use their default configurations.
 
-### ripgrep, tpm, scripts
+### ripgrep, tpm, scripts, edalize
 
-No custom keybindings (CLI tools/utility scripts). Configuration is minimal or defaults are used.
+No custom keybindings (CLI tools/utility scripts).
+Configuration is minimal or defaults are used.
 
 ### Neovim (`config/nvim/`)
 
@@ -431,7 +434,7 @@ Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
 The bootstrap script prompts you to choose between two installation modes:
 
 1. **Terminal tools only** - Installs tools that require no sudo privileges:
-   - neovim, ripgrep, verilator, fusesoc, neovim-remote (nvr)
+   - neovim, ripgrep, verilator, fusesoc, neovim-remote (nvr), edalize
    - Suitable for remote development or environments without sudo access
 
 2. **Full wayland experience** - Includes terminal tools plus Wayland desktop components:
@@ -456,6 +459,14 @@ Fusesoc is installed into the `envs/main` virtual environment via `bootstrap.sh`
 Custom configuration in `config/fusesoc/fusesoc.conf`:
 - Library location: `~/code/`
 - Auto-sync: disabled
+
+#### [Edalize](https://github.com/olofk/edalize)
+Abstraction library for interfacing EDA tools
+##### Installation
+Edalize is installed into the `envs/main` virtual environment via `bootstrap.sh`.
+##### Configuration
+
+Uses default configuration. No custom config provided in this repo.
 
 #### [ripgrep](https://github.com/BurntSushi/ripgrep)
 Fast text search tool (alternative to grep).
