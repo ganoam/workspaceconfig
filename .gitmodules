@@ -40,3 +40,7 @@
 	path = deps/foot
 	url = https://codeberg.org/dnkl/foot.git
 	branch = main
+[submodule "deps/fusesoc"]
+	path = deps/fusesoc
+	url = https://github.com/olofk/fusesoc.git
+	branch = master

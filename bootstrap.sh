@@ -90,6 +90,15 @@ nvr_install() {
 }
 ensure_tool "nvr" "tool_check nvr $MAIN_VENV" "nvr_install" "tool_describe nvr $MAIN_VENV"
 
+# --- fusesoc ---
+fusesoc_install() {
+    ensure_venv &&
+    pushd "$ROOT/deps/fusesoc" > /dev/null
+    "$MAIN_VENV/bin/pip" install .
+    popd > /dev/null
+}
+ensure_tool "fusesoc" "tool_check fusesoc $MAIN_VENV" "fusesoc_install" "tool_describe fusesoc $MAIN_VENV"
+
 # --- qutebrowser ---
 QB_VENV="$ROOT/envs/qb"
 qb_install() {
