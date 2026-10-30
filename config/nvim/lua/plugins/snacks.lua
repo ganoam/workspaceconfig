@@ -71,12 +71,6 @@ return {
       ------------------------------------------
       zen = {
         win = {
-          keys = {
-            q = false,
-            ["<Esc>"] = function(self)
-              self:close()
-            end,
-          },
           width = function()
             local buf = vim.api.nvim_get_current_buf()
             local max = 0
