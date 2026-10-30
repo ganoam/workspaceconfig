@@ -174,6 +174,8 @@ else
     alias libelic='$LIBERO_PATH/lic/lmgrd -c $LIBERO_LIC_PATH/License.dat'
 fi
 
+# Activate the main virtual environment
+source $ROOT/envs/main/bin/activate
 
 export WORKSPACE_SET=1
 
