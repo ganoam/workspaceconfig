@@ -3,3 +3,5 @@ deps/neovim
 deps/ripgrep
 deps/wlock
 deps/tpm
+deps/tmux
+envs
