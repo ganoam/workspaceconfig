@@ -34,8 +34,9 @@ done
 
 echo "== versions (runtime check) =="
 check_version() { # name, command
-    local out; out=$("$@" 2>&1 | head -1)
-    [ $? -eq 0 ] && [ -n "$out" ] && ok "$out" || fail "$1 failed: $out"
+    local out rc; out=$("$@" 2>&1); rc=$?
+    out=$(head -1 <<<"$out")
+    [ $rc -eq 0 ] && [ -n "$out" ] && ok "$out" || fail "$1 failed: $out"
 }
 check_version nvim --version
 check_version rg --version
