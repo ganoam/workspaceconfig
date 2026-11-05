@@ -1,4 +1,5 @@
 # build deps for gtkwave4 (meson, apt packages)
+- gperf
 - meson
 - ninja-build
 - libglib2.0-dev
@@ -8,3 +9,6 @@
 - zlib1g-dev
 - libbz2-dev
 - liblzma-dev
+- gobject-introspection
+- libgirepository1.0-dev
+- desktop-file-utils
