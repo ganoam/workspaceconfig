@@ -47,3 +47,6 @@
 [submodule "deps/edalize"]
 	path = deps/edalize
 	url = git@github.com:olofk/edalize.git
+[submodule "deps/gtkwave"]
+	path = deps/gtkwave
+	url = https://github.com/gtkwave/gtkwave

@@ -180,16 +180,37 @@ verilator_install() {
 }
 ensure_tool "verilator" "tool_check $VERILATOR_BIN" "verilator_install" "tool_describe verilator"
 
+# --- gtkwave4 (GUI, but no wayland requirement) ---
+GTKWAVE_BIN="$ROOT/deps/gtkwave/install/bin/gtkwave"
+gtkwave_install() {
+  local rc
+  pushd "$ROOT/deps/gtkwave" > /dev/null || return 1
+  meson setup build --prefix="$ROOT/deps/gtkwave/install" &&
+  ninja -C build && ninja -C build install
+  rc=$?
+  popd > /dev/null
+  return $rc
+}
+ensure_tool "gtkwave" "tool_check $GTKWAVE_BIN" "gtkwave_install" "tool_describe gtkwave"
+
+# --- inkscape (GUI, official AppImage from gitlab release) ---
+INKSCAPE_BIN="$ROOT/deps/inkscape/Inkscape.AppImage"
+inkscape_install() {
+  mkdir -p "$ROOT/deps/inkscape" &&
+  curl -fsSL "https://media.inkscape.org/dl/resources/file/Inkscape-091e20e-x86_64.AppImage" -o "$INKSCAPE_BIN" &&
+  echo "d217fe05c92faaed5c3af46856b6299c98933dc722819cb5bc2ca052c5522166  $INKSCAPE_BIN" | sha256sum -c - &&
+  chmod +x "$INKSCAPE_BIN"
+}
+ensure_tool "inkscape" "tool_check $INKSCAPE_BIN" "inkscape_install" "tool_describe inkscape"
+
 # --- qutebrowser ---
-if [ "$INSTALL_MODE" == "full" ]; then
-  QB_VENV="$ROOT/envs/qb"
-  qb_install() {
-      local QB_DIR="$ROOT/deps/qutebrowser"
-      ensure_venv $QB_VENV &&
-      $QB_DIR/scripts/mkvenv.py --venv-dir $QB_VENV
-  }
-  ensure_tool "qutebrowser" "tool_check qutebrowser $QB_VENV" "qb_install" "tool_describe qutebrowser $QB_VENV"
-fi
+QB_VENV="$ROOT/envs/qb"
+qb_install() {
+    local QB_DIR="$ROOT/deps/qutebrowser"
+    ensure_venv $QB_VENV &&
+    $QB_DIR/scripts/mkvenv.py --venv-dir $QB_VENV
+}
+ensure_tool "qutebrowser" "tool_check qutebrowser $QB_VENV" "qb_install" "tool_describe qutebrowser $QB_VENV"
 
 # --- waybar ---
 if [ "$INSTALL_MODE" == "full" ]; then

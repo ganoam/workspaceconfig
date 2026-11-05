@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+$CONFIGROOT/../deps/gtkwave/install/bin/gtkwave "$@"
