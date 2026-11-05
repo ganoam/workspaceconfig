@@ -455,6 +455,13 @@ Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
 You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (terminal tools only)
 For wayland tools to take effect you'll need to logout and login.
 
+**What to expect:** The bootstrap downloads and builds a lot.
+The verilator build alone can take a while.
+Everything it installs stays inside this directory (deps/, envs/, config/share/).
+The only things committed to your system are apt packages, which are only installed after a sudo.
+In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/`.
+Deleting the `workspaceconfig` directory removes everything the bootstrap added, except aforementioned apt packages.
+
 
 ### Installation Modes
 
