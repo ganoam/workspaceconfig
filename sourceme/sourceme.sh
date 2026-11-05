@@ -121,7 +121,15 @@ alias nvim=nvim
 alias vim=nvim
 alias vi=nvim
 alias vimdiff="nvim -d"
-export EDITOR=nvim
+if [ -n "$NVIM" ]; then
+    # Inside a nvim terminal buffer: hand editor requests back to the host
+    # nvim via nvr instead of nesting a new instance. --remote-wait blocks
+    # until the buffer is wiped; bufhidden=wipe makes :q/:wq end the wait.
+    export EDITOR="nvr -cc split --remote-wait +'set bufhidden=wipe'"
+    export VISUAL=$EDITOR
+else
+    export EDITOR=nvim
+fi
 
 #shortcuts to open files in new split / tab
 alias h='nvr -o'
