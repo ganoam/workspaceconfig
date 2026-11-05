@@ -467,226 +467,57 @@ Deleting the `workspaceconfig` directory removes everything the bootstrap added,
 
 The bootstrap script prompts you to choose between two installation modes:
 
-1. **Terminal tools only** - Installs tools that require no sudo privileges:
-   - neovim, ripgrep, verilator, fusesoc, neovim-remote (nvr), edalize
-   - Suitable for remote development or environments without sudo access
+1. **Terminal tools only:** everything needed for the editor/shell workflow, no sudo required.
+Suitable for remote development or machines without sudo access.
 
-2. **Full wayland experience** - Includes terminal tools plus Wayland desktop components:
-   - dwl, waybar, mako, swaybg, wmenu, foot, qutebrowser
-   - Requires sudo for installing dwl desktop file to `/usr/local/share/wayland-sessions/`
+2. **Full wayland experience:** terminal tools plus the Wayland desktop (compositor, bar, launcher, terminal, notifications).
+Requires sudo for build/runtime dependencies and the dwl session file.
+
+See the tables below for what's included in each mode.
 
 **Flags:**
 - `-t` or `--terminal`: Install terminal tools only (skip prompt)
 - `-y` or `--yes`: Skip prompts (default to full wayland experience when used alone)
 - Combine flags: `./bootstrap.sh -y -t` for automated terminal-only installation
 
-### Terminal-only tools
-Installation of the following tools is handled by the bootstrap script automatically.
-All tools are made available via wrapper scripts in `bin/` which point to the build directories.
-No system-wide installations required for terminal tools.
 
-#### [fusesoc](https://github.com/olofk/fusesoc)
-FPGA build system for managing IP cores and dependencies.
-##### Installation
-Fusesoc is installed into the `envs/main` virtual environment via `bootstrap.sh`.
-##### Configuration
-Custom configuration in `config/fusesoc/fusesoc.conf`:
-- Library location: `~/code/`
-- Auto-sync: disabled
+### Terminal tools
 
-#### [Edalize](https://github.com/olofk/edalize)
-Abstraction library for interfacing EDA tools
-##### Installation
-Edalize is installed into the `envs/main` virtual environment via `bootstrap.sh`.
-##### Configuration
+All terminal tools are installed by `bootstrap.sh` automatically, fetched as
+binary tarballs, git submodules, or pip packages into `envs/main`.
+No sudo required and nothing installed system-wide.
+`bin/` contains wrapper scripts pointing into `deps/`.
 
-Uses default configuration. No custom config provided in this repo.
+| Tool | Description | Config | System deps |
+|---|---|---|---|
+| [neovim](https://neovim.io) | text editor | `config/nvim/` (see keybindings above) | none (tarball) |
+| [ripgrep](https://github.com/BurntSushi/ripgrep) | fast grep; editor plugins | default | none (tarball) |
+| [tmux](https://github.com/tmux/tmux) | terminal multiplexer | `config/tmux/tmux.conf` + tpm plugins + `config/tmux-powerline/` | none (static tarball) |
+| [verilator](https://github.com/ganoam/verilator) | HDL simulator | `VERILATOR_ROOT` env var | see `verilator-deps.yml` |
+| [fusesoc](https://github.com/olofk/fusesoc) | FPGA build system | `config/fusesoc/fusesoc.conf` | none (pip → `envs/main`) |
+| [edalize](https://github.com/olofk/edalize) | EDA tool abstraction library | default | none (pip → `envs/main`) |
+| [nvr](https://github.com/mhinz/neovim-remote) | remote-control running nvim (tmux integration) | n/a | none (pip → `envs/main`) |
+| [tpm](https://github.com/tmux-plugins/tpm) | tmux plugin manager | plugins via tmux `prefix + I` | none (submodule) |
+| [scripts](https://github.com/ganoam/scripts) | utility scripts incl. `shortcut-menus` | n/a | none (submodule → PATH) |
 
-#### [ripgrep](https://github.com/BurntSushi/ripgrep)
-Fast text search tool (alternative to grep).
-##### Installation
-Binary tarball fetched and symlinked into `bin/`.
-##### Configuration
-Uses default ripgrep configuration. No custom config provided in this repo.
+### Wayland tools
 
-#### [wlock](https://codeberg.org/sewn/wlock)
-Simple Wayland screen locker.
-##### Installation
-Git submodule fetched into `deps/wlock`. Built with make.
-##### Configuration
-Uses default wlock configuration. No custom config provided in this repo.
+Only installed in full mode.
+Fetched as submodules and built with meson/ninja or make.
+Each tool's system dependencies are listed in its `<tool>-deps.yml` and installed by `bootstrap.sh` (after confirmation, or with `-y`).
 
-### #[tpm](https://github.com/tmux-plugins/tpm)
-Tmux Plugin Manager for managing tmux plugins.
-##### Installation
-Git submodule fetched into `deps/tpm`. Plugins are installed via tmux prefix+I.
-##### Configuration
-See tmux section below for plugin configuration.
+| Tool | Description | Config | System deps |
+|---|---|---|---|
+| [dwl](https://github.com/ganoam/dwl) + [dwl-patches](https://codeberg.org/dwl/dwl-patches) | wayland compositor | patches in `deps/dwl-patches` | `dwl-deps.yml`; session file → `/usr/local/share/wayland-sessions/` (sudo) |
+| [waybar](https://github.com/Alexays/Waybar) | statusbar | `config/waybar/` (layout + styling) | `waybar-deps.yml` |
+| [mako](https://github.com/emersion/mako) | notification daemon | default | `mako-deps.yml` |
+| [swaybg](https://github.com/swaywm/swaybg) | wallpaper | default | `swaybg-deps.yml` |
+| [wmenu](https://codeberg.org/adnano/wmenu) | menu launcher | default | `wmenu-deps.yml` |
+| [foot](https://codeberg.org/foot/foot) | wayland terminal emulator | default | `foot-deps.yml` |
+| [wlock](https://codeberg.org/sewn/wlock) | screen locker | default | fetched only; `make` manually |
+| [qutebrowser](https://github.com/qutebrowser/qutebrowser) | keyboard-driven browser | `config/qutebrowser/config.py` (command-mode/tab keymaps) | `libpython3-dev`; venv in `envs/qb` |
 
-#### [scripts](https://github.com/ganoam/scripts)
-Collection of utility scripts including shortcut-menus.
-##### Installation
-Git submodule fetched into `deps/scripts`. Scripts added to PATH.
-##### Configuration
-Utility scripts for wmenu integration. No additional configuration required.
-
-#### [neovim](https://neovim.io)
-Extensible Vim-based text editor.
-##### Installation
-Binary tarball fetched and added to PATH.
-##### Configuration
-See Neovim section below for detailed keymaps and plugin configuration.
-
-#### [tmux](https://github.com/tmux/tmux)
-Terminal multiplexer.
-##### Installation
-Static binary tarball fetched from tmux-builds and added to PATH.
-##### Configuration
-Custom configuration in `config/tmux/tmux.conf` and plugins managed via tpm.
-
-#### [verilator](https://github.com/ganoam/verilator)
-HDL simulator (Verilog to SystemVerilog).
-##### Installation
-Git submodule fetched into `deps/verilator`. Built with autoconf/make.
-##### Configuration
-`VERILATOR_ROOT` environment variable set to `$ROOT/deps/verilator`. `bin/` prepended to PATH.
-
-
-### Wayland Tools
-
-The following Wayland tools (dwl, waybar, mako, swaybg, wmenu, foot) use meson for building.
-If building from source with the full wayland experience, ensure `meson` and `ninja` are installed:
-```
-sudo apt install meson ninja-build
-```
-
-Installation of the following tools is handled by the bootstrap script automatically, but they require system dependencies to be put into place.
-If you want to take manual control, here's how.
-These tools are not needed for terminal configuration only.
-
-
-#### [dwl](https://github.com/ganoam/dwl)
-Suckless minimalist wayland window manager.
-Intro/Instructions: [dwl-deep-dive](https://codeberg.org/julmajustus/dwl-deep-dive)
-##### Build from source
-Bootstrap installation depends on the following system tools (see `dwl-deps.yml`):
-```
-sudo apt install libwlroots-0.19-dev
-```
-##### Configuration
-Built with patches from `deps/dwl-patches`. Desktop file installed to `/usr/local/share/wayland-sessions/`.
-
-#### [waybar](https://github.com/Alexays/Waybar)
-Lightweight dwl statusbar.
-##### Build from source: [System Dependencies](https://github.com/Alexays/Waybar#building-from-source)
-Bootstrap installation depends on the following system tools (see `waybar-deps.yml`):
-
-**Runtime dependencies**:
-```
-gtkmm3       jsoncpp      libsigc++    fmt          wayland
-chrono-date  spdlog       xkbregistry  libgtk-3-dev upower
-
-sudo apt install
-    libpulse-dev libnl-3-dev  libappindicator3-dev  libdbusmenu-gtk3-dev \
-    libmpdclient-dev libsndio-dev libevdev-dev
-```
-
-**build dependencies**:
-```
-sudo apt install cmake meson scdoc wayland-protocol
-```
-**Install Dependencies**:
-```
-sudo apt install \
-  clang-tidy gobject-introspection libdbusmenu-gtk3-dev libevdev-dev \
-  libfmt-dev libgirepository1.0-dev libgtk-3-dev libgtkmm-3.0-dev \
-  libinput-dev libjsoncpp-dev libmpdclient-dev libnl-3-dev libnl-genl-3-dev \
-  libpulse-dev libsigc++-2.0-dev libspdlog-dev libwayland-dev scdoc upower \
-  libxkbregistry-dev libiniparser-dev libfftw3-dev
-```
-
-and let `bootstrap.sh` build it.
-
-##### Or use your package manager:
-```
-sudo apt install waybar
-```
-
-##### Configuration
-Custom configuration in `config/waybar/`:
-- `config.jsonc`: Module layout (dwl/tags, media, MPD, idle inhibitor, pulseaudio, network, power profiles, CPU, memory, temperature, backlight, keyboard state, language, battery, clock, tray, power menu)
-- `style.css`: Custom styling with color-coded modules (transparent background, color-coded status indicators)
-
-##### Modules
-Left: dwl/tags, custom/media
-Center: sway/window
-Right: MPD, idle_inhibitor, pulseaudio, network, power-profiles-daemon, cpu, memory, temperature, backlight, keyboard-state, sway/language, battery, clock, tray, custom/power
-
-#### [mako](https://github.com/emersion/mako)
-Wayland notification daemon.
-##### Build from source: [System Dependencies](https://github.com/emersion/mako#building)
-Bootstrap installation depends on the following system tools:
-```
-sudo apt install libpango1.0-dev libwayland-dev
-```
-##### Configuration
-Uses default mako configuration. No custom config provided in this repo.
-
-#### [swaybg](https://github.com/swaywm/swaybg)
-Wallpaper utility for Wayland compositors.
-##### Build from source: [System Dependencies](https://github.com/swaywm/swaybg#building)
-Bootstrap installation depends on the following system tools:
-```
-sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev
-```
-##### Configuration
-Uses default swaybg configuration. No custom config provided in this repo.
-
-#### [wmenu](https://codeberg.org/adnano/wmenu)
-Wayland menu launcher.
-##### Build from source: [System Dependencies](https://codeberg.org/adnano/wmenu)
-Bootstrap installation depends on the following system tools:
-```
-sudo apt install libwayland-dev libcairo2-dev libpango1.0-dev libxkbcommon-dev
-```
-##### Configuration
-Uses default wmenu configuration. No custom config provided in this repo.
-
-#### [foot](https://codeberg.org/foot/foot)
-Fast, lightweight Wayland terminal emulator.
-##### Build from source: [System Dependencies](https://codeberg.org/foot/foot#building)
-Bootstrap installation depends on the following system tools:
-```
-sudo apt install libwayland-dev libxkbcommon-dev libfontconfig1-dev libpixman-1-dev
-```
-
-##### Or use your package manager:
-```
-sudo apt install foot
-```
-##### Configuration
-Uses default foot configuration. No custom config provided in this repo.
-
-#### [qutebrowser](https://github.com/qutebrowser/qutebrowser)
-keyboard-driven browser.
-##### Build from source: [System Dependencies](https://github.com/qutebrowser/qutebrowser#building-from-source)
-Bootstrap installation depends on the following system tools:
-```
-sudo apt install libpython3-dev
-```
-
-##### Or use your package manager:
-```
-sudo apt install qutebrowser
-```
-
-##### Configuration
-Custom configuration in `config/qutebrowser/config.py`:
-- `<Ctrl-n>` / `<Ctrl-p>`: Next/prev completion item in command mode
-- `a`: Enter insert mode
-- `K` / `J`: Next/prev tab
-- `H` / `L`: Back/forward
-- `Q`: Close tab
+If you'd rather not build from source, most wayland tools are also in apt (`waybar`, `foot`, `qutebrowser`, …), but `bootstrap.sh` only uses the submodule builds.
 
 
 ### Manual Changes for Persistent TMUX sessions across SSH reconnects
