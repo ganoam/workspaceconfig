@@ -442,10 +442,18 @@ Empty `setup({})` → all defaults [8](#19-7) .
 
 ## Install
 
+The workspace config is usually cloned into `~/workspaceconfig`.
+Other paths should work but are not tested.
 Most tools are automatically bootstrapped by the bootstrap.sh script.
-Run `./bootstrap.sh` to start the installation process.
 
+```bash
+cd path/to/workspaceconfig
+. sourceme/sourceme.sh
+./bootstrap.sh
+```
 Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
+You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (terminal tools only)
+For wayland tools to take effect you'll need to logout and login.
 
 
 ### Installation Modes
