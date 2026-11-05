@@ -499,6 +499,9 @@ No sudo required and nothing installed system-wide.
 | [nvr](https://github.com/mhinz/neovim-remote) | remote-control running nvim (tmux integration) | n/a | none (pip → `envs/main`) |
 | [tpm](https://github.com/tmux-plugins/tpm) | tmux plugin manager | plugins via tmux `prefix + I` | none (submodule) |
 | [scripts](https://github.com/ganoam/scripts) | utility scripts incl. `shortcut-menus` | n/a | none (submodule → PATH) |
+| [gtkwave](https://github.com/gtkwave/gtkwave) | waveform viewer (VCD/FST etc.); v4 dev branch | default | `gtkwave-deps.yml`; GUI needs a display |
+| [inkscape](https://gitlab.com/inkscape/inkscape) | vector graphics editor | `config/inkscape/` | official AppImage (gitlab release); needs FUSE |
+| [qutebrowser](https://github.com/qutebrowser/qutebrowser) | keyboard-driven browser | `config/qutebrowser/config.py` (command-mode/tab keymaps) | `qutebrowser-deps.yml`; venv in `envs/qb` |
 
 ### Wayland tools
 
@@ -515,7 +518,6 @@ Each tool's system dependencies are listed in its `<tool>-deps.yml` and installe
 | [wmenu](https://codeberg.org/adnano/wmenu) | menu launcher | default | `wmenu-deps.yml` |
 | [foot](https://codeberg.org/foot/foot) | wayland terminal emulator | default | `foot-deps.yml` |
 | [wlock](https://codeberg.org/sewn/wlock) | screen locker | default | fetched only; `make` manually |
-| [qutebrowser](https://github.com/qutebrowser/qutebrowser) | keyboard-driven browser | `config/qutebrowser/config.py` (command-mode/tab keymaps) | `libpython3-dev`; venv in `envs/qb` |
 
 If you'd rather not build from source, most wayland tools are also in apt (`waybar`, `foot`, `qutebrowser`, …), but `bootstrap.sh` only uses the submodule builds.
 
