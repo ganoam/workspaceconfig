@@ -13,7 +13,12 @@ return {
       explorer = { enabled = false },
       indent = { enabled = true },
       input = { enabled = true },
-      picker = { enabled = true },
+      picker = {
+        enabled = true,
+        -- allow the picker's target window to be a non-file buffer
+        -- (e.g. a terminal in a split) instead of jumping to a file window
+        main = { file = false },
+      },
       notifier = {
         enabled = true,
         height = {min = 1, max = 0.9},
