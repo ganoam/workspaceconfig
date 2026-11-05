@@ -124,13 +124,13 @@ fi
 
 # --- deps/scripts: fetch remotely if not yet present, then delegate ---
 FETCH_REPOS="setup/fetch-repos.sh"
-bootstrap_script "$FETCH_REPOS" "run" $([ "$ASSUME_YES" -eq 1 ] && echo -y)
+bootstrap_script "$FETCH_REPOS" "run" $([ "$ASSUME_YES" -eq 1 ] && echo -y) || FAILED_TOOLS+=("fetch-repos")
 
 # --- tarballs, once deps/scripts is present ---
 FETCH_TARBALLS="$ROOT/deps/scripts/setup/fetch-tarballs.sh"
 if [ -f "$FETCH_TARBALLS" ]; then
     pushd "$ROOT" > /dev/null
-    bash "$FETCH_TARBALLS" "$ROOT" $([ "$ASSUME_YES" -eq 1 ] && echo -y)
+    bash "$FETCH_TARBALLS" "$ROOT" $([ "$ASSUME_YES" -eq 1 ] && echo -y) || FAILED_TOOLS+=("fetch-tarballs")
     popd > /dev/null
 fi
 
