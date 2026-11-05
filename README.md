@@ -57,6 +57,25 @@ pushd path/to/workspaceconfig
 popd
 ```
 
+## Workflow Tipps
+
+
+### Systemverilog LSP
+Nvim comes with the **LazyVerilog** LSP Plugin (which bypasses mason).
+To function properly, it needs a file list of everything involved in the project you're working on.
+You can autogenerate such a file list like so:
+
+1. List the top level name(s) of the fusesoc core you are working on
+```
+# toplevels.list
+ganoam:util:stream_reg_tb:0
+```
+
+2. Run
+```
+gen_flist.py --target=sim toplevels.list > vcode.f
+```
+
 ## External required tools
 
 **Bootstrap dependencies** (must exist on the system):
