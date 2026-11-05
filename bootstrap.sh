@@ -198,7 +198,7 @@ INKSCAPE_BIN="$ROOT/deps/inkscape/Inkscape.AppImage"
 inkscape_install() {
   mkdir -p "$ROOT/deps/inkscape" &&
   curl -fsSL "https://media.inkscape.org/dl/resources/file/Inkscape-091e20e-x86_64.AppImage" -o "$INKSCAPE_BIN" &&
-  echo "d217fe05c92faaed5c3af46856b6299c98933dc722819cb5bc2ca052c5522166  $INKSCAPE_BIN" | sha256sum -c - &&
+  echo "351deaea3fa391c56e0c6401dadcf83f7c9c8f82faa47bdb07024e99b92f9b5c  $INKSCAPE_BIN" | sha256sum -c - &&
   chmod +x "$INKSCAPE_BIN"
 }
 ensure_tool "inkscape" "tool_check $INKSCAPE_BIN" "inkscape_install" "tool_describe inkscape"
