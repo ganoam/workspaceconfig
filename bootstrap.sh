@@ -17,13 +17,14 @@ log() {
 bootstrap_script() {
     local RELPATH="$1"
     local MODE="${2:-run}" # source or run
+    shift 2
 
     _run_script() {
-      local script="$1"
+      local script="$1"; shift
       if [ "$MODE" == "source" ]; then
-        source "$script"
+        source "$script" "$@"
       else
-        bash "$script"
+        bash "$script" "$@"
       fi
     }
 
@@ -123,7 +124,7 @@ fi
 
 # --- deps/scripts: fetch remotely if not yet present, then delegate ---
 FETCH_REPOS="setup/fetch-repos.sh"
-bootstrap_script "$FETCH_REPOS" "run"
+bootstrap_script "$FETCH_REPOS" "run" $([ "$ASSUME_YES" -eq 1 ] && echo -y)
 
 # --- tarballs, once deps/scripts is present ---
 FETCH_TARBALLS="$ROOT/deps/scripts/setup/fetch-tarballs.sh"
