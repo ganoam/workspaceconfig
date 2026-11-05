@@ -208,7 +208,8 @@ QB_VENV="$ROOT/envs/qb"
 qb_install() {
     local QB_DIR="$ROOT/deps/qutebrowser"
     ensure_venv $QB_VENV &&
-    $QB_DIR/scripts/mkvenv.py --venv-dir $QB_VENV
+    # offscreen platform so the Qt smoke test also works headless
+    QT_QPA_PLATFORM=offscreen $QB_DIR/scripts/mkvenv.py --venv-dir $QB_VENV
 }
 ensure_tool "qutebrowser" "tool_check qutebrowser $QB_VENV" "qb_install" "tool_describe qutebrowser $QB_VENV"
 
