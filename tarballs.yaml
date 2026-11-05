@@ -7,9 +7,3 @@ ripgrep:
 tmux:
   url: https://github.com/tmux/tmux-builds/releases/download/v3.7c/tmux-3.7c-linux-x86_64.tar.gz
   hash: cc56bd1cc873eb6089c615f0496b072385bda8a6d944069f38564a5d49c128aa
-tpm:
-  url: https://github.com/tmux-plugins/tpm.git
-  hash: 99469c4a9b1ccf77fade25842dc7bafbc8ce9946
-wlock:
-  url: https://codeberg.org/sewn/wlock.git
-  hash: c1d159a83391b11efbd85e76c30e8d39ae66e2dd
