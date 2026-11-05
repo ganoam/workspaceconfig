@@ -165,7 +165,8 @@ edalize_install() {
     popd > /dev/null
     return $rc
 }
-ensure_tool "edalize" "tool_check edalize $MAIN_VENV" "edalize_install" "tool_describe edalize $MAIN_VENV"
+# edalize is a library, no console script. check via import instead of tool_check
+ensure_tool "edalize" "$MAIN_VENV/bin/python -c 'import edalize'" "edalize_install" "tool_describe edalize $MAIN_VENV"
 
 # --- verilator ---
 VERILATOR_BIN="$ROOT/deps/verilator/bin/verilator_bin"
