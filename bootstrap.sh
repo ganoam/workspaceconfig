@@ -146,27 +146,36 @@ ensure_tool "nvr" "tool_check nvr $MAIN_VENV" "nvr_install" "tool_describe nvr $
 
 # --- fusesoc ---
 fusesoc_install() {
-    ensure_venv &&
-    pushd "$ROOT/deps/fusesoc" > /dev/null
+    local rc
+    ensure_venv || return 1
+    pushd "$ROOT/deps/fusesoc" > /dev/null || return 1
     "$MAIN_VENV/bin/pip" install .
+    rc=$?
     popd > /dev/null
+    return $rc
 }
 ensure_tool "fusesoc" "tool_check fusesoc $MAIN_VENV" "fusesoc_install" "tool_describe fusesoc $MAIN_VENV"
 
 edalize_install() {
-    ensure_venv &&
-    pushd "$ROOT/deps/edalize" > /dev/null
+    local rc
+    ensure_venv || return 1
+    pushd "$ROOT/deps/edalize" > /dev/null || return 1
     "$MAIN_VENV/bin/pip" install -e .
+    rc=$?
     popd > /dev/null
+    return $rc
 }
 ensure_tool "edalize" "tool_check edalize $MAIN_VENV" "edalize_install" "tool_describe edalize $MAIN_VENV"
 
 # --- verilator ---
 VERILATOR_BIN="$ROOT/deps/verilator/bin/verilator_bin"
 verilator_install() {
-  pushd "$ROOT/deps/verilator" > /dev/null
+  local rc
+  pushd "$ROOT/deps/verilator" > /dev/null || return 1
   autoconf && ./configure && make clean && make -j"$jobs"
+  rc=$?
   popd > /dev/null
+  return $rc
 }
 ensure_tool "verilator" "tool_check $VERILATOR_BIN" "verilator_install" "tool_describe verilator"
 
@@ -185,10 +194,12 @@ fi
 if [ "$INSTALL_MODE" == "full" ]; then
     WB_BIN="$ROOT/deps/waybar/build/waybar"
     wb_install() {
-        pushd "$ROOT/deps/waybar" > /dev/null
-        meson setup build &&
-        ninja -C build
+        local rc
+        pushd "$ROOT/deps/waybar" > /dev/null || return 1
+        meson setup build && ninja -C build
+        rc=$?
         popd > /dev/null
+        return $rc
     }
     ensure_tool "waybar" "tool_check $WB_BIN" "wb_install" "tool_describe waybar"
 fi
@@ -197,12 +208,15 @@ fi
 if [ "$INSTALL_MODE" == "full" ]; then
     DWL_BIN="$ROOT/deps/dwl/dwl"
     dwl_install() {
-      pushd "$ROOT/deps/dwl" > /dev/null
+      local rc
+      pushd "$ROOT/deps/dwl" > /dev/null || return 1
       make clean && make -j"$jobs" &&
       sudo mkdir -p /usr/local/share/wayland-sessions &&
-      sudo cp -r $ROOT/deps/dwl/dwl.desktop /usr/local/share/wayland-sessions/dwl.desktop
+      sudo cp -r $ROOT/deps/dwl/dwl.desktop /usr/local/share/wayland-sessions/dwl.desktop &&
       sudo chmod 644 /usr/local/share/wayland-sessions/dwl.desktop
+      rc=$?
       popd > /dev/null
+      return $rc
     }
 
     ensure_tool "dwl" "tool_check $DWL_BIN" "dwl_install" "tool_describe dwl"
@@ -212,10 +226,12 @@ fi
 if [ "$INSTALL_MODE" == "full" ]; then
     MAKO_BIN="$ROOT/deps/mako/build/mako"
     mako_install() {
-        pushd "$ROOT/deps/mako" > /dev/null
-        meson setup build &&
-        ninja -C build
+        local rc
+        pushd "$ROOT/deps/mako" > /dev/null || return 1
+        meson setup build && ninja -C build
+        rc=$?
         popd > /dev/null
+        return $rc
     }
     ensure_tool "mako" "tool_check $MAKO_BIN" "mako_install" "tool_describe mako"
 fi
@@ -224,10 +240,12 @@ fi
 if [ "$INSTALL_MODE" == "full" ]; then
     SWAYBG_BIN="$ROOT/deps/swaybg/build/swaybg"
     swaybg_install() {
-        pushd "$ROOT/deps/swaybg" > /dev/null
-        meson setup build &&
-        ninja -C build
+        local rc
+        pushd "$ROOT/deps/swaybg" > /dev/null || return 1
+        meson setup build && ninja -C build
+        rc=$?
         popd > /dev/null
+        return $rc
     }
     ensure_tool "swaybg" "tool_check $SWAYBG_BIN" "swaybg_install" "tool_describe swaybg"
 fi
@@ -236,10 +254,12 @@ fi
 if [ "$INSTALL_MODE" == "full" ]; then
     WMENU_BIN="$ROOT/deps/wmenu/build/wmenu"
     wmenu_install() {
-        pushd "$ROOT/deps/wmenu" > /dev/null
-        meson setup build &&
-        ninja -C build
+        local rc
+        pushd "$ROOT/deps/wmenu" > /dev/null || return 1
+        meson setup build && ninja -C build
+        rc=$?
         popd > /dev/null
+        return $rc
     }
     ensure_tool "wmenu" "tool_check $WMENU_BIN" "wmenu_install" "tool_describe wmenu"
 fi
@@ -248,11 +268,19 @@ fi
 if [ "$INSTALL_MODE" == "full" ]; then
     FOOT_BIN="$ROOT/deps/foot/build/foot"
     foot_install() {
-        pushd "$ROOT/deps/foot" > /dev/null
-        meson setup build &&
-        ninja -C build
+        local rc
+        pushd "$ROOT/deps/foot" > /dev/null || return 1
+        meson setup build && ninja -C build
+        rc=$?
         popd > /dev/null
+        return $rc
     }
     ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot"
 fi
+
+if ((${#FAILED_TOOLS[@]})); then
+    log "FAILED to install: ${FAILED_TOOLS[*]}"
+    exit 1
+fi
+log "All tools installed."
 
