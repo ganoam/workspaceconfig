@@ -95,6 +95,13 @@ return {
       { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Find Config File" },
       { "<leader>ff", function() Snacks.picker.files() end, desc = "Find Files" },
       { "<leader>fo", function() Snacks.picker.files() end, desc = "Find Files" },
+      { "<leader>fT", function() -- T because ft is already floaterm stuff
+        Snacks.picker.buffers({
+          title = "Terminal Buffers",
+          hidden = true, -- include unlisted buffers (snacks/floaterm hide theirs)
+          filter = { filter = function(item) return item.buftype == "terminal" end },
+        })
+      end, desc = "Terminal Buffers" },
       { "<leader>fg", function() Snacks.picker.git_files() end, desc = "Find Git Files" },
       { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
       { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent" },
