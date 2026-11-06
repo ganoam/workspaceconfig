@@ -59,6 +59,87 @@ return {
       return diagnostics
     end
 
+    -- the lint Makefile runs `verilator --lint-only`: everything is on
+    -- stdout, no .sarif is written. keep the raw output of the last run.
+    local last_output
+    -- content + dir of a .sarif if a run ever produces one
+    local last_sarif_content
+    local last_sarif_dir
+
+    -- collect results for every file in the sarif, not just the linted
+    -- buffer (nvim-lint's for_sarif parser filters to bufnr)
+    local function sarif_to_qf_items(content, dir, want)
+      local ok, data = pcall(vim.json.decode, content)
+      if not ok or type(data) ~= 'table' then return {} end
+      local items = {}
+      for _, run in ipairs(data.runs or {}) do
+        for _, res in ipairs(run.results or {}) do
+          local loc = res.locations and res.locations[1]
+            and res.locations[1].physicalLocation
+          if loc and want[res.level] then
+            local uri = loc.artifactLocation and loc.artifactLocation.uri or ''
+            local fname = uri:gsub('^file://', '')
+            if not vim.startswith(fname, '/') then
+              fname = vim.fn.fnamemodify(dir .. '/' .. fname, ':p')
+            end
+            local region = loc.region or {}
+            table.insert(items, {
+              filename = fname,
+              lnum = region.startLine or 1,
+              col = region.startColumn or 1,
+              text = (res.message and res.message.text) or '',
+              type = res.level == 'error' and 'E' or 'W',
+            })
+          end
+        end
+      end
+      return items
+    end
+
+    -- same %Error/%Warning-CODE scan as verilator_parser, but keeps every
+    -- file in the run instead of filtering to the linted buffer
+    local function output_to_qf_items(output, cwd, want)
+      local build_dir = output:match("Entering directory '(.-)'") or cwd
+      local items = {}
+      for line in vim.gsplit(output, '\n', true) do
+        local sev, code, file, lnum, col, msg =
+          line:match('%%(%a+)%-?(%w*):%s*([^:]+):(%d+):(%d+):%s*(.+)')
+        if sev and file and want[sev:lower()] then
+          local fname = file:sub(1, 1) == '/' and file
+            or vim.fn.fnamemodify(build_dir .. '/' .. file, ':p')
+          table.insert(items, {
+            filename = fname,
+            lnum = tonumber(lnum),
+            col = tonumber(col),
+            text = (code ~= '' and code .. ' ' or '') .. msg,
+            type = sev == 'Error' and 'E' or 'W',
+          })
+        end
+      end
+      return items
+    end
+
+    local function lint_to_qf(want, label)
+      local items = {}
+      if last_sarif_content then
+        items = sarif_to_qf_items(last_sarif_content, last_sarif_dir, want)
+      elseif last_output then
+        items = output_to_qf_items(last_output, vim.fn.getcwd(), want)
+      end
+      vim.fn.setqflist({}, ' ', {
+        title = 'fusesoc_verilator: ' .. label,
+        items = items,
+      })
+      vim.cmd('botright copen')
+    end
+
+    vim.keymap.set('n', '<leader>le',
+      function() lint_to_qf({ error = true }, 'errors') end,
+      { desc = 'fusesoc lint: load errors into quickfix' })
+    vim.keymap.set('n', '<leader>lw',
+      function() lint_to_qf({ warning = true }, 'warnings') end,
+      { desc = 'fusesoc lint: load warnings into quickfix' })
+
     require('lint').linters.fusesoc_verilator = {
       name = 'fusesoc_linter',
       cmd = 'fusesoc',
@@ -72,15 +153,18 @@ return {
       ignore_exitcode = true, -- fusesoc/verilator likely exit non-zero on lint errors
 
       parser = function(output, bufnr, cwd)
-        vim.notify(output) -- print output to notification
+        vim.notify("fusesoc_verilator: done") -- print output to notification
 
+        last_output = output
         local dir = output:match("Entering directory '(.-)'")
+        last_sarif_content = nil
 
         if dir then
           local sarif_path = vim.fn.glob(dir .. '/*.sarif')
           if vim.fn.filereadable(sarif_path) == 1 then
-            local sarif_content = table.concat(vim.fn.readfile(sarif_path), '\n')
-            return sarif_parser(sarif_content, bufnr, cwd)
+            last_sarif_dir = vim.fn.fnamemodify(sarif_path, ':h')
+            last_sarif_content = table.concat(vim.fn.readfile(sarif_path), '\n')
+            return sarif_parser(last_sarif_content, bufnr, cwd)
           end
         end
         -- fallback: no sarif -> parse verilator's own output

@@ -443,6 +443,19 @@ Empty `setup({})` → all defaults [8](#19-7) .
 |---|---|---|
 | `<leader>ni` | Icon picker | plugin default — `add_default_keybindings = true` |
 
+### nvim-lint (`plugins/nvim-lint.lua`)
+
+| Key | Action | Source |
+|---|---|---|
+| `<leader>le` | Load last `fusesoc_verilator` run's errors into quickfix | custom |
+| `<leader>lw` | Load last `fusesoc_verilator` run's warnings into quickfix | custom |
+
+Lint runs automatically on `BufWritePost` for `verilog`/`systemverilog`:
+`fusesoc run --target=lint` on the core named by `vim.g.fusesoc_target`
+(set per project in `.nvim.lua`). Results land as buffer diagnostics;
+the keys above refill quickfix from the run's `.sarif`, project-wide —
+errors or warnings respectively.
+
 
 ### render-markdown.nvim (`plugins/render-markdown.lua`)
 
