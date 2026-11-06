@@ -3,6 +3,14 @@
 Modular development workspace configuration: shell environment, Neovim, tmux,
 Wayland desktop (dwl/waybar/wlock), qutebrowser, and a pinned EDA toolchain.
 
+## Roadmap
+
+- [ ] Fix intermittent blank screens on suspend / resume
+- [ ] Fix brightness shortcuts / script
+- [ ] Fix waybar components
+- [ ] Continuously expand Workflow tips
+- [ ] Continuously expand Roadmap. haha.
+
 ## Layout
 
 ```
