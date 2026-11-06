@@ -381,9 +381,12 @@ specs.
 | `<leader>gB` | Git browse (n, v) | custom |
 | `<leader>gg` | Lazygit | custom |
 | `<leader>N` | Neovim news | custom |
-| `<c-/>` / `<c-_>` | Toggle terminal | custom |
+| `<c-/>` / `<c-_>` | Toggle terminal (n) / escape to normal mode (t) | custom |
 | `]]` / `[[` | Next / prev reference (n, t) | custom |
 | `<cr>` `<c-v>` `<c-x>` `<Tab>` `q` etc. | Picker-internal navigation | plugin default |
+
+`<c-/>` is mode-sensitive: in a terminal buffer the first press escapes to
+normal mode, the second press (normal mode) toggles the terminal closed.
 
 
 ### vim-floaterm (`plugins/floaterm.lua`)
