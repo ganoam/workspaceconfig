@@ -121,6 +121,7 @@ gen_flist.py --target=sim toplevels.list > vcode.f
 | `h` / `v` / `t` | `nvr -o` / `nvr -O` / `nvr --remote-tab` |
 | `less` | `less -m -N -g -i -J --line-numbers --underline-special` |
 | `more` | `less` |
+| `cdr` | `cd` to the root of the current git repository (no-op outside a repo) |
 | `tmux` | `tmux -f $CONFIGROOT/tmux/tmux.conf` |
 | `qutebrowser` | `qutebrowser -C $CONFIGROOT/qutebrowser/config.py` |
 | `vvfi` | `verible-verilog-format --inplace` |

@@ -159,6 +159,7 @@ alias qutebrowser="qutebrowser -C $CONFIGROOT/qutebrowser/config.py"
 
 
 # Commodities
+alias cdr='cd "$(git rev-parse --show-toplevel 2>/dev/null || echo .)"'
 alias vvfi="verible-verilog-format --inplace"
 
 alias vvmts="vivado -mode tcl -source "
