@@ -143,7 +143,11 @@ return {
     require('lint').linters.fusesoc_verilator = {
       name = 'fusesoc_linter',
       cmd = 'fusesoc',
-      args = { 'run',  '--no-export',  '--target=lint', '--setup', '--build',
+      args = { '--cores-root',
+        function()
+          return vim.g.fusesoc_cores_root or '.'
+        end,
+        'run',  '--no-export',  '--target=lint', '--setup', '--build',
         function()
           return  vim.g.fusesoc_target
         end,}, -- or whatever build/lint target
