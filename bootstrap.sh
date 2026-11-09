@@ -185,6 +185,7 @@ GTKWAVE_BIN="$ROOT/deps/gtkwave/install/bin/gtkwave"
 gtkwave_install() {
   local rc
   pushd "$ROOT/deps/gtkwave" > /dev/null || return 1
+  rm -rf build &&
   meson setup build --prefix="$ROOT/deps/gtkwave/install" &&
   ninja -C build && ninja -C build install
   rc=$?
@@ -219,7 +220,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
     wb_install() {
         local rc
         pushd "$ROOT/deps/waybar" > /dev/null || return 1
-        meson setup build && ninja -C build
+        rm -rf build && meson setup build && ninja -C build
         rc=$?
         popd > /dev/null
         return $rc
@@ -251,7 +252,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
     mako_install() {
         local rc
         pushd "$ROOT/deps/mako" > /dev/null || return 1
-        meson setup build && ninja -C build
+        rm -rf build && meson setup build && ninja -C build
         rc=$?
         popd > /dev/null
         return $rc
@@ -265,7 +266,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
     swaybg_install() {
         local rc
         pushd "$ROOT/deps/swaybg" > /dev/null || return 1
-        meson setup build && ninja -C build
+        rm -rf build && meson setup build && ninja -C build
         rc=$?
         popd > /dev/null
         return $rc
@@ -279,7 +280,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
     wmenu_install() {
         local rc
         pushd "$ROOT/deps/wmenu" > /dev/null || return 1
-        meson setup build && ninja -C build
+        rm -rf build && meson setup build && ninja -C build
         rc=$?
         popd > /dev/null
         return $rc
@@ -293,7 +294,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
     foot_install() {
         local rc
         pushd "$ROOT/deps/foot" > /dev/null || return 1
-        meson setup build && ninja -C build
+        rm -rf build && meson setup build && ninja -C build
         rc=$?
         popd > /dev/null
         return $rc
