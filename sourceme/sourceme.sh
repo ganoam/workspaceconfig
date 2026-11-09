@@ -174,7 +174,7 @@ if [[ -z $XILINXD_LICENSE_FILE ]]; then
     echo WARNING: variable XILINXD_LICENSE_FILE is not set.
 fi
 
-if [[ -z $LIBERO_PATH && -z LIBERO_LIC_PATH ]]; then
+if [[ -z $LIBERO_PATH || -z $LIBERO_LIC_PATH ]]; then
     echo WARNING: variable LIBERO_PATH and / or LIBERO_LIC_PATH is not set.
 else
     # Alias for Libero launch command
