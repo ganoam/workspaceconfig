@@ -1,7 +1,7 @@
 [submodule "deps/dwl"]
 	path = deps/dwl
 	url = git@github.com:ganoam/dwl.git
-	branch = origin/dev
+	branch = dev
 [submodule "deps/dwl-patches"]
 	path = deps/dwl-patches
 	url = https://codeberg.org/dwl/dwl-patches.git
