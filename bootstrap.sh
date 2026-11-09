@@ -48,12 +48,16 @@ bootstrap_script() {
             || { rm -f "$tmp"; log "ERROR: failed to fetch $RELPATH"; return 1; }
         pushd "$CONFIGROOT/.." > /dev/null # fetch scripts need to run from workspaceconfig root.
         _run_script "$tmp"
+        local rc=$?
         popd > /dev/null
         rm -f "$tmp"
+        return $rc
     else
         pushd "$CONFIGROOT/.." > /dev/null
         _run_script "$FULLPATH"
+        local rc=$?
         popd > /dev/null
+        return $rc
     fi
 }
 
@@ -193,7 +197,7 @@ gtkwave_install() {
   popd > /dev/null
   return $rc
 }
-ensure_tool "gtkwave" "tool_check $GTKWAVE_BIN" "gtkwave_install" "tool_describe gtkwave"
+ensure_tool "gtkwave" "tool_check $GTKWAVE_BIN" "gtkwave_install" "tool_describe gtkwave" "gtkwave:deps/gtkwave/install/bin/gtkwave"
 
 # --- inkscape (GUI, official AppImage from gitlab release) ---
 INKSCAPE_BIN="$ROOT/deps/inkscape/Inkscape.AppImage"
@@ -203,7 +207,7 @@ inkscape_install() {
   echo "351deaea3fa391c56e0c6401dadcf83f7c9c8f82faa47bdb07024e99b92f9b5c  $INKSCAPE_BIN" | sha256sum -c - &&
   chmod +x "$INKSCAPE_BIN"
 }
-ensure_tool "inkscape" "tool_check $INKSCAPE_BIN" "inkscape_install" "tool_describe inkscape"
+ensure_tool "inkscape" "tool_check $INKSCAPE_BIN" "inkscape_install" "tool_describe inkscape" "inkscape:deps/inkscape/Inkscape.AppImage"
 
 # --- qutebrowser ---
 QB_VENV="$ROOT/envs/qb"
@@ -213,7 +217,7 @@ qb_install() {
     # offscreen platform so the Qt smoke test also works headless
     QT_QPA_PLATFORM=offscreen $QB_DIR/scripts/mkvenv.py --venv-dir $QB_VENV
 }
-ensure_tool "qutebrowser" "tool_check qutebrowser $QB_VENV" "qb_install" "tool_describe qutebrowser $QB_VENV"
+ensure_tool "qutebrowser" "tool_check qutebrowser $QB_VENV" "qb_install" "tool_describe qutebrowser $QB_VENV" "qutebrowser:envs/qb/bin/qutebrowser" "-C" "$CONFIGROOT/qutebrowser/config.py"
 
 # --- waybar ---
 if [ "$INSTALL_MODE" == "full" ]; then
@@ -226,7 +230,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
         popd > /dev/null
         return $rc
     }
-    ensure_tool "waybar" "tool_check $WB_BIN" "wb_install" "tool_describe waybar"
+    ensure_tool "waybar" "tool_check $WB_BIN" "wb_install" "tool_describe waybar" "waybar:deps/waybar/build/waybar"
 fi
 
 # --- dwl ---
@@ -244,7 +248,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
       return $rc
     }
 
-    ensure_tool "dwl" "tool_check $DWL_BIN" "dwl_install" "tool_describe dwl"
+    ensure_tool "dwl" "tool_check $DWL_BIN" "dwl_install" "tool_describe dwl" "dwl:deps/dwl/dwl"
 fi
 
 # --- mako ---
@@ -258,7 +262,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
         popd > /dev/null
         return $rc
     }
-    ensure_tool "mako" "tool_check $MAKO_BIN" "mako_install" "tool_describe mako"
+    ensure_tool "mako" "tool_check $MAKO_BIN" "mako_install" "tool_describe mako" "mako:deps/mako/build/mako"
 fi
 
 # --- swaybg ---
@@ -272,7 +276,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
         popd > /dev/null
         return $rc
     }
-    ensure_tool "swaybg" "tool_check $SWAYBG_BIN" "swaybg_install" "tool_describe swaybg"
+    ensure_tool "swaybg" "tool_check $SWAYBG_BIN" "swaybg_install" "tool_describe swaybg" "swaybg:deps/swaybg/build/swaybg"
 fi
 
 # --- wmenu ---
@@ -286,7 +290,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
         popd > /dev/null
         return $rc
     }
-    ensure_tool "wmenu" "tool_check $WMENU_BIN" "wmenu_install" "tool_describe wmenu"
+    ensure_tool "wmenu" "tool_check $WMENU_BIN" "wmenu_install" "tool_describe wmenu" "wmenu:deps/wmenu/build/wmenu"
 fi
 
 # --- foot ---
@@ -300,7 +304,7 @@ if [ "$INSTALL_MODE" == "full" ]; then
         popd > /dev/null
         return $rc
     }
-    ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot"
+    ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot" "foot:deps/foot/build/foot"
 fi
 
 if ((${#FAILED_TOOLS[@]})); then
