@@ -1,7 +1,9 @@
 # workspaceconfig
 
+All my favourite tools, ready to go.
+
 Modular development workspace configuration: shell environment, Neovim, tmux,
-Wayland desktop (dwl/waybar/wlock), qutebrowser, and a pinned EDA toolchain.
+Wayland desktop (dwl/waybar/wlock), qutebrowser.
 
 ## Roadmap
 
@@ -65,30 +67,12 @@ pushd path/to/workspaceconfig
 popd
 ```
 
-## Workflow Tipps
-
-
-### Systemverilog LSP
-Nvim comes with the **LazyVerilog** LSP Plugin (which bypasses mason).
-To function properly, it needs a file list of everything involved in the project you're working on.
-You can autogenerate such a file list like so:
-
-1. List the top level name(s) of the fusesoc core you are working on
-```
-# toplevels.list
-ganoam:util:stream_reg_tb:0
-```
-
-2. Run
-```
-gen_flist.py --target=sim toplevels.list > vcode.f
-```
 
 ## External required tools
 
 **Bootstrap dependencies** (must exist on the system):
 - `bash`, `git`, `curl` - Fundamental system tools
-- `python3-pip` / `pip3` - Required for installing Python packages into virtual environments
+- `python3` and `python3-venv` - Required to create the virtual environments
 
 **Optional tools** (not required for basic functionality):
 - `highlight` - Used by `LESSOPEN` for syntax-highlighted `less` (gracefully degrades if missing)
@@ -586,4 +570,21 @@ Learn more:
 One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than mandated protocol — whether `unix:` is needed depends on how X clients inside tmux resolve `DISPLAY`. The OpenBSD sshd man page example does `xauth -q -i merge -` style handling differently across versions, so verify against your sshd version's SSHRC section.
 
 
+## Workflow Tipps
 
+
+### Systemverilog LSP
+Nvim comes with the **LazyVerilog** LSP Plugin (which bypasses mason).
+To function properly, it needs a file list of everything involved in the project you're working on.
+You can autogenerate such a file list like so:
+
+1. List the top level name(s) of the fusesoc core you are working on
+```
+# toplevels.list
+ganoam:util:stream_reg_tb:0
+```
+
+2. Run
+```
+gen_flist.py --target=sim toplevels.list > vcode.f
+```
