@@ -27,9 +27,13 @@ while read -r status path _; do
 done < <(git submodule status 2>/dev/null)
 
 echo "== binaries on PATH =="
-# terminal-mode tools; add wayland tools here if desired
 for b in nvim rg tmux nvr fusesoc verilator_bin gtkwave inkscape qutebrowser; do
     command -v "$b" >/dev/null && ok "$b -> $(command -v $b)" || fail "$b not on PATH"
+done
+
+echo "== wayland tools (full install only) =="
+for b in dwl waybar mako swaybg wmenu foot; do
+    command -v "$b" >/dev/null && ok "$b -> $(command -v $b)" || warn "$b not on PATH"
 done
 
 echo "== versions (runtime check) =="
