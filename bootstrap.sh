@@ -28,8 +28,8 @@ bootstrap_script() {
       fi
     }
 
-    if [[ -z $CONFIGROOT ]]; then
-      echo "[$basename "$0"] ERROR: variable CONFIGROOT not set."
+    if [[ -z ${CONFIGROOT:-} ]]; then
+      echo "[$(basename "$0")] ERROR: variable CONFIGROOT not set. Source sourceme/sourceme.sh first." >&2
       return 1
     fi
 
