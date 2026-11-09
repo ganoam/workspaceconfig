@@ -4,4 +4,24 @@ deps/ripgrep
 deps/wlock
 deps/tpm
 deps/tmux
+deps/inkscape
+deps/.cache
 envs
+
+# config/ is XDG_CONFIG_HOME
+# Whitelist curated configs; ignore everything else.
+config/*
+!config/bgs/
+!config/fusesoc/
+!config/nvim/
+!config/qutebrowser/
+!config/tmux/
+!config/tmux-powerline/
+!config/waybar/
+# generated state inside curated dirs
+config/nvim/lazy-lock.json
+config/qutebrowser/bookmarks/
+config/qutebrowser/qsettings/
+config/qutebrowser/quickmarks
+config/tmux/plugins/
+config/tmux/resurrect/
