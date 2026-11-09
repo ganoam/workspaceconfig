@@ -5,8 +5,9 @@
 # fetch-repos.sh remotely if deps/scripts isn't present yet).
 #
 # Flags:
-#   -y, --yes     Skip prompts (default to full wayland experience)
+#   -y, --yes     Skip prompts (default to terminal)
 #   -t, --terminal Install terminal tools only (no sudo required)
+#   -f, --full     Install full desktop environment
 
 set -uo pipefail
 
@@ -67,19 +68,13 @@ jobs=$(nproc)
 log "jobs: $jobs"
 
 # Parse custom flags
-INSTALL_MODE=""
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        -t|--terminal)
-            INSTALL_MODE="terminal"
-            shift
-            ;;
-        *)
-            # Pass other args to parse_common_args
-            break
-            ;;
-    esac
-done
+ INSTALL_MODE=""
+ for arg in "$@"; do
+     case "$arg" in
+         -f|--full)     INSTALL_MODE="full" ;;
+         -t|--terminal) INSTALL_MODE="terminal" ;;
+     esac
+ done
 
 # --- deps/scripts: fetch remotely if not yet present, then delegate ---
 LIB="setup/lib.sh"
@@ -96,8 +91,8 @@ mkdir -p "$ROOT/deps"
 # --- prompt for installation mode ---
 if [ -z "$INSTALL_MODE" ]; then
     if [ "$ASSUME_YES" -eq 1 ]; then
-        INSTALL_MODE="full"
-        log "ASSUME_YES is set, defaulting to full wayland experience"
+        INSTALL_MODE="terminal"
+        log "ASSUME_YES is set, defaulting to terminal-only tools"
     else
         echo ""
         echo "Select installation mode:"
@@ -114,7 +109,7 @@ if [ -z "$INSTALL_MODE" ]; then
                     ;;
                 2)
                     INSTALL_MODE="full"
-                    log "Installing full wayland experience"
+                    log "Installing full Desktop Environment"
                     break
                     ;;
                 *)

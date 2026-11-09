@@ -479,15 +479,17 @@ The bootstrap script prompts you to choose between two installation modes:
 1. **Terminal tools only:** everything needed for the editor/shell workflow, no sudo required.
 Suitable for remote development or machines without sudo access.
 
-2. **Full wayland experience:** terminal tools plus the Wayland desktop (compositor, bar, launcher, terminal, notifications).
+2. **Full Desktop environment:** terminal tools plus my personal fork of the DWL desktop environment (compositor, bar, launcher, terminal, notifications).
 Requires sudo for build/runtime dependencies and the dwl session file.
 
 See the tables below for what's included in each mode.
 
 **Flags:**
-- `-t` or `--terminal`: Install terminal tools only (skip prompt)
-- `-y` or `--yes`: Skip prompts (default to full wayland experience when used alone)
+- `-t` or `--terminal`: Install terminal tools only (skip prompts for DE tools)
+- `-f` or `--full`: Install full desktop environment
+- `-y` or `--yes`: Skip all prompts (default to terminal mode when used alone)
 - Combine flags: `./bootstrap.sh -y -t` for automated terminal-only installation
+    - You will still be asked for sudo privileges when needed.
 
 
 ### Terminal tools
@@ -512,7 +514,7 @@ No sudo required and nothing installed system-wide.
 | [inkscape](https://gitlab.com/inkscape/inkscape) | vector graphics editor | `config/inkscape/` | official AppImage (gitlab release); needs FUSE |
 | [qutebrowser](https://github.com/qutebrowser/qutebrowser) | keyboard-driven browser | `config/qutebrowser/config.py` (command-mode/tab keymaps) | `qutebrowser-deps.yml`; venv in `envs/qb` |
 
-### Wayland tools
+### Full Desktop Environment
 
 Only installed in full mode.
 Fetched as submodules and built with meson/ninja or make.
