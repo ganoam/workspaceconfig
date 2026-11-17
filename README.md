@@ -5,6 +5,10 @@ All my favourite tools, ready to go.
 Modular development workspace configuration: shell environment, Neovim, tmux,
 Wayland desktop (dwl/waybar/wlock), qutebrowser.
 
+```systemverilog
+assign target_audience = nvim_nerds & ic_engineers;
+```
+
 ## Roadmap
 
 - [ ] Fix intermittent blank screens on suspend / resume
