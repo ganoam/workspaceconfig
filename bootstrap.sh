@@ -15,6 +15,13 @@ set -uo pipefail
 log() {
   echo "[$(basename "$0")] $*" >&2
 }
+
+# Allow running without sourcing sourceme.sh first: derive CONFIGROOT
+# from the script's own location.
+if [[ -z ${CONFIGROOT:-} ]]; then
+    export CONFIGROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/config"
+fi
+
 bootstrap_script() {
     local RELPATH="$1"
     local MODE="${2:-run}" # source or run
