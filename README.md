@@ -2,8 +2,9 @@
 
 All my favourite tools, ready to go.
 
-Modular development workspace configuration: shell environment, Neovim, tmux,
-Wayland desktop (dwl/waybar/wlock), qutebrowser.
+Reproducible workstation bootstrap: shell environment, Neovim, tmux,
+an EDA toolchain (verilator/fusesoc/gtkwave) and a Wayland desktop
+(dwl/waybar/wlock), verified on a clean Ubuntu 26.04 install.
 
 ```systemverilog
 assign target_audience = nvim_nerds & ic_engineers;
