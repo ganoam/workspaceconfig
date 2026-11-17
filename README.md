@@ -238,11 +238,11 @@ Bash line editing is set to vi mode (`set -o vi`).
 
 Status line keys are vi-style; plugins: tpm, tmux-sensible,
 `tmux-plugins/tmux-resurrect` (nvim/vim session strategy, pane contents captured),
-tmux-powerline. Default terminal: `st-256color`.
+tmux-powerline. Default terminal: `tmux-256color`.
 `SSH_AUTH_SOCK` is forced to `~/.ssh/ssh_auth_sock` (see `~/.ssh/rc` above).
 
 #### Configuration Details
-- **Terminal**: `st-256color` (suckless terminal)
+- **Terminal**: `tmux-256color`
 - **Shell**: Non-login shell for proper environment
 - **Status keys**: vi-style
 - **Aggressive resize**: enabled
