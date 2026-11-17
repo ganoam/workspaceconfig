@@ -21,7 +21,7 @@ deps/               # fetched dependencies (gitlinks; contents gitignored)
 envs/               # generated: venvs + tool shims (gitignored)
 tricks/             # assorted notes and gotchas (bash, git, nvim, bwrap, ...)
 notes/              # running todo and current working context
-tarballs.yaml       # binary tarball manifest (nvim, ripgrep, tmux)
+tarballs.yml        # binary tarball manifest (nvim, ripgrep, tmux)
 *-deps.yml          # per-tool apt package manifests
 ```
 
@@ -111,7 +111,7 @@ in the bottom-right corner — it lists the installed sessions. Select `dwl`, th
 as usual. To go back to the regular desktop, log out and pick `Ubuntu` from the same
 gear menu.
 
-#### DWL Survival Notes
+### DWL Survival Notes
 
 dwl boots to a wallpaper and a status bar — that's not broken, it's the whole desktop.
 It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
