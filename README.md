@@ -472,7 +472,8 @@ For the desktop environment to take effect you'll need to logout and login.
 The verilator build alone can take a while.
 Everything it installs stays inside this directory (deps/, envs/, config/share/).
 The only things committed to your system are apt packages, which are only installed after a sudo.
-In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/`.
+In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/`
+and wlock is installed setuid to `/usr/local/bin/` (it needs root to verify your password).
 
 **Starting dwl from the login screen:** After logging out (or rebooting), click your
 username on the Ubuntu login screen. Before typing your password, click the gear icon
@@ -491,7 +492,9 @@ It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
 - `MOD + Shift + q` — quit dwl, back to the login screen (memorize this one)
 
 The full keybinding table is under [dwl](#dwl-depsdwlconfigdefh) further down.
-Deleting the `workspaceconfig` directory removes everything the bootstrap added, except aforementioned apt packages.
+Deleting the `workspaceconfig` directory removes everything the bootstrap added inside it.
+Left behind on the system: the installed apt packages and, in full mode,
+`/usr/local/share/wayland-sessions/dwl.desktop` and `/usr/local/bin/wlock` — remove those manually.
 
 
 ### Installation Modes
