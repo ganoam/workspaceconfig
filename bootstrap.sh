@@ -6,7 +6,7 @@
 #
 # Flags:
 #   -y, --yes     Skip prompts (default to standalone)
-#   -t, --tools Install standalone tools only (no sudo required)
+#   -t, --tools Install standalone tools only (apt deps may still need sudo)
 #   -f, --full     Install full desktop environment
 
 set -uo pipefail
@@ -96,7 +96,7 @@ if [ -z "$INSTALL_MODE" ]; then
     else
         echo ""
         echo "Select installation mode:"
-        echo "  1) Standalone tools (no sudo required)"
+        echo "  1) Standalone tools (no system installs; apt build deps may need sudo)"
         echo "  2) Full desktop environment (includes wayland compositor and utilities)"
         echo ""
         while true; do
