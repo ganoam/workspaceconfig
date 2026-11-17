@@ -56,7 +56,7 @@ Each tool's system dependencies are listed in its `<tool>-deps.yml` and installe
 
 | Tool | Description | Config | System deps |
 |---|---|---|---|
-| [dwl](https://github.com/ganoam/dwl) + [dwl-patches](https://codeberg.org/dwl/dwl-patches) | wayland compositor | patches in `deps/dwl-patches` | `dwl-deps.yml`; session file → `/usr/local/share/wayland-sessions/` (sudo) |
+| [dwl](https://github.com/ganoam/dwl) + [dwl-patches](https://codeberg.org/dwl/dwl-patches) | wayland compositor | patched fork (`dev` branch); `deps/dwl-patches` kept for reference | `dwl-deps.yml`; session file → `/usr/local/share/wayland-sessions/` (sudo) |
 | [waybar](https://github.com/Alexays/Waybar) | statusbar | `config/waybar/` (layout + styling) | `waybar-deps.yml` |
 | [mako](https://github.com/emersion/mako) | notification daemon | default | `mako-deps.yml` |
 | [swaybg](https://github.com/swaywm/swaybg) | wallpaper | default | `swaybg-deps.yml` |
