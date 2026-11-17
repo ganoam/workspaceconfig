@@ -477,6 +477,18 @@ username on the Ubuntu login screen. Before typing your password, click the gear
 in the bottom-right corner — it lists the installed sessions. Select `dwl`, then log in
 as usual. To go back to the regular desktop, log out and pick `Ubuntu` from the same
 gear menu.
+
+#### DWL Survival Notes
+
+dwl boots to a wallpaper and a status bar — that's not broken, it's the whole desktop.
+It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
+
+- `MOD + Shift + Return` — open a terminal (foot)
+- `MOD + p` — app launcher; runs anything on your PATH in addition to special menu scripts (`wifi`, `bluetooth`, ...)
+- Volume, mic mute and brightness should work via the usual media keys
+- `MOD + Shift + q` — quit dwl, back to the login screen (memorize this one)
+
+The full keybinding table is under [dwl](#dwl-depsdwlconfigdefh) further down.
 Deleting the `workspaceconfig` directory removes everything the bootstrap added, except aforementioned apt packages.
 
 
