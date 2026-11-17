@@ -1,0 +1,6 @@
+- libwayland-dev
+- libwayland-bin
+- libxkbcommon-dev
+- wayland-protocols
+- libcrypt-dev
+- pkg-config
