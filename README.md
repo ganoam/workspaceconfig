@@ -29,7 +29,8 @@ envs/       # environments + generated tool shims (gitignored)
 
 All standalone tools are installed by `bootstrap.sh` automatically, fetched as
 binary tarballs, git submodules, or pip packages into `envs/main`.
-No sudo required and nothing installed system-wide.
+Nothing installed system-wide, but build/runtime deps are still
+apt-installed where a `<tool>-deps.yml` exists (sudo prompt).
 `envs/bin/` contains wrapper scripts generated at install time, pointing into `deps/`.
 
 | Tool | Description | Config | System deps |
@@ -86,6 +87,7 @@ Most tools are automatically bootstrapped by the bootstrap.sh script.
 cd path/to/workspaceconfig
 . sourceme/sourceme.sh
 ./bootstrap.sh
+./checkhealth.sh   # verify everything is in place
 ```
 Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try — mileage may vary.
 If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
@@ -137,8 +139,8 @@ Left behind on the system: the installed apt packages and, in full mode,
 
 The bootstrap script prompts you to choose between two installation modes:
 
-1. **Standalone tools:** everything needed for the editor/shell workflow, no sudo required.
-Suitable for remote development or machines without sudo access.
+1. **Standalone tools:** everything needed for the editor/shell workflow.
+Nothing installed system-wide; some tools still need apt build deps (sudo).
 
 2. **Full Desktop environment:** standalone tools plus my personal fork of the DWL desktop environment (compositor, bar, launcher, terminal, notifications).
 Requires sudo for build/runtime dependencies and the dwl session file.
@@ -201,7 +203,6 @@ One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than 
   `NVIMCONFIG`, `TMUX_HOME`
 - `EDITOR=nvim`, `menu=wmenu`, `WORKSPACE_SET=1`
 - `HISTSIZE`/`HISTFILESIZE=10000000`, shared history via `PROMPT_COMMAND`
-- `LESSOPEN` pipes through `highlight` (solarized-light)
 - PATH prepends: `$VERILATOR_ROOT/bin` (only when built),
   `$CARGOPATH/bin`, `$GOPATH/bin`, `$ROOT/envs/bin`, `$ROOT/bin`,
   `$ROOT/deps/scripts/shortcut-menus`, `$ROOT/deps/scripts/bin`
@@ -218,7 +219,6 @@ One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than 
 | `more` | `less` |
 | `cdr` | `cd` to the root of the current git repository (no-op outside a repo) |
 | `tmux` | `tmux -f $CONFIGROOT/tmux/tmux.conf` |
-| `qutebrowser` | `qutebrowser -C $CONFIGROOT/qutebrowser/config.py` |
 | `vvfi` | `verible-verilog-format --inplace` |
 | `vvmts` | `vivado -mode tcl -source ` |
 | `vvmbs` | `vivado -mode batch -source ` |
@@ -237,7 +237,7 @@ Bash line editing is set to vi mode (`set -o vi`).
 | `prefix l` / `prefix h` (repeatable) | swap window right/left |
 
 Status line keys are vi-style; plugins: tpm, tmux-sensible,
-`Koalemo/tmux-resurrect` (nvim/vim session strategy, pane contents captured),
+`tmux-plugins/tmux-resurrect` (nvim/vim session strategy, pane contents captured),
 tmux-powerline. Default terminal: `st-256color`.
 `SSH_AUTH_SOCK` is forced to `~/.ssh/ssh_auth_sock` (see `~/.ssh/rc` above).
 
@@ -251,7 +251,7 @@ tmux-powerline. Default terminal: `st-256color`.
 #### Plugins (via tpm)
 - `tmux-plugins/tpm`: Plugin manager
 - `tmux-plugins/tmux-sensible`: Sensible defaults
-- `Koalemo/tmux-resurrect`: Session restoration with nvim/vim session strategy and pane contents capture
+- `tmux-plugins/tmux-resurrect`: Session restoration with nvim/vim session strategy and pane contents capture
 - `erikw/tmux-powerline`: Powerline-style status bar
 
 Install plugins: `prefix + I` (install), `prefix + U` (update)
