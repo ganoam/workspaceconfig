@@ -460,6 +460,8 @@ cd path/to/workspaceconfig
 . sourceme/sourceme.sh
 ./bootstrap.sh
 ```
+Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try — mileage may vary.
+If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
 Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
 You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (terminal tools only)
 For wayland tools to take effect you'll need to logout and login.
