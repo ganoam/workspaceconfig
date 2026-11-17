@@ -303,6 +303,20 @@ if [ "$INSTALL_MODE" == "full" ]; then
     ensure_tool "foot" "tool_check $FOOT_BIN" "foot_install" "tool_describe foot" "foot:deps/foot/build/foot"
 fi
 
+# --- wlock ---
+if [ "$INSTALL_MODE" == "full" ]; then
+    WLOCK_BIN="/usr/local/bin/wlock"
+    wlock_install() {
+        local rc
+        pushd "$ROOT/deps/wlock" > /dev/null || return 1
+        make clean && make -j"$jobs" && sudo make install
+        rc=$?
+        popd > /dev/null
+        return $rc
+    }
+    ensure_tool "wlock" "tool_check $WLOCK_BIN" "wlock_install" "tool_describe wlock"
+fi
+
 if ((${#FAILED_TOOLS[@]})); then
     log "FAILED to install: ${FAILED_TOOLS[*]}"
     exit 1

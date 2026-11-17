@@ -32,7 +32,7 @@ for b in nvim rg tmux nvr fusesoc verilator_bin gtkwave inkscape qutebrowser; do
 done
 
 echo "== wayland tools (full install only) =="
-for b in dwl waybar mako swaybg wmenu foot; do
+for b in dwl waybar mako swaybg wmenu foot wlock; do
     command -v "$b" >/dev/null && ok "$b -> $(command -v $b)" || warn "$b not on PATH"
 done
 
