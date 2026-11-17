@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# bootstrap.sh [-y|--yes] [-t|--terminal]
+# bootstrap.sh [-y|--yes] [-t|--tools] [-f|--full]
 # Run manually. Ensures deps/scripts is available, then delegates
 # submodule/tarball fetching to deps/scripts/setup/*.sh (or fetches
 # fetch-repos.sh remotely if deps/scripts isn't present yet).
 #
 # Flags:
-#   -y, --yes     Skip prompts (default to terminal)
-#   -t, --terminal Install terminal tools only (no sudo required)
+#   -y, --yes     Skip prompts (default to standalone)
+#   -t, --tools Install standalone tools only (no sudo required)
 #   -f, --full     Install full desktop environment
 
 set -uo pipefail
@@ -72,7 +72,7 @@ log "jobs: $jobs"
  for arg in "$@"; do
      case "$arg" in
          -f|--full)     INSTALL_MODE="full" ;;
-         -t|--terminal) INSTALL_MODE="terminal" ;;
+         -t|--tools) INSTALL_MODE="standalone" ;;
      esac
  done
 
@@ -91,20 +91,20 @@ mkdir -p "$ROOT/deps"
 # --- prompt for installation mode ---
 if [ -z "$INSTALL_MODE" ]; then
     if [ "$ASSUME_YES" -eq 1 ]; then
-        INSTALL_MODE="terminal"
-        log "ASSUME_YES is set, defaulting to terminal-only tools"
+        INSTALL_MODE="standalone"
+        log "ASSUME_YES is set, defaulting to standalone tools"
     else
         echo ""
         echo "Select installation mode:"
-        echo "  1) Terminal tools only (no sudo required)"
-        echo "  2) Full wayland experience (includes wayland compositor and utilities)"
+        echo "  1) Standalone tools (no sudo required)"
+        echo "  2) Full desktop environment (includes wayland compositor and utilities)"
         echo ""
         while true; do
             read -p "Enter choice [1/2]: " choice
             case $choice in
                 1)
-                    INSTALL_MODE="terminal"
-                    log "Installing terminal tools only"
+                    INSTALL_MODE="standalone"
+                    log "Installing standalone tools"
                     break
                     ;;
                 2)

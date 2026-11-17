@@ -26,7 +26,7 @@ envs/       # environments + generated tool shims (gitignored)
 
 (fetched into `deps/`):
 
-**Terminal tools (no sudo required):**
+**Standalone tools (no sudo required):**
 
 | Dependency | Type | Purpose |
 |---|---|---|
@@ -465,21 +465,8 @@ cd path/to/workspaceconfig
 Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try — mileage may vary.
 If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
 Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
-You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (terminal tools only)
+You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (standalone tools only)
 For the desktop environment to take effect you'll need to logout and login.
-
-**Wayland tools (full mode only, requires sudo for dwl and build/runtime dependencies (see: `tool-deps.yml`.):**
-
-| Dependency | Type | Purpose |
-|---|---|---|
-| dwl + dwl-patches | git | Wayland compositor |
-| waybar | git | Wayland statusbar |
-| mako | git | Wayland notification daemon |
-| swaybg | git | Wayland wallpaper utility |
-| wmenu | git | Wayland menu launcher |
-| foot | git | Wayland terminal emulator |
-| wlock | git | Wayland screen locker |
-
 
 **What to expect:** The bootstrap downloads and builds a lot.
 The verilator build alone can take a while.
@@ -511,25 +498,25 @@ Deleting the `workspaceconfig` directory removes everything the bootstrap added,
 
 The bootstrap script prompts you to choose between two installation modes:
 
-1. **Terminal tools only:** everything needed for the editor/shell workflow, no sudo required.
+1. **Standalone tools:** everything needed for the editor/shell workflow, no sudo required.
 Suitable for remote development or machines without sudo access.
 
-2. **Full Desktop environment:** terminal tools plus my personal fork of the DWL desktop environment (compositor, bar, launcher, terminal, notifications).
+2. **Full Desktop environment:** standalone tools plus my personal fork of the DWL desktop environment (compositor, bar, launcher, terminal, notifications).
 Requires sudo for build/runtime dependencies and the dwl session file.
 
 See the tables below for what's included in each mode.
 
 **Flags:**
-- `-t` or `--terminal`: Install terminal tools only (skip prompts for DE tools)
+- `-t` or `--tools`: Install standalone tools only (skip prompts for DE tools)
 - `-f` or `--full`: Install full desktop environment
-- `-y` or `--yes`: Skip all prompts (default to terminal mode when used alone)
-- Combine flags: `./bootstrap.sh -y -t` for automated terminal-only installation
+- `-y` or `--yes`: Skip all prompts (defaults to standalone mode when used alone)
+- Combine flags: `./bootstrap.sh -y -t` for automated standalone installation
     - You will still be asked for sudo privileges when needed.
 
 
-### Terminal tools
+### Standalone tools
 
-All terminal tools are installed by `bootstrap.sh` automatically, fetched as
+All standalone tools are installed by `bootstrap.sh` automatically, fetched as
 binary tarballs, git submodules, or pip packages into `envs/main`.
 No sudo required and nothing installed system-wide.
 `envs/bin/` contains wrapper scripts generated at install time, pointing into `deps/`.
