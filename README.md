@@ -10,14 +10,6 @@ an EDA toolchain (verilator/fusesoc/gtkwave) and a Wayland desktop
 assign target_audience = nvim_nerds & ic_engineers;
 ```
 
-## Roadmap
-
-- [ ] Fix intermittent blank screens on suspend / resume
-- [ ] Fix brightness shortcuts / script
-- [ ] Fix waybar components
-- [ ] Continuously expand Workflow tips
-- [ ] Continuously expand Roadmap. haha.
-
 ## Layout
 
 ```
