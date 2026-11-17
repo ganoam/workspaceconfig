@@ -24,39 +24,47 @@ envs/       # environments + generated tool shims (gitignored)
 
 ## Provided tools
 
-(fetched into `deps/`):
 
-**Standalone tools (no sudo required):**
+### Standalone tools
 
-| Dependency | Type | Purpose |
-|---|---|---|
-| neovim | binary tarball | editor, added to PATH |
-| ripgrep | binary tarball | Fast grep; editor plugins |
-| tmux | binary tarball | Terminal multiplexer |
-| verilator | git | HDL simulator; `VERILATOR_ROOT` set, `bin/` prepended to PATH |
-| qutebrowser | git | keyboard-driven browser |
-| gtkwave | git | waveform viewer; built to `deps/gtkwave/install` |
-| inkscape | AppImage | vector graphics editor |
-| tpm | git | tmux plugin manager |
-| scripts | git | `shortcut-menus` wmenu scripts added to PATH |
-| fusesoc | git | SOC build system; installed into `envs/main` venv |
-| edalize | git | An abstraction library for interfacing EDA tools; installed into `envs/main` venv |
-| neovim-remote (nvr) | pip | Neovim remote control for tmux integration; installed into `envs/main` venv |
+All standalone tools are installed by `bootstrap.sh` automatically, fetched as
+binary tarballs, git submodules, or pip packages into `envs/main`.
+No sudo required and nothing installed system-wide.
+`envs/bin/` contains wrapper scripts generated at install time, pointing into `deps/`.
 
-**Full desktop environment (requires sudo for dwl and build/runtime dependencies (see: `tool-deps.yml`.):**
+| Tool | Description | Config | System deps |
+|---|---|---|---|
+| [neovim](https://neovim.io) | text editor | `config/nvim/` (see keybindings below) | none (tarball) |
+| [ripgrep](https://github.com/BurntSushi/ripgrep) | fast grep; editor plugins | default | none (tarball) |
+| [tmux](https://github.com/tmux/tmux) | terminal multiplexer | `config/tmux/tmux.conf` + tpm plugins + `config/tmux-powerline/` | none (static tarball) |
+| [verilator](https://github.com/ganoam/verilator) | HDL simulator | `VERILATOR_ROOT` env var | see `verilator-deps.yml` |
+| [fusesoc](https://github.com/olofk/fusesoc) | FPGA build system | `config/fusesoc/fusesoc.conf` | none (pip → `envs/main`) |
+| [edalize](https://github.com/olofk/edalize) | EDA tool abstraction library | default | none (pip → `envs/main`) |
+| [nvr](https://github.com/mhinz/neovim-remote) | remote-control running nvim (tmux integration) | n/a | none (pip → `envs/main`) |
+| [tpm](https://github.com/tmux-plugins/tpm) | tmux plugin manager | plugins via tmux `prefix + I` | none (submodule) |
+| [scripts](https://github.com/ganoam/scripts) | utility scripts incl. `shortcut-menus` | n/a | none (submodule → PATH) |
+| [gtkwave](https://github.com/gtkwave/gtkwave) | waveform viewer (VCD/FST etc.); v4 dev branch | default | `gtkwave-deps.yml`; GUI needs a display |
+| [inkscape](https://gitlab.com/inkscape/inkscape) | vector graphics editor | `config/inkscape/` | official AppImage (gitlab release); needs FUSE |
+| [qutebrowser](https://github.com/qutebrowser/qutebrowser) | keyboard-driven browser | `config/qutebrowser/config.py` (command-mode/tab keymaps) | `qutebrowser-deps.yml`; venv in `envs/qb` |
 
-| Dependency | Type | Purpose |
-|---|---|---|
-| dwl + dwl-patches | git | Wayland compositor |
-| waybar | git | Wayland statusbar |
-| mako | git | Wayland notification daemon |
-| swaybg | git | Wayland wallpaper utility |
-| wmenu | git | Wayland menu launcher |
-| foot | git | Wayland terminal emulator |
-| wlock | git | Wayland screen locker |
+### Full Desktop Environment
 
-Repo config dirs (`config/`): `nvim/`, `tmux/` (incl. tmux-powerline),
-`waybar/`, `qutebrowser/`, `fusesoc/`.
+Only installed in full mode.
+Fetched as submodules and built with meson/ninja or make.
+Each tool's system dependencies are listed in its `<tool>-deps.yml` and installed by `bootstrap.sh` (after confirmation, or with `-y`).
+
+| Tool | Description | Config | System deps |
+|---|---|---|---|
+| [dwl](https://github.com/ganoam/dwl) + [dwl-patches](https://codeberg.org/dwl/dwl-patches) | wayland compositor | patches in `deps/dwl-patches` | `dwl-deps.yml`; session file → `/usr/local/share/wayland-sessions/` (sudo) |
+| [waybar](https://github.com/Alexays/Waybar) | statusbar | `config/waybar/` (layout + styling) | `waybar-deps.yml` |
+| [mako](https://github.com/emersion/mako) | notification daemon | default | `mako-deps.yml` |
+| [swaybg](https://github.com/swaywm/swaybg) | wallpaper | default | `swaybg-deps.yml` |
+| [wmenu](https://codeberg.org/adnano/wmenu) | menu launcher | default | `wmenu-deps.yml` |
+| [foot](https://codeberg.org/foot/foot) | wayland terminal emulator | default | `foot-deps.yml` |
+| [wlock](https://codeberg.org/sewn/wlock) | screen locker | default | `wlock-deps.yml`; setuid install → `/usr/local/bin/` (sudo) |
+
+If you'd rather not build from source, most wayland tools are also in apt (`waybar`, `foot`, `qutebrowser`, …), but `bootstrap.sh` only uses the submodule builds.
+
 
 ## Activate
 
@@ -68,19 +76,120 @@ pushd path/to/workspaceconfig
 popd
 ```
 
+## Install
 
-## External required tools
+The workspace config is usually cloned into `~/workspaceconfig`.
+Other paths should work but are not tested.
+Most tools are automatically bootstrapped by the bootstrap.sh script.
+
+```bash
+cd path/to/workspaceconfig
+. sourceme/sourceme.sh
+./bootstrap.sh
+```
+Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try — mileage may vary.
+If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
+Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
+You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (standalone tools only)
+For the desktop environment to take effect you'll need to logout and login.
+
+**What to expect:** The bootstrap downloads and builds a lot.
+The verilator build alone can take a while.
+Everything it installs stays inside this directory (deps/, envs/, config/share/).
+The only things committed to your system are apt packages, which are only installed after a sudo.
+In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/`
+and wlock is installed setuid to `/usr/local/bin/` (it needs root to verify your password).
+
+**Starting dwl from the login screen:** After logging out (or rebooting), click your
+username on the Ubuntu login screen. Before typing your password, click the gear icon
+in the bottom-right corner — it lists the installed sessions. Select `dwl`, then log in
+as usual. To go back to the regular desktop, log out and pick `Ubuntu` from the same
+gear menu.
+
+#### DWL Survival Notes
+
+dwl boots to a wallpaper and a status bar — that's not broken, it's the whole desktop.
+It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
+
+- `MOD + Shift + Return` — open a terminal (foot)
+- `MOD + p` — app launcher; runs anything on your PATH in addition to special menu scripts (`wifi`, `bluetooth`, ...)
+- Volume, mic mute and brightness should work via the usual media keys
+- `MOD + Shift + q` — quit dwl, back to the login screen (memorize this one)
+
+The full keybinding table is under [dwl](#dwl-depsdwlconfigdefh) further down.
+Deleting the `workspaceconfig` directory removes everything the bootstrap added inside it.
+Left behind on the system: the installed apt packages and, in full mode,
+`/usr/local/share/wayland-sessions/dwl.desktop` and `/usr/local/bin/wlock` — remove those manually.
+
+
+### External required tools
 
 **Bootstrap dependencies** (must exist on the system):
 - `bash`, `git`, `curl` - Fundamental system tools
 - `python3` and `python3-venv` - Required to create the virtual environments
 
-**Optional tools** (not required for basic functionality):
-- `highlight` - Used by `LESSOPEN` for syntax-highlighted `less` (gracefully degrades if missing)
-
 **EDA tools** (optional - for FPGA development, warn-only if missing):
 - `vivado`, `verible-verilog-format`, Libero (`LIBERO_PATH`/`LIBERO_LIC_PATH`), `xauth`
 - License env vars expected: `LM_LICENSE_FILE`, `XILINXD_LICENSE_FILE`
+
+
+### Installation Modes
+
+The bootstrap script prompts you to choose between two installation modes:
+
+1. **Standalone tools:** everything needed for the editor/shell workflow, no sudo required.
+Suitable for remote development or machines without sudo access.
+
+2. **Full Desktop environment:** standalone tools plus my personal fork of the DWL desktop environment (compositor, bar, launcher, terminal, notifications).
+Requires sudo for build/runtime dependencies and the dwl session file.
+
+See the tables under [Provided tools](#provided-tools) above for what's included in each mode.
+
+**Flags:**
+- `-t` or `--tools`: Install standalone tools only (skip prompts for DE tools)
+- `-f` or `--full`: Install full desktop environment
+- `-y` or `--yes`: Skip all prompts (defaults to standalone mode when used alone)
+- Combine flags: `./bootstrap.sh -y -t` for automated standalone installation
+    - You will still be asked for sudo privileges when needed.
+
+
+### Manual Changes for Persistent TMUX sessions across SSH reconnects
+
+Need persistent `$SSH_AUTH_SOCK` and xauth cookie.
+They would usually change on reconnect.
+
+Add to `~/.ssh/rc` on each server:
+
+```bash
+#!/bin/bash
+if test "$SSH_AUTH_SOCK" ; then
+  ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
+fi
+if read proto cookie && [ -n "$DISPLAY" ]; then
+  echo "add unix:${DISPLAY#localhost:} $proto $cookie" | xauth -q
+fi
+```
+
+Learn more:
+
+**Stable `SSH_AUTH_SOCK` symlink for tmux**
+
+- https://werat.dev/blog/happy-ssh-agent-forwarding/ and https://gist.github.com/martijnvermaat/8070533
+
+> Use `ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock` pattern so that tmux's fixed `SSH_AUTH_SOCK` resUolves to the current socket after reconnect.
+
+
+**`~/.ssh/rc` semantics — cookies via stdin, runs before the shell**
+
+- The `sshd(8)` man page, in the `SSHRC` section (https://man.openbsd.org/sshd.8#SSHRC).
+
+  > "If X11 forwarding is in use, it will receive the 'proto cookie' pair in its standard input (and DISPLAY in its environment). The script must call `xauth(1)` because sshd will not run xauth automatically to add X11 cookies."
+
+**`unix:` display name rewrite**
+
+- `xauth(1)` / `Xsecurity(7)` man pages document the `unix:N` vs `hostname:N` display-name distinction — the X server matches cookies by exact display name, so a cookie stored as `localhost:10.0` won't be found when clients connect via `unix:10.0`. (https://man.openbsd.org/xauth.1, https://www.x.org/releases/X11R7.7/doc/man/man7/Xsecurity.7.xhtml)
+
+One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than mandated protocol — whether `unix:` is needed depends on how X clients inside tmux resolve `DISPLAY`. The OpenBSD sshd man page example does `xauth -q -i merge -` style handling differently across versions, so verify against your sshd version's SSHRC section.
 
 ## Environment variables set by `sourceme.sh`
 
@@ -450,154 +559,7 @@ errors or warnings respectively.
 | `<leader>bt`| Toggle markdown rendering (buffer)| custom|
 
 
-
-## Install
-
-The workspace config is usually cloned into `~/workspaceconfig`.
-Other paths should work but are not tested.
-Most tools are automatically bootstrapped by the bootstrap.sh script.
-
-```bash
-cd path/to/workspaceconfig
-. sourceme/sourceme.sh
-./bootstrap.sh
-```
-Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try — mileage may vary.
-If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
-Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
-You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (standalone tools only)
-For the desktop environment to take effect you'll need to logout and login.
-
-**What to expect:** The bootstrap downloads and builds a lot.
-The verilator build alone can take a while.
-Everything it installs stays inside this directory (deps/, envs/, config/share/).
-The only things committed to your system are apt packages, which are only installed after a sudo.
-In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/`
-and wlock is installed setuid to `/usr/local/bin/` (it needs root to verify your password).
-
-**Starting dwl from the login screen:** After logging out (or rebooting), click your
-username on the Ubuntu login screen. Before typing your password, click the gear icon
-in the bottom-right corner — it lists the installed sessions. Select `dwl`, then log in
-as usual. To go back to the regular desktop, log out and pick `Ubuntu` from the same
-gear menu.
-
-#### DWL Survival Notes
-
-dwl boots to a wallpaper and a status bar — that's not broken, it's the whole desktop.
-It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
-
-- `MOD + Shift + Return` — open a terminal (foot)
-- `MOD + p` — app launcher; runs anything on your PATH in addition to special menu scripts (`wifi`, `bluetooth`, ...)
-- Volume, mic mute and brightness should work via the usual media keys
-- `MOD + Shift + q` — quit dwl, back to the login screen (memorize this one)
-
-The full keybinding table is under [dwl](#dwl-depsdwlconfigdefh) further down.
-Deleting the `workspaceconfig` directory removes everything the bootstrap added inside it.
-Left behind on the system: the installed apt packages and, in full mode,
-`/usr/local/share/wayland-sessions/dwl.desktop` and `/usr/local/bin/wlock` — remove those manually.
-
-
-### Installation Modes
-
-The bootstrap script prompts you to choose between two installation modes:
-
-1. **Standalone tools:** everything needed for the editor/shell workflow, no sudo required.
-Suitable for remote development or machines without sudo access.
-
-2. **Full Desktop environment:** standalone tools plus my personal fork of the DWL desktop environment (compositor, bar, launcher, terminal, notifications).
-Requires sudo for build/runtime dependencies and the dwl session file.
-
-See the tables below for what's included in each mode.
-
-**Flags:**
-- `-t` or `--tools`: Install standalone tools only (skip prompts for DE tools)
-- `-f` or `--full`: Install full desktop environment
-- `-y` or `--yes`: Skip all prompts (defaults to standalone mode when used alone)
-- Combine flags: `./bootstrap.sh -y -t` for automated standalone installation
-    - You will still be asked for sudo privileges when needed.
-
-
-### Standalone tools
-
-All standalone tools are installed by `bootstrap.sh` automatically, fetched as
-binary tarballs, git submodules, or pip packages into `envs/main`.
-No sudo required and nothing installed system-wide.
-`envs/bin/` contains wrapper scripts generated at install time, pointing into `deps/`.
-
-| Tool | Description | Config | System deps |
-|---|---|---|---|
-| [neovim](https://neovim.io) | text editor | `config/nvim/` (see keybindings above) | none (tarball) |
-| [ripgrep](https://github.com/BurntSushi/ripgrep) | fast grep; editor plugins | default | none (tarball) |
-| [tmux](https://github.com/tmux/tmux) | terminal multiplexer | `config/tmux/tmux.conf` + tpm plugins + `config/tmux-powerline/` | none (static tarball) |
-| [verilator](https://github.com/ganoam/verilator) | HDL simulator | `VERILATOR_ROOT` env var | see `verilator-deps.yml` |
-| [fusesoc](https://github.com/olofk/fusesoc) | FPGA build system | `config/fusesoc/fusesoc.conf` | none (pip → `envs/main`) |
-| [edalize](https://github.com/olofk/edalize) | EDA tool abstraction library | default | none (pip → `envs/main`) |
-| [nvr](https://github.com/mhinz/neovim-remote) | remote-control running nvim (tmux integration) | n/a | none (pip → `envs/main`) |
-| [tpm](https://github.com/tmux-plugins/tpm) | tmux plugin manager | plugins via tmux `prefix + I` | none (submodule) |
-| [scripts](https://github.com/ganoam/scripts) | utility scripts incl. `shortcut-menus` | n/a | none (submodule → PATH) |
-| [gtkwave](https://github.com/gtkwave/gtkwave) | waveform viewer (VCD/FST etc.); v4 dev branch | default | `gtkwave-deps.yml`; GUI needs a display |
-| [inkscape](https://gitlab.com/inkscape/inkscape) | vector graphics editor | `config/inkscape/` | official AppImage (gitlab release); needs FUSE |
-| [qutebrowser](https://github.com/qutebrowser/qutebrowser) | keyboard-driven browser | `config/qutebrowser/config.py` (command-mode/tab keymaps) | `qutebrowser-deps.yml`; venv in `envs/qb` |
-
-### Full Desktop Environment
-
-Only installed in full mode.
-Fetched as submodules and built with meson/ninja or make.
-Each tool's system dependencies are listed in its `<tool>-deps.yml` and installed by `bootstrap.sh` (after confirmation, or with `-y`).
-
-| Tool | Description | Config | System deps |
-|---|---|---|---|
-| [dwl](https://github.com/ganoam/dwl) + [dwl-patches](https://codeberg.org/dwl/dwl-patches) | wayland compositor | patches in `deps/dwl-patches` | `dwl-deps.yml`; session file → `/usr/local/share/wayland-sessions/` (sudo) |
-| [waybar](https://github.com/Alexays/Waybar) | statusbar | `config/waybar/` (layout + styling) | `waybar-deps.yml` |
-| [mako](https://github.com/emersion/mako) | notification daemon | default | `mako-deps.yml` |
-| [swaybg](https://github.com/swaywm/swaybg) | wallpaper | default | `swaybg-deps.yml` |
-| [wmenu](https://codeberg.org/adnano/wmenu) | menu launcher | default | `wmenu-deps.yml` |
-| [foot](https://codeberg.org/foot/foot) | wayland terminal emulator | default | `foot-deps.yml` |
-| [wlock](https://codeberg.org/sewn/wlock) | screen locker | default | fetched only; `make` manually |
-
-If you'd rather not build from source, most wayland tools are also in apt (`waybar`, `foot`, `qutebrowser`, …), but `bootstrap.sh` only uses the submodule builds.
-
-
-### Manual Changes for Persistent TMUX sessions across SSH reconnects
-
-Need persistent `$SSH_AUTH_SOCK` and xauth cookie.
-They would usually change on reconnect.
-
-Add to `~/.ssh/rc` on each server:
-
-```bash
-#!/bin/bash
-if test "$SSH_AUTH_SOCK" ; then
-  ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock
-fi
-if read proto cookie && [ -n "$DISPLAY" ]; then
-  echo "add unix:${DISPLAY#localhost:} $proto $cookie" | xauth -q
-fi
-```
-
-Learn more:
-
-**Stable `SSH_AUTH_SOCK` symlink for tmux**
-
-- https://werat.dev/blog/happy-ssh-agent-forwarding/ and https://gist.github.com/martijnvermaat/8070533
-
-> Use `ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock` pattern so that tmux's fixed `SSH_AUTH_SOCK` resUolves to the current socket after reconnect.
-
-
-**`~/.ssh/rc` semantics — cookies via stdin, runs before the shell**
-
-- The `sshd(8)` man page, in the `SSHRC` section (https://man.openbsd.org/sshd.8#SSHRC).
-
-  > "If X11 forwarding is in use, it will receive the 'proto cookie' pair in its standard input (and DISPLAY in its environment). The script must call `xauth(1)` because sshd will not run xauth automatically to add X11 cookies."
-
-**`unix:` display name rewrite**
-
-- `xauth(1)` / `Xsecurity(7)` man pages document the `unix:N` vs `hostname:N` display-name distinction — the X server matches cookies by exact display name, so a cookie stored as `localhost:10.0` won't be found when clients connect via `unix:10.0`. (https://man.openbsd.org/xauth.1, https://www.x.org/releases/X11R7.7/doc/man/man7/Xsecurity.7.xhtml)
-
-One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than mandated protocol — whether `unix:` is needed depends on how X clients inside tmux resolve `DISPLAY`. The OpenBSD sshd man page example does `xauth -q -i merge -` style handling differently across versions, so verify against your sshd version's SSHRC section.
-
-
-## Workflow Tipps
+## Random Workflow Tipps
 
 
 ### Systemverilog LSP
@@ -615,3 +577,5 @@ ganoam:util:stream_reg_tb:0
 ```
 gen_flist.py --target=sim toplevels.list > vcode.f
 ```
+
+
