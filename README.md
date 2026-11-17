@@ -471,6 +471,12 @@ The verilator build alone can take a while.
 Everything it installs stays inside this directory (deps/, envs/, config/share/).
 The only things committed to your system are apt packages, which are only installed after a sudo.
 In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/`.
+
+**Starting dwl from the login screen:** After logging out (or rebooting), click your
+username on the Ubuntu login screen. Before typing your password, click the gear icon
+in the bottom-right corner — it lists the installed sessions. Select `dwl`, then log in
+as usual. To go back to the regular desktop, log out and pick `Ubuntu` from the same
+gear menu.
 Deleting the `workspaceconfig` directory removes everything the bootstrap added, except aforementioned apt packages.
 
 
