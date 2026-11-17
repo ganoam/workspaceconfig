@@ -13,10 +13,16 @@ assign target_audience = nvim_nerds & ic_engineers;
 ## Layout
 
 ```
-config/     # nvim, tmux, waybar, qutebrowser, fusesoc configs (XDG_CONFIG_HOME)
-sourceme/   # sourceme.sh
-deps/       # fetched dependencies (partially gitignored)
-envs/       # environments + generated tool shims (gitignored)
+bootstrap.sh        # install: standalone tools or full desktop environment
+checkhealth.sh      # verify everything is in place
+config/             # nvim, tmux, waybar, qutebrowser, fusesoc configs (XDG_CONFIG_HOME)
+sourceme/           # sourceme.sh — env vars, PATH, aliases
+deps/               # fetched dependencies (gitlinks; contents gitignored)
+envs/               # generated: venvs + tool shims (gitignored)
+tricks/             # assorted notes and gotchas (bash, git, nvim, bwrap, ...)
+notes/              # running todo and current working context
+tarballs.yaml       # binary tarball manifest (nvim, ripgrep, tmux)
+*-deps.yml          # per-tool apt package manifests
 ```
 
 ## Provided tools
