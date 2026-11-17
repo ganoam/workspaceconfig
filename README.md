@@ -16,7 +16,7 @@ assign target_audience = nvim_nerds & ic_engineers;
 bootstrap.sh        # install: standalone tools or full desktop environment
 checkhealth.sh      # verify everything is in place
 config/             # nvim, tmux, waybar, qutebrowser, fusesoc configs (XDG_CONFIG_HOME)
-sourceme/           # sourceme.sh — env vars, PATH, aliases
+sourceme/           # sourceme.sh: env vars, PATH, aliases
 deps/               # fetched dependencies (gitlinks; contents gitignored)
 envs/               # generated: venvs + tool shims (gitignored)
 tricks/             # assorted notes and gotchas (bash, git, nvim, bwrap, ...)
@@ -92,7 +92,7 @@ cd path/to/workspaceconfig
 ./bootstrap.sh
 ./checkhealth.sh   # verify everything is in place
 ```
-Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try — mileage may vary.
+Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try; mileage may vary.
 If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
 Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
 You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (standalone tools only)
@@ -107,24 +107,24 @@ and wlock is installed setuid to `/usr/local/bin/` (it needs root to verify your
 
 **Starting dwl from the login screen:** After logging out (or rebooting), click your
 username on the Ubuntu login screen. Before typing your password, click the gear icon
-in the bottom-right corner — it lists the installed sessions. Select `dwl`, then log in
+in the bottom-right corner: it lists the installed sessions. Select `dwl`, then log in
 as usual. To go back to the regular desktop, log out and pick `Ubuntu` from the same
 gear menu.
 
 ### DWL Survival Notes
 
-dwl boots to a wallpaper and a status bar — that's not broken, it's the whole desktop.
+dwl boots to a wallpaper and a status bar. That's not broken, it's the whole desktop.
 It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
 
-- `MOD + Shift + Return` — open a terminal (foot)
-- `MOD + p` — app launcher; runs anything on your PATH in addition to special menu scripts (`wifi`, `bluetooth`, ...)
+- `MOD + Shift + Return`: open a terminal (foot)
+- `MOD + p`: app launcher; runs anything on your PATH in addition to special menu scripts (`wifi`, `bluetooth`, ...)
 - Volume, mic mute and brightness should work via the usual media keys
-- `MOD + Shift + q` — quit dwl, back to the login screen (memorize this one)
+- `MOD + Shift + q`: quit dwl, back to the login screen (memorize this one)
 
 The full keybinding table is under [dwl](#dwl-depsdwlconfigdefh) further down.
 Deleting the `workspaceconfig` directory removes everything the bootstrap added inside it.
 Left behind on the system: the installed apt packages and, in full mode,
-`/usr/local/share/wayland-sessions/dwl.desktop` and `/usr/local/bin/wlock` — remove those manually.
+`/usr/local/share/wayland-sessions/dwl.desktop` and `/usr/local/bin/wlock`; remove those manually.
 
 
 ### External required tools
@@ -184,7 +184,7 @@ Learn more:
 > Use `ln -sf $SSH_AUTH_SOCK ~/.ssh/ssh_auth_sock` pattern so that tmux's fixed `SSH_AUTH_SOCK` resUolves to the current socket after reconnect.
 
 
-**`~/.ssh/rc` semantics — cookies via stdin, runs before the shell**
+**`~/.ssh/rc` semantics: cookies via stdin, runs before the shell**
 
 - The `sshd(8)` man page, in the `SSHRC` section (https://man.openbsd.org/sshd.8#SSHRC).
 
@@ -192,9 +192,9 @@ Learn more:
 
 **`unix:` display name rewrite**
 
-- `xauth(1)` / `Xsecurity(7)` man pages document the `unix:N` vs `hostname:N` display-name distinction — the X server matches cookies by exact display name, so a cookie stored as `localhost:10.0` won't be found when clients connect via `unix:10.0`. (https://man.openbsd.org/xauth.1, https://www.x.org/releases/X11R7.7/doc/man/man7/Xsecurity.7.xhtml)
+- `xauth(1)` / `Xsecurity(7)` man pages document the `unix:N` vs `hostname:N` display-name distinction: the X server matches cookies by exact display name, so a cookie stored as `localhost:10.0` won't be found when clients connect via `unix:10.0`. (https://man.openbsd.org/xauth.1, https://www.x.org/releases/X11R7.7/doc/man/man7/Xsecurity.7.xhtml)
 
-One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than mandated protocol — whether `unix:` is needed depends on how X clients inside tmux resolve `DISPLAY`. The OpenBSD sshd man page example does `xauth -q -i merge -` style handling differently across versions, so verify against your sshd version's SSHRC section.
+One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than mandated protocol; whether `unix:` is needed depends on how X clients inside tmux resolve `DISPLAY`. The OpenBSD sshd man page example does `xauth -q -i merge -` style handling differently across versions, so verify against your sshd version's SSHRC section.
 
 ## Environment variables set by `sourceme.sh`
 
@@ -352,7 +352,7 @@ Configuration is minimal or defaults are used.
 ### Neovim (`config/nvim/`)
 
 `init.lua` loads `config.lazy` (lazy.nvim bootstrap), `config.keymaps`,
-`config.options`, `config.autocmds` — see `config/nvim/lua/config/keymaps.lua`
+`config.options`, `config.autocmds`; see `config/nvim/lua/config/keymaps.lua`
 and `config/nvim/lua/plugins/` for the full list of custom keymaps and plugin
 specs.
 
@@ -418,9 +418,9 @@ specs.
 | `gao` / `gaI` | n | Outgoing calls (call hierarchy) | snacks.lua|
 | `<leader>ss` | n | LSP document symbols | snacks.lua |
 | `<leader>sS` | n | LSP workspace symbols | snacks.lua |
-| `<leader>fmt` | n | `vim.lsp.buf.format()` — format buffer | keymaps.lua |
+| `<leader>fmt` | n | `vim.lsp.buf.format()`: format buffer | keymaps.lua |
 | `[d` / `]d` | n | Prev / next diagnostic | keymaps.lua - shadows the 0.11 builtin pair |
-| `<leader>e` | n | `vim.diagnostic.open_float()` — line diagnostics popup | keymaps.lua |
+| `<leader>e` | n | `vim.diagnostic.open_float()`: line diagnostics popup | keymaps.lua |
 | `<leader>q` | n | Toggle Quickfix List | keymaps.lua |
 | `<C-k>` / `<C-j>` | n | Quickfix next / prev (used to walk grep/LSP results) | keymaps.lua |
 | `K` | n | Hover documentation (`vim.lsp.buf.hover`) | builtin |
@@ -433,7 +433,7 @@ specs.
 | `<C-s>` | i | Signature help | builtin |
 | `<C-x><C-o>` | i | Omnifunc completion (when `omnifunc` set by lspconfig) | builtin |
 
-- `gr` (snacks) vs `grr` (builtin) — both "references", different UIs; same for `gI`/`gri` and `gy`/`grt`.
+- `gr` (snacks) vs `grr` (builtin): both "references", different UIs; same for `gI`/`gri` and `gy`/`grt`.
 - `gd` is fully shadowed: builtin `gd` = "goto local declaration", now unreachable.
 
 
@@ -539,7 +539,7 @@ Empty `setup({})` → all defaults [8](#19-7) .
 
 | Key | Action | Source |
 |---|---|---|
-| `<leader>ni` | Icon picker | plugin default — `add_default_keybindings = true` |
+| `<leader>ni` | Icon picker | plugin default: `add_default_keybindings = true` |
 
 ### nvim-lint (`plugins/nvim-lint.lua`)
 
@@ -551,7 +551,7 @@ Empty `setup({})` → all defaults [8](#19-7) .
 Lint runs automatically on `BufWritePost` for `verilog`/`systemverilog`:
 `fusesoc run --target=lint` on the core named by `vim.g.fusesoc_target`
 (set per project in `.nvim.lua`). Results land as buffer diagnostics;
-the keys above refill quickfix from the run's `.sarif`, project-wide —
+the keys above refill quickfix from the run's `.sarif`, project-wide:
 errors or warnings respectively.
 
 
