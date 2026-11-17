@@ -236,7 +236,8 @@ if [ "$INSTALL_MODE" == "full" ]; then
       pushd "$ROOT/deps/dwl" > /dev/null || return 1
       make clean && make -j"$jobs" &&
       sudo mkdir -p /usr/local/share/wayland-sessions &&
-      sudo cp -r $ROOT/deps/dwl/dwl.desktop /usr/local/share/wayland-sessions/dwl.desktop &&
+      sed "s|~/workspaceconfig|$ROOT|g" "$ROOT/deps/dwl/dwl.desktop" |
+      sudo tee /usr/local/share/wayland-sessions/dwl.desktop > /dev/null &&
       sudo chmod 644 /usr/local/share/wayland-sessions/dwl.desktop
       rc=$?
       popd > /dev/null
