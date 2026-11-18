@@ -7,6 +7,26 @@
 -- Or remove existing autocmds by their group name (which is prefixed with `lazyvim_` for the defaults)
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
+---------------------------------------------------------------
+-- trim trailing whitespaces without moving the cursor/view  --
+---------------------------------------------------------------
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*",
+  callback = function()
+    local view = vim.fn.winsaveview()
+    vim.cmd([[%s/\s\+$//e]])
+    vim.fn.winrestview(view)
+  end,
+})
+
+-----------------------------------------------------------------------
+-- Treesitter: highlight every filetype that has an installed parser  --
+-----------------------------------------------------------------------
+-- pcall() makes this a silent no-op when no parser exists, so one rule
+-- covers all installed languages, including newly installed parsers
+-- and injected languages (lua/python inside sh heredocs, code fences
+-- in markdown). Treesitter-based *indentation* stays opt-in below:
+-- it is opinionated enough that enabling it everywhere can surprise.
 vim.api.nvim_create_autocmd('FileType', {
   callback = function()
     pcall(vim.treesitter.start)                       -- Highlighting (no-op without parser)
@@ -22,36 +42,43 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
----------------------------------------------------------------
--- trim trailing whitespaces without moving the cursor/view  --
----------------------------------------------------------------
-vim.api.nvim_create_autocmd("BufWritePre", {
-  pattern = "*",
-  callback = function()
-    local view = vim.fn.winsaveview()
-    vim.cmd([[%s/\s\+$//e]])
-    vim.fn.winrestview(view)
-  end,
-})
+-----------------------------------------------------------------------
+-- Custom highlight overrides                                         --
+-----------------------------------------------------------------------
+-- Any group we define or override lives in set_custom_hl() so it is
+-- re-applied on every ColorScheme event: colorschemes reset groups,
+-- so defining these once at startup would silently lose them.
+--
+-- shift Normal's bg by `amt` per channel, lighter on dark schemes / darker on light
+local function shade_bg(amt)
+  local n = vim.api.nvim_get_hl(0, { name = "Normal" }).bg or 0
+  local r, g, b = math.floor(n / 0x10000), math.floor(n / 0x100) % 0x100, n % 0x100
+  local d = (r + g + b) < 384 and amt or -amt
+  local f = function(c) return math.min(255, math.max(0, c + d)) end
+  return f(r) * 0x10000 + f(g) * 0x100 + f(b)
+end
 
--------------------------------
--- Override search highlight --
--------------------------------
-local function set_search_hl()
+local function set_custom_hl()
   vim.api.nvim_set_hl(0, "Search",     { fg = "#000000", bg = "#ffd75f" })
   vim.api.nvim_set_hl(0, "CurSearch",  { fg = "#000000", bg = "#ff8700", bold = true })
   vim.api.nvim_set_hl(0, "IncSearch",  { link = "CurSearch" })
   vim.api.nvim_set_hl(0, "Substitute", { fg = "#000000", bg = "#87afff" })
+  -- Embedded-language block tint (heredocs, markdown fences, ...):
+  -- bg derived from Normal (not hardcoded), so it tracks the active
+  -- scheme. Painted full-line by line_hl extmarks over each injected
+  -- region in plugins/nvim-treesitter.lua.
+  vim.api.nvim_set_hl(0, "EmbeddedCode", { bg = shade_bg(50) })
 end
 
-set_search_hl()
+set_custom_hl()
 vim.api.nvim_create_autocmd("ColorScheme", {
-  callback = set_search_hl,
+  callback = set_custom_hl,
 })
 
 ----------------------------------------------------------------------------
 -- Per-filetype colorschemes via window highlight namespaces (Nvim 0.10+) --
 ----------------------------------------------------------------------------
+-- Mute colors in inactive windows
 local ft_colors = {
   -- python        = "habamax",
   lua           = "darkblue",
