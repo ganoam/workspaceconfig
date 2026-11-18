@@ -320,3 +320,92 @@ git push private --delete local
 Fails if it is the remote's default branch ("refusing to delete the
 current branch") -- change the default on GitHub (Settings -> Branches)
 or leave the branch.
+
+## Point a repo's hooks at a directory (shared, auto-updating hooks)
+
+```shell
+git config core.hooksPath <dir>
+```
+
+Relative paths resolve against the worktree top-level. Missing dir ->
+silently NO hooks run (check the dir exists when setting).
+
+## Vendor only a subdirectory of another repo (git subtree)
+
+`git subtree add --prefix=X <repo> <ref>` vendors the WHOLE repo, not
+the subdir. Split the subdir out upstream first:
+
+```shell
+cd <source-repo>
+git subtree split --prefix=<subdir> -b split-<name>
+cd <target-repo>
+git subtree add --prefix=<subdir> <source-repo> split-<name> --squash
+```
+
+## Update a vendored subtree
+
+Split is a snapshot: it does not track upstream. Re-split, then pull:
+
+```shell
+cd <source-repo>
+git subtree split --prefix=<subdir> -b split-<name>   # regenerate
+cd <target-repo>
+git subtree pull --prefix=<subdir> <source-repo> split-<name> --squash
+```
+
+Local edits can go back upstream: `git subtree push --prefix=<subdir>
+<repo> <branch>`.
+
+## Bump a submodule to its tracked branch tip
+
+```shell
+git submodule update --remote <path>
+git add <path> && git commit
+```
+
+Requires `submodule.<path>.branch` set in `.gitmodules`.
+
+## Caution: subtree vs. submodule when you need upstream tracking
+
+Subtree copies are static snapshots. They never track upstream; every
+update means re-split + `subtree pull`, and each pull adds squash/merge
+noise to your history. For content that must stay current, prefer a
+submodule instead: the parent repo tracks only the gitlink, so even a
+full checkout confines the noise to the subdir. Sparse checkout inside
+a submodule is cosmetic only and not committed (per-clone state in
+`.git/modules/<name>/info/sparse-checkout`).
+
+## Worktrees: second checkout of the same repo
+
+```shell
+git worktree add /tmp/wt master      # checkout branch at a new path
+git worktree list                    # show registered worktrees
+git worktree remove --force /tmp/wt  # delete worktree + registry entry
+git worktree prune                   # drop registry entries whose dir is gone
+```
+
+One branch, one worktree: a branch cannot be checked out twice.
+`rm -rf` on a worktree dir leaves a stale registry entry in
+`.git/worktrees/` -> "already used by worktree at <gone path>" on the
+next `worktree add`. Fix: `git worktree prune` (registry, not the
+filesystem, is what the branch-pin check consults).
+
+## Navigate a merge commit's parents
+
+M has two parents. ^ picks one, ~ walks first-parent steps:
+
+```shell
+git log --oneline M^1    # = M^, my tip at merge time
+git log --oneline M^^    # = M^1^1, one before that on my side
+git log --oneline M^2    # merged-in tip
+git log --oneline M^2^   # one down the merged-in line (also: M^2~2 etc)
+git merge-base M^1 M^2   # where the two lines diverged
+```
+
+## Read history around merges
+
+```shell
+git log --graph --oneline
+```
+
+The one command that makes merge topology legible.

@@ -50,3 +50,6 @@
 [submodule "deps/gtkwave"]
 	path = deps/gtkwave
 	url = https://github.com/gtkwave/gtkwave
+[submodule "deps/workflows"]
+	path = deps/workflows
+	url = git@github.com:ganoam/workflows
