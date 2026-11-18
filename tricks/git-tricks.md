@@ -298,3 +298,25 @@ git log --format='%an %s' | uniq -c   # own commits = contiguous block on top
 Note: reordering is cosmetic -- future merges from the upstream remote
 re-interleave history. `git log --author=<me>` / `git shortlog` already
 give a "my work" view without rewriting anything.
+
+## Rename a branch
+
+```shell
+git branch -m local private
+```
+
+## Push a branch as 'master' to a named remote (set upstream)
+
+```shell
+git push -u private private:master
+```
+
+## Delete a branch on a remote
+
+```shell
+git push private --delete local
+```
+
+Fails if it is the remote's default branch ("refusing to delete the
+current branch") -- change the default on GitHub (Settings -> Branches)
+or leave the branch.
