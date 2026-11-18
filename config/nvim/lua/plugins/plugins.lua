@@ -14,7 +14,12 @@ return {
 
   -- GitCommands
   {
-    'tpope/vim-fugitive'
+    'tpope/vim-fugitive',
+    config = function()
+      vim.keymap.set('n', 'y<C-G>',
+        ':<C-U>call setreg(v:register, fugitive#Object(@%))<CR>',
+        { desc = "Yank object path" })
+    end,
   },
 
   -- git tools:show change symbols
@@ -26,7 +31,33 @@ return {
   {"jremmen/vim-ripgrep"},
 
   -- Netrw bindings
-  {"tpope/vim-vinegar"},
+  {
+    "tpope/vim-vinegar",
+    config = function()
+      vim.keymap.set('n', '-', '<Plug>VinegarUp',
+        { desc = "Open netrw at file's dir / go up", remap = true })
+      -- vinegar's remaining binds are netrw-buffer-local and use <SID>
+      -- functions; patch descs onto them instead of re-declaring
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "netrw",
+        callback = function()
+          for lhs, desc in pairs({
+            ["-"] = "Go up a directory",
+            ["~"] = "Go to home directory",
+            ["."] = "Prepend filename to command line",
+            ["gh"] = "Toggle hidden files",
+            ["y."] = "Yank absolute path",
+          }) do
+            local m = vim.fn.maparg(lhs, "n", false, true)
+            if m.lhs ~= "" then
+              m.desc = desc
+              pcall(vim.fn.mapset, "n", 0, m)
+            end
+          end
+        end,
+      })
+    end,
+  },
 
 
   {'simnalamburt/vim-mundo',
@@ -79,9 +110,12 @@ return {
       'folke/snacks.nvim',
     },
     cmd = 'Nerdy',
+    keys = {
+      { '<leader>in', '<cmd>Nerdy list<CR>', desc = "Browse nerd icons" },
+      { '<leader>iN', '<cmd>Nerdy recents<CR>', desc = "Recent nerd icons" },
+    },
     opts = {
       max_recents = 30, -- Configure recent icons limit
-      add_default_keybindings = true, -- Add default keybindings
       copy_to_clipboard = false, -- Copy glyph to clipboard instead of inserting
       copy_register = '+', -- Register to use for copying (if `copy_to_clipboard` is true)
     }
