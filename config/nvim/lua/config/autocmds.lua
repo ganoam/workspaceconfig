@@ -8,20 +8,17 @@
 -- e.g. vim.api.nvim_del_augroup_by_name("lazyvim_wrap_spell")
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'python', 'rust', 'lua' },
   callback = function()
-    vim.treesitter.start()                            -- Highlighting
+    pcall(vim.treesitter.start)                       -- Highlighting (no-op without parser)
     -- vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()' -- Folding
     -- vim.wo.foldmethod = 'expr'
-    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- Indentation
   end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'systemverilog', 'verilog' },
+  pattern = { 'python', 'rust', 'lua' },
   callback = function()
-    vim.treesitter.start()                            -- Highlighting
-    -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- Indentation
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" -- Indentation
   end,
 })
 
