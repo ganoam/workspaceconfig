@@ -1,0 +1,20 @@
+#!/bin/bash
+# Block committing files listed in .gitprivate on the public branch
+# (master). The list lives on the `private` branch and is read via
+# `git show` so it applies regardless of the checked-out branch.
+branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+[ "$branch" = "master" ] || exit 0
+
+private_set=$(git show private:.gitprivate 2>/dev/null \
+  | sed 's/#.*//; s/^ *//; s/ *$//' | grep -v '^$' | LC_ALL=C sort)
+[ -n "$private_set" ] || exit 0
+
+offending=$(git diff --cached --name-only | LC_ALL=C sort \
+  | comm -12 - <(echo "$private_set"))
+if [ -n "$offending" ]; then
+  echo "pre-commit: .gitprivate files staged on master:"
+  echo "$offending" | sed 's/^/  /'
+  echo "commit them on the 'private' branch instead."
+  exit 1
+fi
+exit 0
