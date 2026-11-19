@@ -69,6 +69,46 @@ Each tool's system dependencies are listed in its `<tool>-deps.yml` and installe
 
 If you'd rather not build from source, most wayland tools are also in apt (`waybar`, `foot`, `qutebrowser`, …), but `bootstrap.sh` only uses the submodule builds.
 
+### Planned tools
+
+Not integrated yet. Together these cover an open-source digital
+backend flow: synthesis, place-and-route, and static timing
+analysis with no vendor tools.
+
+| Tool | Role | Planned install |
+|---|---|---|
+| [oss-cad-suite](https://github.com/YosysHQ/oss-cad-suite-build) | prebuilt FPGA toolchain (yosys, nextpnr, ...) | tarball via `tarballs.yml` + `sourceme` env |
+| [sv2v](https://github.com/zachjs/sv2v) | SystemVerilog -> Verilog-2005, for Verilog-only tools | standalone: submodule + stack build |
+| [OpenSTA](https://github.com/The-OpenROAD-Project/OpenSTA) | static timing analysis (liberty/SDC/SDF) | standalone: submodule + cmake build |
+| [OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts) | RTL-to-GDSII implementation flow | heavyweight opt-in: submodule + OpenROAD binaries or docker |
+
+Reference flows on the same toolchain, to be reviewed:
+[OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts)
+documents RTL -> GDSII end to end (yosys synthesis, OpenROAD PnR,
+OpenSTA signoff); [LibreLane](https://github.com/librelane/librelane)
+(OpenLane's successor) packages the same components turnkey.
+
+No tool above supplies a PDK; candidates for the foundry side:
+
+| PDK | Status | How it lands |
+|---|---|---|
+| Nangate45, ASAP7 | academic test platforms; shipped inside OpenROAD-flow-scripts | nothing to install; flow bring-up |
+| [sky130](https://github.com/RTimothyEdwards/open_pdks) | real 130nm, manufacturable (long MPW shuttle history) | `ciel` pip PDK manager, or open_pdks source build |
+| [gf180mcu](https://github.com/google/gf180mcu-pdk) | real 180nm, manufacturable | same: `ciel` / open_pdks |
+| [IHP SG13G2](https://github.com/IHP-GmbH/IHP-Open-PDK) | real 130nm BiCMOS; early access, not yet production-qualified | repo checkout pointed at by the flow config |
+
+How the pieces relate: known overlaps and alternatives. These are
+open questions, not decisions; each needs careful study when the
+tools actually get integrated, nothing here is settled.
+
+| Tools | Relationship |
+|---|---|
+| OpenSTA / OpenROAD-flow-scripts | OpenSTA is the timing engine inside OpenROAD; ORFS uses it at every signoff stage. A standalone build only adds a lightweight `sta` binary for timing checks without the ORFS install. |
+| oss-cad-suite / verilator, gtkwave | The suite bundles both, which are already integrated separately (`deps/`). PATH precedence between `envs/bin` shims and the suite's `bin/` needs a decision at install time. |
+| oss-cad-suite / OpenROAD-flow-scripts | Both bundle yosys: the suite's serves the FPGA path, ORFS's the ASIC synth step. Two yosys installs coexist; same role name, different flows. |
+| oss-cad-suite / OpenROAD-flow-scripts | Complementary targets, not redundant: FPGA synth/PnR/bitstream vs. ASIC RTL-to-GDSII. |
+| sv2v / yosys-slang (sv-elab) | sv2v exists for yosys's limited native SV parsing. If the slang frontend is used instead (newer suites can ship it), sv2v is unnecessary. |
+
 
 ## Activate
 
