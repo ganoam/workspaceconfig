@@ -106,3 +106,7 @@ recorded as they happen.
   preamble, repo-specific deltas only).
 - `recipes/devlog.md` added to the workflows repo: this file's entry
   format became the shared house format; the log reworked onto it.
+- New shared style rule adopted via `deps/workflows`: one sentence
+  per line in prose docs, no fixed-column rewrapping. Sweeps of this
+  repo's and the workflows repo's docs queued in both roadmaps,
+  timing is the owner's call.
