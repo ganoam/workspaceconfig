@@ -1,9 +1,9 @@
-# Agent notes for workspaceconfig
+# AGENTS.md: notes for anyone working in this repo
 
-Generic binding rules and operating workflow live in
-`deps/workflows/agents/` (`rules.md`, `workflow.md`) and apply in
-full here. This file holds only repo-specific guidance. Keep it
-current per the shared rules.
+Generic binding rules and operating workflow live in `deps/workflows/agents/` (`rules.md`, `workflow.md`) and the prose style guide `deps/workflows/MdStyle.md`; all apply in full here.
+Resolve them through the checkout chain: `~/workspaceconfig/deps/workflows`, then `deps/workflows` in this repo, then `../workflows` for dependency checkouts; if none exists, warn the owner and prompt them to clone the workflows repo.
+This file holds only repo-specific guidance.
+Keep it current per the shared rules.
 
 ## What this is
 
@@ -32,8 +32,10 @@ Deltas on top of the shared rules:
 - Do not change GUI behavior without need (qutebrowser opening a real
   window in checkhealth is accepted).
 - Never edit git config; never commit secrets.
-- Root-level untracked files (`post.txt`, `learnings.md`, scratch tests)
-  are intentional; do not delete or gitignore them.
+- Root-level untracked files (`post.txt`, `DEPS/` reference
+  checkouts, `learnings.md`, scratch tests) are intentional; do not
+  delete or gitignore them. `DEPS/` reintroduction candidates are
+  tracked in `ROADMAP.md`.
 - `DEVLOG.md` format: `deps/workflows/recipes/devlog.md` (dated
   sections, newest at the bottom, terse per-packet bullets).
 - `README.md` is the install contract: a fresh-clone reader should be
@@ -46,7 +48,8 @@ Deltas on top of the shared rules:
 project-local `recipes/` directory, if present, layers on top and
 overrides. When a task falls under one, read and follow it.
 
-Project-local recipes here: none yet. Shared recipes this repo
+Project-local recipes: `recipes/fresh-install-testing.md` (bwrap
+sandbox bootstrap verification). Shared recipes this repo
 exercises: `git-privacy.md` (public/private split),
 `deps-management.md` and `vendoring.md` (`deps/` submodules),
 `agent-setup.md` (this file's shape).
@@ -141,11 +144,12 @@ the dep clone, then the owner bumps the pin.
 
 ## Current state and next steps
 
-- Public/private split is set up: `.gitprivate` started, hooks live in
-  `deps/scripts/git-hooks` (activated by `core.hooksPath`), `private`
-  remote configured. Pending owner actions: run the hooks installer,
-  commit `.gitprivate` plus the untracked docs, and classify
-  `AGENTS.md`/`DEVLOG.md` as private or public.
+- Public/private split is set up: `.gitprivate` started (still
+  untracked), hooks live in `deps/scripts/git-hooks` (activated by
+  `core.hooksPath`, not yet set), `private` remote configured.
+  `AGENTS.md`/`DEVLOG.md` are public. Pending owner actions: run the
+  hooks installer and commit `.gitprivate` (hooks read the committed
+  list).
 - Tricks live in `deps/workflows/tricks/`; the old tracked copies at
   repo root were removed (`e4a8321`).
 - The installed Devin plugin is a `--local` link to this checkout of
