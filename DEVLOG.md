@@ -110,3 +110,20 @@ recorded as they happen.
   per line in prose docs, no fixed-column rewrapping. Sweeps of this
   repo's and the workflows repo's docs queued in both roadmaps,
   timing is the owner's call.
+- snippet: `README.md` gained a planned-tools section.
+
+## 2026-11-20: fresh-install test rerun + first local recipe
+
+- Re-ran the bwrap fresh-install test on `ubuntu-base-26.04.1` (was 24.04): 36 ok / 7 warn (wayland tools, expected in `-t`) / 1 fail; second bootstrap run fully idempotent.
+- New sandbox findings vs the notes doc: `apparmor_restrict_unprivileged_userns` strips `CAP_DAC_OVERRIDE`, so real `sudo` can't unpack (mode-000 `.dpkg-new` reopen fails EACCES) and is dropped from the container apt list in favor of the shim; `chown` to unmapped uids EINVALs, so the `dbus` postinst cascade into "N not fully installed" is noise, not signal.
+- Real repo gap surfaced: `qutebrowser-deps.yml` carries build deps only; QtWebEngine needs `libnspr4 libnss3 libasound2t64 libxkbfile1 libxcb-cursor0 libxkbcommon-x11-0` at runtime (queued in `BACKLOG.md`).
+- `recipes/fresh-install-testing.md` added: first project-local recipe, distilled from `~/code/notes/fresh-install-testing.md` plus this run's findings; `AGENTS.md` recipe list updated.
+- `deps/workflows`: `MdStyle.md` added as a third binding doc in the AGENTS preamble and given a path in `rules.md` after a prose style miss; DEVLOG prompting rule changed to direct edit prompts in `rules.md` + `workflow.md`. Owner commits + pin bump pending.
+- `BACKLOG.md` added for noticed-not-fixed items.
+
+## 2026-11-22: doc upkeep + update-docs.sh attribution
+
+- `AGENTS.md` preamble re-synced verbatim to `deps/workflows/agents/template.md` (the three-doc pointer including `MdStyle.md`); the copy had drifted to the older two-doc wording.
+- `BACKLOG.md` maintenance: canonical header adopted; the workflows gitlink bump moved to `## In flight` (checkout at `b971a90`, parent commit pending); decided items recorded: an `update-docs.sh` CI gate (Actions job: regen + `git diff --exit-code` on push) and a bootstrap fresh-install CI job porting `recipes/fresh-install-testing.md` (bwrap) onto the runner.
+- `update-docs.sh` restyled to the `deps/workflows/hooks` comment convention (`== Intent/Method/Caveats/Usage ==` header, `# ---` separators); comments only, still a shell script; verified idempotent against the checked-out README.
+- `update-docs.sh` is agent-authored (Devin session, 2026-11): output verified, deliberately not line-reviewed by the owner. Authorship recorded here and in the script header since this repo is portfolio material.
