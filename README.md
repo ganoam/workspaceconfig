@@ -19,7 +19,7 @@ config/             # nvim, tmux, waybar, qutebrowser, fusesoc configs (XDG_CONF
 sourceme/           # sourceme.sh: env vars, PATH, aliases
 deps/               # fetched dependencies (gitlinks; contents gitignored)
 envs/               # generated: venvs + tool shims (gitignored)
-tricks/             # assorted notes and gotchas (bash, git, nvim, bwrap, ...)
+ROADMAP.md          # ongoing and planned work
 notes/              # running todo and current working context
 tarballs.yml        # binary tarball manifest (nvim, ripgrep, tmux)
 *-deps.yml          # per-tool apt package manifests
