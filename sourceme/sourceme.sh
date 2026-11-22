@@ -30,6 +30,7 @@ add_to_path $ROOT/bin
 # TODO: find a better solution
 add_to_path $ROOT/deps/scripts/shortcut-menus
 add_to_path $ROOT/deps/scripts/bin
+add_to_path $ROOT/deps/scripts/git-util
 
 # git submodules
 if [ -f "$ROOT/.gitmodules" ]; then
