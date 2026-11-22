@@ -712,6 +712,10 @@ errors or warnings respectively.
 
 ## Known issues
 
+- Intermittent blank screens on suspend/resume (machine-level
+  debugging, not a config problem).
+- Brightness shortcuts/script not working yet (same category).
+- waybar: some components unfinished.
 
 ## Random Workflow Tipps
 
