@@ -127,6 +127,9 @@ recorded as they happen.
 - `BACKLOG.md` maintenance: canonical header adopted; the workflows gitlink bump moved to `## In flight` (checkout at `b971a90`, parent commit pending); decided items recorded: an `update-docs.sh` CI gate (Actions job: regen + `git diff --exit-code` on push) and a bootstrap fresh-install CI job porting `recipes/fresh-install-testing.md` (bwrap) onto the runner.
 - `update-docs.sh` restyled to the `deps/workflows/hooks` comment convention (`== Intent/Method/Caveats/Usage ==` header, `# ---` separators); comments only, still a shell script; verified idempotent against the checked-out README.
 - `update-docs.sh` is agent-authored (Devin session, 2026-11): output verified, deliberately not line-reviewed by the owner. Authorship recorded here and in the script header since this repo is portfolio material.
+- snippet: `README.md` gained the generated keymap tables (first committed `update-docs.sh` run), a known-issues section, and a refreshed contents listing.
+- snippet: `sourceme/sourceme.sh` adds `deps/scripts/git-util` to PATH.
+- snippet: private branch gained its `.gitprivate` declaration and first private-only docs.
 
 ## 2026-11-22: bump scripts 498f6288...5648d6ae (9 commits)
 ## 2026-11-22: bump scripts 5d1c2933...4d663e70 (1 commit)
