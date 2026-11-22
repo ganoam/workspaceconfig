@@ -1,6 +1,6 @@
 # AGENTS.md: notes for anyone working in this repo
 
-Generic binding rules and operating workflow live in `deps/workflows/agents/` (`rules.md`, `workflow.md`) and the prose style guide `deps/workflows/MdStyle.md`; all apply in full here.
+Generic binding rules and operating workflow live in `~/workspaceconfig/deps/workflows/agents/` (`rules.md`, `workflow.md`) and the prose style guide `~/workspaceconfig/deps/workflows/MdStyle.md`; all apply in full here.
 Resolve them through the checkout chain: `~/workspaceconfig/deps/workflows`, then `deps/workflows` in this repo, then `../workflows` for dependency checkouts; if none exists, warn the owner and prompt them to clone the workflows repo.
 This file holds only repo-specific guidance.
 Keep it current per the shared rules.
@@ -16,9 +16,9 @@ do not oversell.
 Deltas on top of the shared rules:
 
 - Public/private split (recipe: `deps/workflows/recipes/git-privacy.md`):
-  work happens on `private` (a superset of `master`), `.gitprivate`
+  work happens on `private` (a superset of `main`), `.gitprivate`
   declares private paths, `deps/scripts/git-util/publish.sh` replays
-  public commits onto `master` (owner runs it).
+  public commits onto `main` (owner runs it).
 - Commit style: `[area] short lowercase summary` (see `git log`).
 - **Self-documenting code.** State the high-level goal in a section
   header, then explain each block adjacent to it. Names mentioned in
@@ -144,14 +144,14 @@ the dep clone, then the owner bumps the pin.
 
 ## Current state and next steps
 
-- Public/private split is set up: `.gitprivate` started (still
-  untracked), hooks live in `deps/scripts/git-hooks` (activated by
-  `core.hooksPath`, not yet set), `private` remote configured.
-  `AGENTS.md`/`DEVLOG.md` are public. Pending owner actions: run the
-  hooks installer and commit `.gitprivate` (hooks read the committed
-  list).
-- Tricks live in `deps/workflows/tricks/`; the old tracked copies at
-  repo root were removed (`e4a8321`).
+- Public/private split is active: `.gitprivate` committed
+  (`14fa873`; declares `.gitprivate`, `notes/`, `BACKLOG.md`), hooks
+  enabled via `core.hooksPath` -> `deps/scripts/git-hooks`,
+  `private` remote configured. First `publish.sh` replay done:
+  `main` is published through `58dfecf`; `private` is one commit
+  ahead of `mirror/private`.
+- `ROADMAP.md` added: flat checklist of open work; public (not in
+  `.gitprivate`), still untracked.
 - The installed Devin plugin is a `--local` link to this checkout of
   `deps/workflows`, so the pinned docs and injected skills stay in
   sync.
