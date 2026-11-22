@@ -129,3 +129,4 @@ recorded as they happen.
 - `update-docs.sh` is agent-authored (Devin session, 2026-11): output verified, deliberately not line-reviewed by the owner. Authorship recorded here and in the script header since this repo is portfolio material.
 
 ## 2026-11-22: bump scripts 498f6288...5648d6ae (9 commits)
+## 2026-11-22: bump scripts 5d1c2933...4d663e70 (1 commit)
