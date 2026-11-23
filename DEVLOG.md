@@ -145,3 +145,5 @@ recorded as they happen.
 - `.github/workflows/fresh-install.yml`: the bwrap fresh-install flow from `recipes/fresh-install-testing.md` ported to Actions (ubuntu-base 26.04 rootfs, userns sysctl, git@->https rewrite); `update-docs.sh --check` is its last step, running on the nvim the bootstrap just installed, so the docs gate uses the bootstrap result as a true precondition.
   Path-gated on bootstrap+doc inputs plus a nightly cron.
 - `bootstrap.sh` runs `git-util/setup-git-hooks.sh` after fetch-repos (needs the dep checkout present; the remote-fetch fallback can't resolve `../git-hooks`).
+
+## 2026-11-23: bump dwl (1 commit)
