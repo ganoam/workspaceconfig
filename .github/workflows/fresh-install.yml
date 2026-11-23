@@ -1,0 +1,104 @@
+# Agent-generated; human reviewed.
+# Fresh-install gate, ported from recipes/fresh-install-testing.md:
+# clone HEAD into a bwrap ubuntu-base sandbox, run bootstrap.sh -t and
+# checkhealth.sh, then use that bootstrapped environment as the
+# readme-docs gate (update-docs.sh --check runs with the nvim the
+# bootstrap just installed). A bootstrap failure means the docs check
+# never runs: it is a precondition, not a sibling job.
+name: fresh-install
+on:
+  push:
+    paths:
+      - 'bootstrap.sh'
+      - 'checkhealth.sh'
+      - 'update-docs.sh'
+      - 'sourceme/**'
+      - '*-deps.yml'
+      - 'tarballs.yml'
+      - '.gitmodules'
+      - 'deps/**'
+      - 'config/**'
+      - 'git-hooks/**'
+      - 'README.md'
+      - '.github/workflows/**'
+      - 'recipes/fresh-install-testing.md'
+  schedule:
+    - cron: '23 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  bwrap-fresh-install:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    # public repo only: the file also lands on the private mirror via
+    # publish/push, where this job skips without running.
+    if: github.repository == 'ganoam/workspaceconfig'
+    steps:
+      - uses: actions/checkout@v4
+
+      # Ubuntu 24.04+ runners restrict unprivileged userns via
+      # apparmor; bwrap needs one.
+      - name: allow unprivileged userns
+        run: sudo sysctl kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: install bubblewrap
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y bubblewrap wget ca-certificates
+
+      - name: build ubuntu-base rootfs
+        run: |
+          mkdir -p /tmp/freshtest/rootfs/mnt
+          wget -q -P /tmp/freshtest \
+            https://cdimage.ubuntu.com/ubuntu-base/releases/26.04.1/release/ubuntu-base-26.04.1-base-amd64.tar.gz
+          tar -xpf /tmp/freshtest/ubuntu-base-*-base-amd64.tar.gz -C /tmp/freshtest/rootfs
+          # DNS: runners symlink resolv.conf to the 127.0.0.53 stub
+          # resolver, dead inside the sandbox; copy the real upstream
+          # list into the rootfs instead of bind-mounting.
+          cp -L /run/systemd/resolve/resolv.conf /tmp/freshtest/rootfs/etc/resolv.conf 2>/dev/null \
+            || cp -L /etc/resolv.conf /tmp/freshtest/rootfs/etc/resolv.conf
+          cp -L /etc/hosts /tmp/freshtest/rootfs/etc/hosts
+          # apt's _apt user can't seteuid in a userns -> run as root
+          echo 'APT::Sandbox::User "root";' > /tmp/freshtest/rootfs/etc/apt/apt.conf.d/99bwrap-sandbox
+          # no sudo package in the base image, and real sudo can't
+          # unpack without CAP_DAC_OVERRIDE; fake-root passthrough.
+          printf '#!/bin/sh\nexec "$@"\n' > /tmp/freshtest/rootfs/usr/local/bin/sudo
+          chmod +x /tmp/freshtest/rootfs/usr/local/bin/sudo
+
+      - name: bootstrap + checkhealth + readme-docs inside the sandbox
+        run: |
+          cat > /tmp/freshtest/bwrap-run.sh <<'LAUNCHER'
+          #!/bin/sh
+          # $1 = host repo, mounted read-only so the clone gets pushed HEAD
+          bwrap --unshare-user --uid 0 --gid 0 \
+            --bind /tmp/freshtest/rootfs / \
+            --dev /dev --proc /proc --tmpfs /dev/shm \
+            --dev-bind-try /dev/pts /dev/pts \
+            --ro-bind "$1" /mnt/hostrepo \
+            --clearenv --setenv HOME /root \
+            --setenv PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
+            --setenv TERM xterm-256color --setenv LANG C.UTF-8 \
+            --die-with-parent /bin/bash /mnt/inside-test.sh
+          LAUNCHER
+          cat > /tmp/freshtest/rootfs/mnt/inside-test.sh <<'INSIDE'
+          #!/bin/bash
+          set -x
+          # last line: QtWebEngine runtime libs for the qutebrowser
+          # --version probe; harness-side until qutebrowser-deps.yml
+          # carries them (repo gap in BACKLOG).
+          apt-get update -qq && apt-get install -y --no-install-recommends \
+            git curl ca-certificates gcc python3 python3-venv python3-pip \
+            tar xz-utils make locales \
+            libnspr4 libnss3 libasound2t64 libxkbfile1 libxcb-cursor0 libxkbcommon-x11-0
+          # no ssh client/keys in the rootfs: rewrite git@ URLs to https
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+          # fresh clone of HEAD, never the runner's working tree
+          git clone file:///mnt/hostrepo wc && cd wc
+          source sourceme/sourceme.sh
+          ./bootstrap.sh -t -y
+          QT_QPA_PLATFORM=offscreen QTWEBENGINE_CHROMIUM_FLAGS=--no-sandbox ./checkhealth.sh
+          # readme-docs gate: uses the nvim this bootstrap installed.
+          ./update-docs.sh --check
+          INSIDE
+          chmod +x /tmp/freshtest/bwrap-run.sh /tmp/freshtest/rootfs/mnt/inside-test.sh
+          /tmp/freshtest/bwrap-run.sh "$GITHUB_WORKSPACE"

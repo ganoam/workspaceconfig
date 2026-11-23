@@ -135,3 +135,13 @@ recorded as they happen.
 ## 2026-11-22: bump scripts 5d1c2933...4d663e70 (1 commit)
 ## 2026-11-22: bump workflows 2c5127e7...9a5a2460 (30 commits)
 ## 2026-11-23: bump scripts 4d663e70...e9d58ae3 (4 commits)
+
+## 2026-11-22: readme-docs gate (--check, hook dispatch, CI)
+
+- `update-docs.sh --check`: regenerates into a temp copy and diffs against README.md instead of writing in place; nonzero exit plus the drift diff on stale tables, missing nvim is a hard error (otherwise the gate passes on unverified tables).
+- `deps/scripts/git-hooks` split into run-parts multiplexers: `pre-commit`/`pre-push` now run every executable in `<hook>.d/` (shared) then `<repo>/git-hooks/<hook>.d/` (consumer-local); the privacy guards moved to `10-git-private` files unchanged.
+  `tests/test-git-privacy.sh` gained dispatch cases; 20/20 pass.
+- `git-hooks/pre-push.d/readme-docs`: repo-local gate running the same `--check`; verified live (an origin push was blocked by the privacy guard, a mirror push ran the docs check).
+- `.github/workflows/fresh-install.yml`: the bwrap fresh-install flow from `recipes/fresh-install-testing.md` ported to Actions (ubuntu-base 26.04 rootfs, userns sysctl, git@->https rewrite); `update-docs.sh --check` is its last step, running on the nvim the bootstrap just installed, so the docs gate uses the bootstrap result as a true precondition.
+  Path-gated on bootstrap+doc inputs plus a nightly cron.
+- `bootstrap.sh` runs `git-util/setup-git-hooks.sh` after fetch-repos (needs the dep checkout present; the remote-fetch fallback can't resolve `../git-hooks`).
