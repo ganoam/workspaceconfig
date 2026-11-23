@@ -149,3 +149,4 @@ recorded as they happen.
 ## 2026-11-23: bump dwl (1 commit)
 
 ## 2026-11-23: bump scripts e9d58ae3...2894d87d (2 commits)
+## 2026-11-23: bump workflows 9a5a2460...414afbd1 (3 commits)
