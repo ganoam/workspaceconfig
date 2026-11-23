@@ -2,9 +2,7 @@
 
 All my favourite tools, ready to go.
 
-Reproducible workstation bootstrap: shell environment, Neovim, tmux,
-an EDA toolchain (verilator/fusesoc/gtkwave) and a Wayland desktop
-(dwl/waybar/wlock), verified on a clean Ubuntu 26.04 install.
+Reproducible workstation bootstrap: shell environment, Neovim, tmux, an EDA toolchain (verilator/fusesoc/gtkwave) and a Wayland desktop (dwl/waybar/wlock), verified on a clean Ubuntu 26.04 install.
 
 ```systemverilog
 assign target_audience = nvim_nerds & ic_engineers;
@@ -21,8 +19,6 @@ deps/               # fetched dependencies (gitlinks; contents gitignored)
 envs/               # generated: venvs + tool shims (gitignored)
 git-hooks/          # repo-local git hook gates (dispatched via deps/scripts)
 .github/            # CI: bwrap fresh-install + readme-docs gate
-ROADMAP.md          # ongoing and planned work
-notes/              # running todo and current working context
 tarballs.yml        # binary tarball manifest (nvim, ripgrep, tmux)
 *-deps.yml          # per-tool apt package manifests
 ```
@@ -32,10 +28,8 @@ tarballs.yml        # binary tarball manifest (nvim, ripgrep, tmux)
 
 ### Standalone tools
 
-All standalone tools are installed by `bootstrap.sh` automatically, fetched as
-binary tarballs, git submodules, or pip packages into `envs/main`.
-Nothing installed system-wide, but build/runtime deps are still
-apt-installed where a `<tool>-deps.yml` exists (sudo prompt).
+All standalone tools are installed by `bootstrap.sh` automatically, fetched as binary tarballs, git submodules, or pip packages into `envs/main`.
+Nothing installed system-wide, but build/runtime deps are still apt-installed where a `<tool>-deps.yml` exists (sudo prompt).
 `envs/bin/` contains wrapper scripts generated at install time, pointing into `deps/`.
 
 | Tool | Description | Config | System deps |
@@ -73,9 +67,8 @@ If you'd rather not build from source, most wayland tools are also in apt (`wayb
 
 ### Planned tools
 
-Not integrated yet. Together these cover an open-source digital
-backend flow: synthesis, place-and-route, and static timing
-analysis with no vendor tools.
+Not integrated yet.
+Together these cover an open-source digital backend flow: synthesis, place-and-route, and static timing analysis with no vendor tools.
 
 | Tool | Role | Planned install |
 |---|---|---|
@@ -84,11 +77,7 @@ analysis with no vendor tools.
 | [OpenSTA](https://github.com/The-OpenROAD-Project/OpenSTA) | static timing analysis (liberty/SDC/SDF) | standalone: submodule + cmake build |
 | [OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts) | RTL-to-GDSII implementation flow | heavyweight opt-in: submodule + OpenROAD binaries or docker |
 
-Reference flows on the same toolchain, to be reviewed:
-[OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts)
-documents RTL -> GDSII end to end (yosys synthesis, OpenROAD PnR,
-OpenSTA signoff); [LibreLane](https://github.com/librelane/librelane)
-(OpenLane's successor) packages the same components turnkey.
+Reference flows on the same toolchain, to be reviewed: [OpenROAD-flow-scripts](https://github.com/The-OpenROAD-Project/OpenROAD-flow-scripts) documents RTL -> GDSII end to end (yosys synthesis, OpenROAD PnR, OpenSTA signoff); [LibreLane](https://github.com/librelane/librelane) (OpenLane's successor) packages the same components turnkey.
 
 No tool above supplies a PDK; candidates for the foundry side:
 
@@ -99,9 +88,8 @@ No tool above supplies a PDK; candidates for the foundry side:
 | [gf180mcu](https://github.com/google/gf180mcu-pdk) | real 180nm, manufacturable | same: `ciel` / open_pdks |
 | [IHP SG13G2](https://github.com/IHP-GmbH/IHP-Open-PDK) | real 130nm BiCMOS; early access, not yet production-qualified | repo checkout pointed at by the flow config |
 
-How the pieces relate: known overlaps and alternatives. These are
-open questions, not decisions; each needs careful study when the
-tools actually get integrated, nothing here is settled.
+How the pieces relate: known overlaps and alternatives.
+These are open questions, not decisions; each needs careful study when the tools actually get integrated, nothing here is settled.
 
 | Tools | Relationship |
 |---|---|
@@ -138,28 +126,28 @@ cd path/to/workspaceconfig
 `bootstrap.sh` also sets this clone's `core.hooksPath` to `deps/scripts/git-hooks` (git-privacy guards plus any repo-local gates in `git-hooks/`); that writes repo-local git config, nothing user-level.
 To do it by hand: `sh deps/scripts/git-util/setup-git-hooks.sh` (after `git submodule update --init deps/scripts`).
 
-Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try; mileage may vary.
+Targeted at **Ubuntu 26.04** only.
+Other distros/releases are welcome to try; mileage may vary.
 If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
-Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)
-You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (standalone tools only)
+Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`).
+You may need to re-source the `./sourceme/sourceme.sh` script to make your changes immediately apply (standalone tools only).
 For the desktop environment to take effect you'll need to logout and login.
 
 **What to expect:** The bootstrap downloads and builds a lot.
 The verilator build alone can take a while.
 Everything it installs stays inside this directory (deps/, envs/, config/share/).
 The only things committed to your system are apt packages, which are only installed after a sudo.
-In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/`
-and wlock is installed setuid to `/usr/local/bin/` (it needs root to verify your password).
+In full mode, dwl's session file is also copied to `/usr/local/share/wayland-sessions/` and wlock is installed setuid to `/usr/local/bin/` (it needs root to verify your password).
 
-**Starting dwl from the login screen:** After logging out (or rebooting), click your
-username on the Ubuntu login screen. Before typing your password, click the gear icon
-in the bottom-right corner: it lists the installed sessions. Select `dwl`, then log in
-as usual. To go back to the regular desktop, log out and pick `Ubuntu` from the same
-gear menu.
+**Starting dwl from the login screen:** After logging out (or rebooting), click your username on the Ubuntu login screen.
+Before typing your password, click the gear icon in the bottom-right corner: it lists the installed sessions.
+Select `dwl`, then log in as usual.
+To go back to the regular desktop, log out and pick `Ubuntu` from the same gear menu.
 
 ### DWL Survival Notes
 
-dwl boots to a wallpaper and a status bar. That's not broken, it's the whole desktop.
+dwl boots to a wallpaper and a status bar.
+That's not broken, it's the whole desktop.
 It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
 
 - `MOD + Shift + Return`: open a terminal (foot)
@@ -169,8 +157,7 @@ It's a keyboard-driven tiling compositor; `MOD` is the Super/Windows key.
 
 The full keybinding table is under [dwl](#dwl-depsdwlconfigdefh) further down.
 Deleting the `workspaceconfig` directory removes everything the bootstrap added inside it.
-Left behind on the system: the installed apt packages and, in full mode,
-`/usr/local/share/wayland-sessions/dwl.desktop` and `/usr/local/bin/wlock`; remove those manually.
+Left behind on the system: the installed apt packages and, in full mode, `/usr/local/share/wayland-sessions/dwl.desktop` and `/usr/local/bin/wlock`; remove those manually.
 
 
 ### External required tools
@@ -189,10 +176,10 @@ Left behind on the system: the installed apt packages and, in full mode,
 The bootstrap script prompts you to choose between two installation modes:
 
 1. **Standalone tools:** everything needed for the editor/shell workflow.
-Nothing installed system-wide; some tools still need apt build deps (sudo).
+   Nothing installed system-wide; some tools still need apt build deps (sudo).
 
 2. **Full Desktop environment:** standalone tools plus my personal fork of the DWL desktop environment (compositor, bar, launcher, terminal, notifications).
-Requires sudo for build/runtime dependencies and the dwl session file.
+   Requires sudo for build/runtime dependencies and the dwl session file.
 
 See the tables under [Provided tools](#provided-tools) above for what's included in each mode.
 
@@ -234,27 +221,24 @@ Learn more:
 
 - The `sshd(8)` man page, in the `SSHRC` section (https://man.openbsd.org/sshd.8#SSHRC).
 
-  > "If X11 forwarding is in use, it will receive the 'proto cookie' pair in its standard input (and DISPLAY in its environment). The script must call `xauth(1)` because sshd will not run xauth automatically to add X11 cookies."
+  > "If X11 forwarding is in use, it will receive the 'proto cookie' pair in its standard input (and DISPLAY in its environment).
+  > The script must call `xauth(1)` because sshd will not run xauth automatically to add X11 cookies."
 
 **`unix:` display name rewrite**
 
 - `xauth(1)` / `Xsecurity(7)` man pages document the `unix:N` vs `hostname:N` display-name distinction: the X server matches cookies by exact display name, so a cookie stored as `localhost:10.0` won't be found when clients connect via `unix:10.0`. (https://man.openbsd.org/xauth.1, https://www.x.org/releases/X11R7.7/doc/man/man7/Xsecurity.7.xhtml)
 
-One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than mandated protocol; whether `unix:` is needed depends on how X clients inside tmux resolve `DISPLAY`. The OpenBSD sshd man page example does `xauth -q -i merge -` style handling differently across versions, so verify against your sshd version's SSHRC section.
+One caveat: the exact `${DISPLAY#localhost:}` rewrite is convention rather than mandated protocol; whether `unix:` is needed depends on how X clients inside tmux resolve `DISPLAY`.
+The OpenBSD sshd man page example does `xauth -q -i merge -` style handling differently across versions, so verify against your sshd version's SSHRC section.
 
 ## Environment variables set by `sourceme.sh`
 
 - `VERILATOR_ROOT=$ROOT/deps/verilator`
-- `TOOLS_PATH` (default `~/tools`), `GOPATH` (default `~/go`),
-  `CARGOPATH` (default `~/.cargo`), `USRBIN` (default `/usr/bin`)
-  (GOPATH/CARGOPATH are for general Go/Rust development, not required by workspace tools)
-- `CONFIGROOT=$ROOT/config`, `XDG_CONFIG_HOME`, `XDG_DATA_HOME`,
-  `NVIMCONFIG`, `TMUX_HOME`
+- `TOOLS_PATH` (default `~/tools`), `GOPATH` (default `~/go`), `CARGOPATH` (default `~/.cargo`), `USRBIN` (default `/usr/bin`) (GOPATH/CARGOPATH are for general Go/Rust development, not required by workspace tools)
+- `CONFIGROOT=$ROOT/config`, `XDG_CONFIG_HOME`, `XDG_DATA_HOME`, `NVIMCONFIG`, `TMUX_HOME`
 - `EDITOR=nvim`, `menu=wmenu`, `WORKSPACE_SET=1`
 - `HISTSIZE`/`HISTFILESIZE=10000000`, shared history via `PROMPT_COMMAND`
-- PATH prepends: `$VERILATOR_ROOT/bin` (only when built),
-  `$CARGOPATH/bin`, `$GOPATH/bin`, `$ROOT/envs/bin`, `$ROOT/bin`,
-  `$ROOT/deps/scripts/menus`, `$ROOT/deps/scripts/bin`
+- PATH prepends: `$VERILATOR_ROOT/bin` (only when built), `$CARGOPATH/bin`, `$GOPATH/bin`, `$ROOT/envs/bin`, `$ROOT/bin`, `$ROOT/deps/scripts/menus`, `$ROOT/deps/scripts/bin`
 - `envs/bin/` holds shims generated by `bootstrap.sh`
 
 ## Aliases
@@ -289,9 +273,8 @@ Bash line editing is set to vi mode (`set -o vi`).
 | `prefix h` (repeatable) | `swap-window -t -` |
 <!-- keymaps:tmux:end -->
 
-Status line keys are vi-style; plugins: tpm, tmux-sensible,
-`tmux-plugins/tmux-resurrect` (nvim/vim session strategy, pane contents captured),
-tmux-powerline. Default terminal: `tmux-256color`.
+Status line keys are vi-style; plugins: tpm, tmux-sensible, `tmux-plugins/tmux-resurrect` (nvim/vim session strategy, pane contents captured), tmux-powerline.
+Default terminal: `tmux-256color`.
 `SSH_AUTH_SOCK` is forced to `~/.ssh/ssh_auth_sock` (see `~/.ssh/rc` above).
 
 #### Configuration Details
@@ -381,7 +364,8 @@ Custom configuration in `config/fusesoc/fusesoc.conf`:
 **Note**: MODKEY is defined as WLR_MODIFIER_LOGO (Windows/Super key)
 
 #### Configuration
-Built with patches from `deps/dwl-patches`. Desktop file installed to `/usr/local/share/wayland-sessions/`.
+Built with patches from `deps/dwl-patches`.
+Desktop file installed to `/usr/local/share/wayland-sessions/`.
 - **Keyboard layout**: us/ch(de) with caps lock toggle
 - **Terminal**: foot
 - **Menu**: wmenu-run
@@ -401,10 +385,7 @@ Configuration is minimal or defaults are used.
 
 ### Neovim (`config/nvim/`)
 
-`init.lua` loads `config.lazy` (lazy.nvim bootstrap), `config.keymaps`,
-`config.options`, `config.autocmds`; see `config/nvim/lua/config/keymaps.lua`
-and `config/nvim/lua/plugins/` for the full list of custom keymaps and plugin
-specs.
+`init.lua` loads `config.lazy` (lazy.nvim bootstrap), `config.keymaps`, `config.options`, `config.autocmds`; see `config/nvim/lua/config/keymaps.lua` and `config/nvim/lua/plugins/` for the full list of custom keymaps and plugin specs.
 
 `mapleader = " "` (space)
 
@@ -597,8 +578,7 @@ Custom LSP binds (`keymaps.lua`, generated by `update-docs.sh`):
 | `<leader>sw` | x | Visual selection or word |
 <!-- keymaps:snacks:end -->
 
-`<c-/>` is mode-sensitive: in a terminal buffer the first press escapes to
-normal mode, the second press (normal mode) toggles the terminal closed.
+`<c-/>` is mode-sensitive: in a terminal buffer the first press escapes to normal mode, the second press (normal mode) toggles the terminal closed.
 
 
 ### vim-floaterm (`plugins/floaterm.lua`)
@@ -625,8 +605,7 @@ Plus the Neovim builtin `<C-\><C-n>`: exit terminal mode (not plugin).
 | `<leader>mt` | n | Mundo Toggle |
 <!-- keymaps:vim-mundo:end -->
 
-Inside the Mundo window (buffer-local plugin defaults): `<cr>` `o` `d` `p`
-`j`/`k` `q`: revert/diff/preview/navigate/quit.
+Inside the Mundo window (buffer-local plugin defaults): `<cr>` `o` `d` `p` `j`/`k` `q`: revert/diff/preview/navigate/quit.
 
 ### nvim-surround (`plugins.lua`)
 
@@ -662,8 +641,7 @@ Empty `setup({})` → all defaults [8](#19-7) .
 
 ### vim-vinegar (`plugins.lua`)
 
-In netrw buffers (buffer-local plugin defaults): `-` up a dir, `~` home,
-`.` prepend filename to cmdline, `gh` toggle hidden, `y.` yank path.
+In netrw buffers (buffer-local plugin defaults): `-` up a dir, `~` home, `.` prepend filename to cmdline, `gh` toggle hidden, `y.` yank path.
 
 <!-- keymaps:vim-vinegar:begin -->
 | Key | Mode | Action |
@@ -673,8 +651,7 @@ In netrw buffers (buffer-local plugin defaults): `-` up a dir, `~` home,
 
 ### vim-fugitive (`plugins.lua`)
 
-In `:G` buffers (buffer-local plugin defaults): `s` `u` `=` `dd` `dv` `dh`
-`cc` `q`: stage / unstage / inline diff / diff splits / commit / close.
+In `:G` buffers (buffer-local plugin defaults): `s` `u` `=` `dd` `dv` `dh` `cc` `q`: stage / unstage / inline diff / diff splits / commit / close.
 
 <!-- keymaps:vim-fugitive:begin -->
 | Key | Mode | Action |
@@ -700,11 +677,8 @@ In `:G` buffers (buffer-local plugin defaults): `s` `u` `=` `dd` `dv` `dh`
 | `<leader>lw` | n | fusesoc lint: load warnings into quickfix |
 <!-- keymaps:nvim-lint:end -->
 
-Lint runs automatically on `BufWritePost` for `verilog`/`systemverilog`:
-`fusesoc run --target=lint` on the core named by `vim.g.fusesoc_target`
-(set per project in `.nvim.lua`). Results land as buffer diagnostics;
-the keys above refill quickfix from the run's `.sarif`, project-wide:
-errors or warnings respectively.
+Lint runs automatically on `BufWritePost` for `verilog`/`systemverilog`: `fusesoc run --target=lint` on the core named by `vim.g.fusesoc_target` (set per project in `.nvim.lua`).
+Results land as buffer diagnostics; the keys above refill quickfix from the run's `.sarif`, project-wide: errors or warnings respectively.
 
 
 ### render-markdown.nvim (`plugins/render-markdown.lua`)
@@ -718,8 +692,7 @@ errors or warnings respectively.
 
 ## Known issues
 
-- Intermittent blank screens on suspend/resume (machine-level
-  debugging, not a config problem).
+- Intermittent blank screens on suspend/resume (machine-level debugging, not a config problem).
 - Brightness shortcuts/script not working yet (same category).
 - waybar: some components unfinished.
 

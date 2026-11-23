@@ -1,115 +1,66 @@
 # DEVLOG
 
-Entries before 2026-11-18 were seeded retrospectively from `git log`
-(era-level summaries, not per-commit); entries from that date on are
-recorded as they happen.
+Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level summaries, not per-commit); entries from that date on are recorded as they happen.
 
 ## 2023-01 - 2023-12: inception, dotfiles era
 
 - Repo starts as a dbt "Module" system plus initial dotfiles.
-- nvim plugin set built up: gitgutter, floaterm, mundo/undotree,
-  telescope, surround, ALE.
-- tmux replaces GNU screen; tmux-powerline made portable; tpm becomes
-  a dependency.
-- Bash config moves from `.bashrc` into `sourceme.sh`, callable from
-  anywhere.
+- nvim plugin set built up: gitgutter, floaterm, mundo/undotree, telescope, surround, ALE.
+- tmux replaces GNU screen; tmux-powerline made portable; tpm becomes a dependency.
+- Bash config moves from `.bashrc` into `sourceme.sh`, callable from anywhere.
 - `.config/` renamed to `config/`, foreshadowing the XDG-layout repo.
 
 ## 2024: maintenance era
 
-- Periodic installs and plugin upkeep: pylint via ALE,
-  treesitter-textobjects in (gutentags out), svlangserver removed as
-  too noisy, lualine status bar.
+- Periodic installs and plugin upkeep: pylint via ALE, treesitter-textobjects in (gutentags out), svlangserver removed as too noisy, lualine status bar.
 - treesitter SV highlighting attempted and abandoned (still broken).
 
 ## 2025-11 - 2025-12: Wayland pivot + lazy.nvim migration
 
-- Window manager direction changes: dwm dependency added then pointed
-  at personal fork; st terminal for tmux; qutebrowser config and
-  keybindings added.
-- Plugin manager migrated packer -> lazy.nvim; plugins get per-file
-  specs.
+- Window manager direction changes: dwm dependency added then pointed at personal fork; st terminal for tmux; qutebrowser config and keybindings added.
+- Plugin manager migrated packer -> lazy.nvim; plugins get per-file specs.
 - verilator added to deps; filetype.nvim dropped (merged into core).
 
 ## 2026-05 - 2026-09: Wayland desktop assembles
 
-- dwl + dwl-patches added; dwl points at personal fork, wlroots moved
-  to system packages.
-- `XDG_CONFIG_HOME` made explicit so `config/` becomes the live
-  config dir.
+- dwl + dwl-patches added; dwl points at personal fork, wlroots moved to system packages.
+- `XDG_CONFIG_HOME` made explicit so `config/` becomes the live config dir.
 - Waybar configs, dmenu -> wmenu switch, wlock.
-- nvim: telescope replaced by snacks, vim-mundo back, nvim-treesitter
-  plugin spec, mason + nvim-lint (fusesoc_verilator sarif ->
-  quickfix).
+- nvim: telescope replaced by snacks, vim-mundo back, nvim-treesitter plugin spec, mason + nvim-lint (fusesoc_verilator sarif -> quickfix).
 
 ## 2026-10-20 - 2026-10-22: nvim polish sprint
 
-- Per-filetype colorschemes via window highlight namespaces, plus
-  muted unfocused variant, background dimming, zen-mode, snacks
-  pickers.
-- render-markdown configured to non-default values only; blink.cmp
-  autocomplete; lazyverilog LSP (non-mason); quickfix vs loclist
-  toggles; core keymaps consolidated into `keymaps.lua`.
+- Per-filetype colorschemes via window highlight namespaces, plus muted unfocused variant, background dimming, zen-mode, snacks pickers.
+- render-markdown configured to non-default values only; blink.cmp autocomplete; lazyverilog LSP (non-mason); quickfix vs loclist toggles; core keymaps consolidated into `keymaps.lua`.
 
 ## 2026-10-23 - 2026-11-09: bootstrap architecture
 
-- `bootstrap.sh` created and iterated hard: fetch delegated to
-  `deps/scripts`, `-t` standalone / `-f` full desktop modes, made
-  self-sufficient.
-- Repo restructured: `DEPS/` -> `deps/`, dbt MODULE removed, apt deps
-  move to `*-deps.yml` manifests, tarballs to `tarballs.yaml`.
-- Wayland desktop completed: mako, swaybg, wmenu, foot, waybar,
-  wlock, dwl.desktop into wayland-sessions. Tools: verilator,
-  fusesoc, edalize, gtkwave, inkscape, qutebrowser-as-terminal-tool.
+- `bootstrap.sh` created and iterated hard: fetch delegated to `deps/scripts`, `-t` standalone / `-f` full desktop modes, made self-sufficient.
+- Repo restructured: `DEPS/` -> `deps/`, dbt MODULE removed, apt deps move to `*-deps.yml` manifests, tarballs to `tarballs.yaml`.
+- Wayland desktop completed: mako, swaybg, wmenu, foot, waybar, wlock, dwl.desktop into wayland-sessions.
+  Tools: verilator, fusesoc, edalize, gtkwave, inkscape, qutebrowser-as-terminal-tool.
 - `checkhealth.sh` added.
-- Committed `bin/*.sh` wrappers replaced by generated shims in
-  `envs/bin` so repo commands never shadow system commands before
-  install.
-- Fresh-install hardening: curl failures caught early, stale meson
-  builddirs removed, tmux `st-256color` -> `tmux-256color` (present
-  in ncurses-base), `koalemo` -> `ganoam` renames, `branch = dev`
-  submodule fix, dwl.desktop path templating for arbitrary clone
-  locations.
+- Committed `bin/*.sh` wrappers replaced by generated shims in `envs/bin` so repo commands never shadow system commands before install.
+- Fresh-install hardening: curl failures caught early, stale meson builddirs removed, tmux `st-256color` -> `tmux-256color` (present in ncurses-base), `koalemo` -> `ganoam` renames, `branch = dev` submodule fix, dwl.desktop path templating for arbitrary clone locations.
 
 ## 2026-11-17 - 2026-11-18: docs, README overhaul, agent conventions
 
-- README restructured for public consumption: tagline, target
-  audience, roadmap factored out, standalone-vs-full install framing,
-  DWL survival notes, distro note (Ubuntu 26.04 target).
-- `tricks/` committed as the home for lightweight how-tos (moved to
-  `deps/workflows` a day later); em-dashes removed repo-wide.
-- `desc` strings added across keymap configs so binds document
-  themselves (which-key popups, generated README tables); nerdy.nvim
-  bind fixed; fugitive/vinegar buffer-local maps redeclared with
-  descs.
-- Universal treesitter highlighting via
-  `pcall(vim.treesitter.start)`; embedded-language tint via
-  `paint_injections()` `line_hl` extmarks over injected regions
-  (heredocs, fences).
-- `update-docs.sh` added: regenerates fenced `keymaps:NAME` README
-  tables from an `nvim --clean` baseline diff plus tmux parsing.
+- README restructured for public consumption: tagline, target audience, roadmap factored out, standalone-vs-full install framing, DWL survival notes, distro note (Ubuntu 26.04 target).
+- `tricks/` committed as the home for lightweight how-tos (moved to `deps/workflows` a day later); em-dashes removed repo-wide.
+- `desc` strings added across keymap configs so binds document themselves (which-key popups, generated README tables); nerdy.nvim bind fixed; fugitive/vinegar buffer-local maps redeclared with descs.
+- Universal treesitter highlighting via `pcall(vim.treesitter.start)`; embedded-language tint via `paint_injections()` `line_hl` extmarks over injected regions (heredocs, fences).
+- `update-docs.sh` added: regenerates fenced `keymaps:NAME` README tables from an `nvim --clean` baseline diff plus tmux parsing.
 - `AGENTS.md` and this file established.
 
 ## 2026-11-19: agent workflow + git privacy setup
 
-- Adopted the shared agent workflow (`deps/workflows` submodule):
-  agent rules, recipes, and tricks get one pinned source shared
-  across repos; the Devin plugin symlinks this checkout, so injected
-  skills and pinned docs can't drift.
-- Moved repo tricks into `deps/workflows/tricks/` (single shared
-  home).
-- Set up public/private publishing so private files never reach the
-  public remote: `private` superset branch + private mirror,
-  `.gitprivate` declares private paths, pre-commit/pre-push guards
-  live in `deps/scripts/git-hooks` activated via `core.hooksPath`.
-- Restructured `AGENTS.md` onto the shared template (pointer
-  preamble, repo-specific deltas only).
-- `recipes/devlog.md` added to the workflows repo: this file's entry
-  format became the shared house format; the log reworked onto it.
-- New shared style rule adopted via `deps/workflows`: one sentence
-  per line in prose docs, no fixed-column rewrapping. Sweeps of this
-  repo's and the workflows repo's docs queued in both roadmaps,
-  timing is the owner's call.
+- Adopted the shared agent workflow (`deps/workflows` submodule): agent rules, recipes, and tricks get one pinned source shared across repos; the Devin plugin symlinks this checkout, so injected skills and pinned docs can't drift.
+- Moved repo tricks into `deps/workflows/tricks/` (single shared home).
+- Set up public/private publishing so private files never reach the public remote: `private` superset branch + private mirror, `.gitprivate` declares private paths, pre-commit/pre-push guards live in `deps/scripts/git-hooks` activated via `core.hooksPath`.
+- Restructured `AGENTS.md` onto the shared template (pointer preamble, repo-specific deltas only).
+- `recipes/devlog.md` added to the workflows repo: this file's entry format became the shared house format; the log reworked onto it.
+- New shared style rule adopted via `deps/workflows`: one sentence per line in prose docs, no fixed-column rewrapping.
+  Sweeps of this repo's and the workflows repo's docs queued in both roadmaps, timing is the owner's call.
 - snippet: `README.md` gained a planned-tools section.
 
 ## 2026-11-20: fresh-install test rerun + first local recipe
@@ -118,7 +69,8 @@ recorded as they happen.
 - New sandbox findings vs the notes doc: `apparmor_restrict_unprivileged_userns` strips `CAP_DAC_OVERRIDE`, so real `sudo` can't unpack (mode-000 `.dpkg-new` reopen fails EACCES) and is dropped from the container apt list in favor of the shim; `chown` to unmapped uids EINVALs, so the `dbus` postinst cascade into "N not fully installed" is noise, not signal.
 - Real repo gap surfaced: `qutebrowser-deps.yml` carries build deps only; QtWebEngine needs `libnspr4 libnss3 libasound2t64 libxkbfile1 libxcb-cursor0 libxkbcommon-x11-0` at runtime (queued in `BACKLOG.md`).
 - `recipes/fresh-install-testing.md` added: first project-local recipe, distilled from `~/code/notes/fresh-install-testing.md` plus this run's findings; `AGENTS.md` recipe list updated.
-- `deps/workflows`: `MdStyle.md` added as a third binding doc in the AGENTS preamble and given a path in `rules.md` after a prose style miss; DEVLOG prompting rule changed to direct edit prompts in `rules.md` + `workflow.md`. Owner commits + pin bump pending.
+- `deps/workflows`: `MdStyle.md` added as a third binding doc in the AGENTS preamble and given a path in `rules.md` after a prose style miss; DEVLOG prompting rule changed to direct edit prompts in `rules.md` + `workflow.md`.
+  Owner commits + pin bump pending.
 - `BACKLOG.md` added for noticed-not-fixed items.
 
 ## 2026-11-22: doc upkeep + update-docs.sh attribution
@@ -126,7 +78,8 @@ recorded as they happen.
 - `AGENTS.md` preamble re-synced verbatim to `deps/workflows/agents/template.md` (the three-doc pointer including `MdStyle.md`); the copy had drifted to the older two-doc wording.
 - `BACKLOG.md` maintenance: canonical header adopted; the workflows gitlink bump moved to `## In flight` (checkout at `b971a90`, parent commit pending); decided items recorded: an `update-docs.sh` CI gate (Actions job: regen + `git diff --exit-code` on push) and a bootstrap fresh-install CI job porting `recipes/fresh-install-testing.md` (bwrap) onto the runner.
 - `update-docs.sh` restyled to the `deps/workflows/hooks` comment convention (`== Intent/Method/Caveats/Usage ==` header, `# ---` separators); comments only, still a shell script; verified idempotent against the checked-out README.
-- `update-docs.sh` is agent-authored (Devin session, 2026-11): output verified, deliberately not line-reviewed by the owner. Authorship recorded here and in the script header since this repo is portfolio material.
+- `update-docs.sh` is agent-authored (Devin session, 2026-11): output verified, deliberately not line-reviewed by the owner.
+  Authorship recorded here and in the script header since this repo is portfolio material.
 - snippet: `README.md` gained the generated keymap tables (first committed `update-docs.sh` run), a known-issues section, and a refreshed contents listing.
 - snippet: `sourceme/sourceme.sh` adds `deps/scripts/git-util` to PATH.
 - snippet: private branch gained its `.gitprivate` declaration and first private-only docs.
@@ -150,3 +103,9 @@ recorded as they happen.
 
 ## 2026-11-23: bump scripts e9d58ae3...2894d87d (2 commits)
 ## 2026-11-23: bump workflows 9a5a2460...414afbd1 (3 commits)
+
+## 2026-11-23: MdStyle sweep
+
+- One-sentence-per-line and no-em-dash rules applied across the repo's own docs (`AGENTS.md`, `DEVLOG.md`, `README.md`, `ROADMAP.md`, `notes/debug-suspend-hanging.md`): wrapped sentences joined, second sentences moved onto lines indented under their item, em/en-dashes replaced.
+- `questions.md`, `notes/todo.md`, `recipes/fresh-install-testing.md` already compliant; tables and `keymaps:` generated fences exempt, untouched.
+- Dep checkouts (`deps/workflows`, `deps/scripts`) deliberately out of scope; their docs still carry wrap violations for a later sweep there.
