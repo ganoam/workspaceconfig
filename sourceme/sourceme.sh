@@ -28,7 +28,7 @@ add_to_path $ROOT/envs/bin
 add_to_path $ROOT/bin
 # Export wmenu scripts to path
 # TODO: find a better solution
-add_to_path $ROOT/deps/scripts/shortcut-menus
+add_to_path $ROOT/deps/scripts/menus
 add_to_path $ROOT/deps/scripts/bin
 add_to_path $ROOT/deps/scripts/git-util
 
