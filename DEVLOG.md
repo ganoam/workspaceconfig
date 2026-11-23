@@ -109,3 +109,4 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 - One-sentence-per-line and no-em-dash rules applied across the repo's own docs (`AGENTS.md`, `DEVLOG.md`, `README.md`, `ROADMAP.md`, `notes/debug-suspend-hanging.md`): wrapped sentences joined, second sentences moved onto lines indented under their item, em/en-dashes replaced.
 - `questions.md`, `notes/todo.md`, `recipes/fresh-install-testing.md` already compliant; tables and `keymaps:` generated fences exempt, untouched.
 - Dep checkouts (`deps/workflows`, `deps/scripts`) deliberately out of scope; their docs still carry wrap violations for a later sweep there.
+## 2026-11-23: bump workflows 414afbd1...62669ea2 (1 commit)
