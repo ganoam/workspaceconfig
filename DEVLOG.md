@@ -127,3 +127,4 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 - Verified on bwrap 0.11.1: `--dev` mounts a private devpts, so `--dev-bind-try /dev/pts /dev/pts` under `--unshare-user` shadows it with the host instance and breaks `/dev/ptmx` (`EACCES`, `out of pty devices`).
 - Flag removed from `recipes/fresh-install-testing.md` and `.github/workflows/fresh-install.yml`; `--tmpfs /dev/shm` stays.
 - BACKLOG `## Tricks entry` items moved to `## In flight` (uncommitted); answers the `/dev/pts` question in `questions.md`.
+## 2026-11-23: bump scripts 4ffc5754...f4c1869c (1 commit)
