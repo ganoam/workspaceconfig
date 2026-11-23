@@ -48,7 +48,6 @@ The repo is bind-mounted read-only so container clones always get host HEAD.
 bwrap --unshare-user --uid 0 --gid 0 \
   --bind /tmp/freshtest/rootfs / \
   --dev /dev --proc /proc --tmpfs /dev/shm \
-  --dev-bind-try /dev/pts /dev/pts \
   --ro-bind /etc/resolv.conf /etc/resolv.conf \
   --ro-bind /etc/hosts /etc/hosts \
   --ro-bind "$HOME/workspaceconfig" /mnt/hostrepo \

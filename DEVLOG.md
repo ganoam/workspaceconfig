@@ -120,3 +120,10 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 
 ## 2026-11-23: bump workflows 62669ea2...f95b9003 (1 commit)
 ## 2026-11-23: bump scripts 87ea8bd2...4ffc5754 (1 commit)
+
+## 2026-11-23: tricks entries land + pts bind dropped
+
+- `deps/workflows/tricks/linux-tricks.md` (general `/dev/pts` + `/dev/shm`) and `bwrap-tricks.md` sections written in the dep checkout; dep commit and pin bump pending.
+- Verified on bwrap 0.11.1: `--dev` mounts a private devpts, so `--dev-bind-try /dev/pts /dev/pts` under `--unshare-user` shadows it with the host instance and breaks `/dev/ptmx` (`EACCES`, `out of pty devices`).
+- Flag removed from `recipes/fresh-install-testing.md` and `.github/workflows/fresh-install.yml`; `--tmpfs /dev/shm` stays.
+- BACKLOG `## Tricks entry` items moved to `## In flight` (uncommitted); answers the `/dev/pts` question in `questions.md`.

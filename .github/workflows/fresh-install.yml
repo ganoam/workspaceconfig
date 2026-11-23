@@ -73,7 +73,6 @@ jobs:
           bwrap --unshare-user --uid 0 --gid 0 \
             --bind /tmp/freshtest/rootfs / \
             --dev /dev --proc /proc --tmpfs /dev/shm \
-            --dev-bind-try /dev/pts /dev/pts \
             --ro-bind "$1" /mnt/hostrepo \
             --clearenv --setenv HOME /root \
             --setenv PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
