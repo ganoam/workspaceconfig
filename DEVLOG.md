@@ -147,3 +147,5 @@ recorded as they happen.
 - `bootstrap.sh` runs `git-util/setup-git-hooks.sh` after fetch-repos (needs the dep checkout present; the remote-fetch fallback can't resolve `../git-hooks`).
 
 ## 2026-11-23: bump dwl (1 commit)
+
+## 2026-11-23: bump scripts e9d58ae3...2894d87d (2 commits)
