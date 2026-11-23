@@ -119,3 +119,4 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 - Marks are bare: review suffixes (`; human reviewed`, `; output verified`) are owner-stated, not self-applied.
 
 ## 2026-11-23: bump workflows 62669ea2...f95b9003 (1 commit)
+## 2026-11-23: bump scripts 87ea8bd2...4ffc5754 (1 commit)
