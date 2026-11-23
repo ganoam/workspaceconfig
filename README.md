@@ -19,6 +19,8 @@ config/             # nvim, tmux, waybar, qutebrowser, fusesoc configs (XDG_CONF
 sourceme/           # sourceme.sh: env vars, PATH, aliases
 deps/               # fetched dependencies (gitlinks; contents gitignored)
 envs/               # generated: venvs + tool shims (gitignored)
+git-hooks/          # repo-local git hook gates (dispatched via deps/scripts)
+.github/            # CI: bwrap fresh-install + readme-docs gate
 ROADMAP.md          # ongoing and planned work
 notes/              # running todo and current working context
 tarballs.yml        # binary tarball manifest (nvim, ripgrep, tmux)
@@ -132,6 +134,10 @@ cd path/to/workspaceconfig
 ./bootstrap.sh
 ./checkhealth.sh   # verify everything is in place
 ```
+
+`bootstrap.sh` also sets this clone's `core.hooksPath` to `deps/scripts/git-hooks` (git-privacy guards plus any repo-local gates in `git-hooks/`); that writes repo-local git config, nothing user-level.
+To do it by hand: `sh deps/scripts/git-util/setup-git-hooks.sh` (after `git submodule update --init deps/scripts`).
+
 Targeted at **Ubuntu 26.04** only. Other distros/releases are welcome to try; mileage may vary.
 If it does not work, the required system packages in the `*-deps.yml` files are likely named differently on your distro.
 Critical dependency of the bootstrap script: `curl` (`sudo apt install curl`)

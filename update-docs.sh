@@ -26,10 +26,19 @@
 # - The splice is a textual match on NAME: a generator/fence name
 #   mismatch leaves the region untouched (group reported as missing).
 #
-# Usage: ./update-docs.sh  (rewrites README.md in place;
-#        CONFIGROOT overrides the config dir, default ./config)
+# Usage: ./update-docs.sh [--check]
+#   (default)  rewrite README.md in place
+#   --check    splice into a temp copy instead and diff it against
+#              README.md; nonzero exit on drift. This is the gate CI
+#              and the git hook run; a missing nvim is a hard error
+#              here since the nvim stages would produce nothing and
+#              the check would pass on unverified tables.
+#   CONFIGROOT overrides the config dir, default ./config
 
 set -uo pipefail
+
+CHECK=0
+if [ "${1:-}" = "--check" ]; then CHECK=1; fi
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONFIGROOT="${CONFIGROOT:-$ROOT/config}"
@@ -277,7 +286,18 @@ if [ -x "$NVIM" ] || command -v "$NVIM" >/dev/null 2>&1; then
         -c "luafile $WORK/dump.lua" +qa! 2>"$WORK/nvim.err" \
         || echo "WARNING: nvim keymap dump failed (see $WORK/nvim.err)" >&2
 else
+    if [ "$CHECK" = 1 ]; then
+        echo "ERROR: nvim not found, cannot verify nvim keymap tables" >&2
+        exit 2
+    fi
     echo "WARNING: nvim not found, skipping nvim keymaps" >&2
+fi
+
+# A failed stage-2 dump leaves no nvim.txt; in check mode that would
+# silently skip every nvim group, so treat it as a failure.
+if [ "$CHECK" = 1 ] && [ ! -s "$WORK/nvim.txt" ]; then
+    echo "ERROR: nvim keymap dump produced no output" >&2
+    exit 2
 fi
 
 # ------------------------------------------------------------------
@@ -319,7 +339,16 @@ awk '
 # Stage 4 - splice generated blocks into fenced README regions
 # ------------------------------------------------------------------
 
-python3 - "$README" "$WORK/nvim.txt" "$WORK/tmux.txt" <<'python'
+# --check splices into a scratch copy so the worktree stays clean;
+# the drift diff below is the gate's output.
+if [ "$CHECK" = 1 ]; then
+    TARGET="$WORK/README.md"
+    cp "$README" "$TARGET"
+else
+    TARGET="$README"
+fi
+
+python3 - "$TARGET" "$WORK/nvim.txt" "$WORK/tmux.txt" <<'python'
 import re, sys
 
 readme_path, *files = sys.argv[1:]
@@ -352,3 +381,13 @@ print("updated:", ", ".join(sorted(updated)) or "none")
 if missing:
     print("no region for groups:", ", ".join(sorted(missing)), file=sys.stderr)
 python
+
+if [ "$CHECK" = 1 ]; then
+    if diff -u "$README" "$TARGET"; then
+        echo "check: generated tables are up to date"
+    else
+        echo "check: README.md generated tables are stale;" \
+            "run ./update-docs.sh and commit the result" >&2
+        exit 1
+    fi
+fi

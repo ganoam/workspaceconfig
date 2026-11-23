@@ -3,6 +3,7 @@
 Verify `workspaceconfig` bootstraps cleanly on a "fresh Ubuntu" without reinstalling anything.
 Goal: clone, source, bootstrap, checkhealth, all inside a disposable rootfs.
 Run this before landing bootstrap-facing changes: new tools, `*-deps.yml` edits, `deps/scripts/setup/*`, README install instructions.
+The same flow runs in CI as `.github/workflows/fresh-install.yml`, extended with the `update-docs.sh --check` readme gate as its last step.
 
 ## Why bwrap, not a VM
 

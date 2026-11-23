@@ -80,6 +80,9 @@ the dep clone, then the owner bumps the pin.
   machinery plus `git-util/` (hooks installer, `publish.sh`);
   `deps/workflows/` pins the shared agent workflow, recipes, and
   tricks.
+- `git-hooks/`: repo-local hook gates (`pre-push.d/readme-docs` runs
+  `update-docs.sh --check`); dispatched by the shared run-parts
+  hooks in `deps/scripts/git-hooks`, wired via `core.hooksPath`.
 - `*-deps.yml`: apt manifests per tool. Do NOT add Python packages to
   them (triggers sudo prompts); document `python3`/`python3-venv` in
   the README instead.
@@ -91,8 +94,11 @@ the dep clone, then the owner bumps the pin.
   desktop.
 - `./checkhealth.sh`: post-install validation. Tools that only exist
   in `-f` installs are warnings, not failures, so `-t` stays green.
-- `./update-docs.sh`: regenerates the fenced README keymap tables
-  (below).
+- `./update-docs.sh [--check]`: regenerates the fenced README keymap
+  tables (below). `--check` verifies without writing; the local gate
+  is `git-hooks/pre-push.d/readme-docs`, the CI gate is
+  `.github/workflows/fresh-install.yml` (run inside the bwrap
+  bootstrap, on its installed nvim).
 
 ## README generated tables
 

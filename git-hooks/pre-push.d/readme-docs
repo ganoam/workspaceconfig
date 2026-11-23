@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Agent-generated; human reviewed.
+# Repo-local pre-push gate, dispatched by the shared multiplexer in
+# deps/scripts/git-hooks: README.md's generated keymap tables must be
+# current. Same command CI runs; --check leaves the tree untouched.
+# stdin carries the pushed refs, unused: the gate applies to every
+# push.
+cd "$(git rev-parse --show-toplevel)" || exit 1
+exec ./update-docs.sh --check

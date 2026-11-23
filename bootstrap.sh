@@ -141,6 +141,17 @@ if [ -f "$FETCH_TARBALLS" ]; then
     popd > /dev/null
 fi
 
+# --- git hooks: privacy guards + repo-local git-hooks/ dispatch ---
+# Needs the deps/scripts checkout: git-util/setup-git-hooks.sh
+# resolves ../git-hooks relative to itself, so the remote-fetch
+# fallback in bootstrap_script can't substitute.
+HOOK_SETUP="$ROOT/deps/scripts/git-util/setup-git-hooks.sh"
+if [ -f "$HOOK_SETUP" ]; then
+    sh "$HOOK_SETUP" || FAILED_TOOLS+=("git-hooks")
+else
+    log "deps/scripts missing, skipping git-hooks setup"
+fi
+
 # --- shared venv for tools (nvr, qutebrowser, etc) ---
 MAIN_VENV="$ROOT/envs/main"
 
