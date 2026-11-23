@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Agent-generated; human reviewed.
 # bootstrap.sh [-y|--yes] [-t|--tools] [-f|--full]
 # Run manually. Ensures deps/scripts is available, then delegates
 # submodule/tarball fetching to deps/scripts/setup/*.sh (or fetches

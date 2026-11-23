@@ -1,5 +1,6 @@
 # DEVLOG
 
+Agent-maintained; human reviewed.
 Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level summaries, not per-commit); entries from that date on are recorded as they happen.
 
 ## 2023-01 - 2023-12: inception, dotfiles era
@@ -110,3 +111,9 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 - `questions.md`, `notes/todo.md`, `recipes/fresh-install-testing.md` already compliant; tables and `keymaps:` generated fences exempt, untouched.
 - Dep checkouts (`deps/workflows`, `deps/scripts`) deliberately out of scope; their docs still carry wrap violations for a later sweep there.
 ## 2026-11-23: bump workflows 414afbd1...62669ea2 (1 commit)
+
+## 2026-11-23: provenance-mark sweep
+
+- `Agent-maintained` head marks on `README.md`, `DEVLOG.md`, `BACKLOG.md`, `ROADMAP.md` (living docs the agent keeps updated; same convention as the dep-repo sweeps); `Agent-generated` on `recipes/fresh-install-testing.md`, `checkhealth.sh` (owner-confirmed agent-authored), `bootstrap.sh` (mixed authorship; mark records agent involvement in provenance).
+- `update-docs.sh`, `git-hooks/pre-push.d/readme-docs`, `.github/workflows/fresh-install.yml` already carried marks; dep checkouts were swept separately.
+- Marks are bare: review suffixes (`; human reviewed`, `; output verified`) are owner-stated, not self-applied.

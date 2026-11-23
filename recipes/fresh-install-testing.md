@@ -1,5 +1,6 @@
 # Fresh-install testing
 
+Agent-generated; human reviewed.
 Verify `workspaceconfig` bootstraps cleanly on a "fresh Ubuntu" without reinstalling anything.
 Goal: clone, source, bootstrap, checkhealth, all inside a disposable rootfs.
 Run this before landing bootstrap-facing changes: new tools, `*-deps.yml` edits, `deps/scripts/setup/*`, README install instructions.

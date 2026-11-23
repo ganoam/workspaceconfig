@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# checkhealth.sh — verify the workspace config is correctly set up.
+# Agent-generated; human reviewed.
+# checkhealth.sh: verify the workspace config is correctly set up.
 # Sources sourceme.sh, then checks env vars, binaries, and versions.
 # Exit code: number of failed checks (0 = healthy).
 

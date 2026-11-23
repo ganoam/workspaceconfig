@@ -1,5 +1,6 @@
 # workspaceconfig
 
+Agent-maintained; human reviewed.
 All my favourite tools, ready to go.
 
 Reproducible workstation bootstrap: shell environment, Neovim, tmux, an EDA toolchain (verilator/fusesoc/gtkwave) and a Wayland desktop (dwl/waybar/wlock), verified on a clean Ubuntu 26.04 install.
