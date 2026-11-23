@@ -117,3 +117,5 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 - `Agent-maintained` head marks on `README.md`, `DEVLOG.md`, `BACKLOG.md`, `ROADMAP.md` (living docs the agent keeps updated; same convention as the dep-repo sweeps); `Agent-generated` on `recipes/fresh-install-testing.md`, `checkhealth.sh` (owner-confirmed agent-authored), `bootstrap.sh` (mixed authorship; mark records agent involvement in provenance).
 - `update-docs.sh`, `git-hooks/pre-push.d/readme-docs`, `.github/workflows/fresh-install.yml` already carried marks; dep checkouts were swept separately.
 - Marks are bare: review suffixes (`; human reviewed`, `; output verified`) are owner-stated, not self-applied.
+
+## 2026-11-23: bump workflows 62669ea2...f95b9003 (1 commit)
