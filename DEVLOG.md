@@ -128,3 +128,7 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 - Flag removed from `recipes/fresh-install-testing.md` and `.github/workflows/fresh-install.yml`; `--tmpfs /dev/shm` stays.
 - BACKLOG `## Tricks entry` items moved to `## In flight` (uncommitted); answers the `/dev/pts` question in `questions.md`.
 ## 2026-11-23: bump scripts 4ffc5754...f4c1869c (1 commit)
+
+## 2026-11-23: scripts restructure consumer updates
+
+- snippet: `sourceme` PATH and README updated for the `deps/scripts` rename (`shortcut-menus` -> `menus`); the `shell/` -> `desktop/` references live in the bumped `deps/dwl` pin.
