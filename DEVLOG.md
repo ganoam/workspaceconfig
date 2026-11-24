@@ -155,3 +155,5 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 
 - `update-docs.sh`: nvim lists one map under every enumeration it is effective in (an `x`-map also shows in `v`), so single-mode visual specs rendered duplicated `v`/`x` rows. Rows now resolve the map's real mode via `maparg()` and merge entries sharing group+lhs+action into one line with mode letters joined (`nv`, `nt`): the `<leader>hl` bind renders a single `x` row, `{'n','v'}` specs a single `nv` row, and the longstanding v/x duplicates across `keymaps`/`snacks`/`nvim-surround` collapse.
 - `README.md`: all keymap tables regenerated; `--check` green.
+
+## 2026-11-24: bump workflows 5de22a4b...3d9cef00 (1 commit)
