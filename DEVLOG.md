@@ -132,3 +132,4 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 ## 2026-11-23: scripts restructure consumer updates
 
 - snippet: `sourceme` PATH and README updated for the `deps/scripts` rename (`shortcut-menus` -> `menus`); the `shell/` -> `desktop/` references live in the bumped `deps/dwl` pin.
+## 2026-11-24: bump workflows 720c0a39...cc8c0c06 (2 commits)
