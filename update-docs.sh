@@ -190,8 +190,16 @@ local function classify(map, mode)
             end
         end
     end
-    -- keys-spec binds whose handler hides the owning plugin
+    -- keys-spec binds whose handler hides the owning plugin.
+    -- A visual-family spec mode ('v', 'x', 's') surfaces under the
+    -- siblings' enumerations too: try them before falling back.
     local ks = keyspec[mode .. "\0" .. map.lhs]
+    if not ks and (mode == "v" or mode == "x" or mode == "s") then
+        for _, m2 in ipairs({ "v", "x", "s" }) do
+            ks = keyspec[m2 .. "\0" .. map.lhs]
+            if ks then break end
+        end
+    end
     if ks then return ks.name end
     -- required lua modules all get sid-attributed to init.lua, so an
     -- unresolvable custom map is most likely ours
@@ -215,6 +223,7 @@ local function disp(lhs)
 end
 
 local groups = {}
+local seen = {}
 for _, mode in ipairs(modes) do
     for _, map in ipairs(vim.api.nvim_get_keymap(mode)) do
         if defaults[mode .. "\0" .. map.lhs] == map_src(map, mode) then
@@ -228,6 +237,12 @@ for _, mode in ipairs(modes) do
         local action = map.desc
         if not action or action == "" then
             local ks = keyspec[mode .. "\0" .. map.lhs]
+            if not ks and (mode == "v" or mode == "x" or mode == "s") then
+                for _, m2 in ipairs({ "v", "x", "s" }) do
+                    ks = keyspec[m2 .. "\0" .. map.lhs]
+                    if ks then break end
+                end
+            end
             action = (ks and (ks.desc or ks.cmd))
                 or (map.callback and "lua fn" or (map.rhs or ""))
         end
@@ -236,11 +251,38 @@ for _, mode in ipairs(modes) do
            (action:lower():match("lsp") or action:lower():match("diagnostic")) then
             group = "lsp"
         end
-        groups[group] = groups[group] or {}
-        table.insert(groups[group],
-            { lhs = map.lhs, mode = mode, action = action })
+        -- One map can surface under several visual-family enumerations
+        -- (an x-map lists under 'v' too), and a {'n','v'} spec is really
+        -- one declared bind: resolve the map's real mode and merge rows
+        -- sharing group+lhs+action into one line with the mode letters
+        -- joined ('nv').
+        local realmode = mode
+        local info = vim.fn.maparg(map.lhs, mode, false, true)
+        if info and info.mode and info.mode ~= "" then
+            realmode = info.mode
+        end
+        local key = group .. "\0" .. map.lhs .. "\0" .. action
+        local row = seen[key]
+        if not row then
+            row = { lhs = map.lhs, modes = {}, action = action }
+            seen[key] = row
+            groups[group] = groups[group] or {}
+            table.insert(groups[group], row)
+        end
+        row.modes[realmode] = true
         ::continue::
     end
+end
+
+-- mode set -> display string: canonical vim order "nvxsoict"
+local MORDER = "nvxsoict"
+local function modestr(modes)
+    local t = {}
+    for m in pairs(modes) do t[#t + 1] = m end
+    table.sort(t, function(a, b)
+        return MORDER:find(a, 1, true) < MORDER:find(b, 1, true)
+    end)
+    return table.concat(t)
 end
 
 local out = assert(io.open(os.getenv("NVIM_DUMP_OUT"), "w"))
@@ -249,6 +291,7 @@ for name in pairs(groups) do table.insert(names, name) end
 table.sort(names)
 for _, name in ipairs(names) do
     local rows = groups[name]
+    for _, r in ipairs(rows) do r.mode = modestr(r.modes) end
     out:write("@@" .. name .. "\n")
     out:write("| Key | Mode | Action |\n|---|---|---|\n")
     table.sort(rows, function(a, b)

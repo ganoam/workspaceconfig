@@ -142,3 +142,16 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 ## 2026-11-24: bump workflows cc8c0c06...2a941679 (8 commits)
 ## 2026-11-24: bump workflows 2a941679...5de22a4b (4 commits)
 ## 2026-11-24: bump scripts f4c1869c...5407dd69 (2 commits)
+
+## 2026-11-24: gitsigns for visual-selection staging
+
+- `plugins.lua`: `lewis6991/gitsigns.nvim` added alongside vim-gitgutter as the hunk-staging engine (its `signcolumn` off, symbols stay gitgutter's); `<leader>ghs` in visual mode stages the selected line range (`stage_hunk` on the `line('.')`/`line('v')` span).
+  Loads on `BufReadPre` so gitsigns' own attach autocmd is in place before the buffer's read finishes (first attempt on `BufReadPost` raced the attach and staged nothing).
+  Verified in a scratch repo: one selected line of a two-line hunk staged, the rest stayed unstaged.
+- `update-docs.sh`: keyspec classification now tries the sibling visual modes ('v'/'x'/'s') before the `keymaps` fallback; nvim reports one map under several visual-mode enumerations, and a spec-mode-'x' bind otherwise split its rows across groups (first live hit: `<leader>hl` landed in `keymaps` AND the unfenced `gitsigns.nvim` group).
+- `README.md`: `gitsigns.nvim` section + fence added next to vim-gitgutter's; generated rows land there (`v` and `x` enumerations), `--check` green.
+
+## 2026-11-24: update-docs mode-merge: one row per declared bind
+
+- `update-docs.sh`: nvim lists one map under every enumeration it is effective in (an `x`-map also shows in `v`), so single-mode visual specs rendered duplicated `v`/`x` rows. Rows now resolve the map's real mode via `maparg()` and merge entries sharing group+lhs+action into one line with mode letters joined (`nv`, `nt`): the `<leader>hl` bind renders a single `x` row, `{'n','v'}` specs a single `nv` row, and the longstanding v/x duplicates across `keymaps`/`snacks`/`nvim-surround` collapse.
+- `README.md`: all keymap tables regenerated; `--check` green.
