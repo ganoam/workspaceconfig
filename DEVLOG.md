@@ -133,3 +133,8 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 
 - snippet: `sourceme` PATH and README updated for the `deps/scripts` rename (`shortcut-menus` -> `menus`); the `shell/` -> `desktop/` references live in the bumped `deps/dwl` pin.
 ## 2026-11-24: bump workflows 720c0a39...cc8c0c06 (2 commits)
+
+## 2026-11-24: agent-setup upkeep
+
+- README gained the canonical agent-workflow onboarding entry (checkout chain + `--local` plugin install); rest of the `agent-setup.md` checklist verified current: AGENTS.md preamble identical to `agents/template.md`, hooks and privacy split active, plugin already `--local`.
+- `.devin/skills/fresh-install-testing/SKILL.md` generated for the repo-local recipe (agent-setup step 5); `.devin/`: local agent workflow data -> private mirror.

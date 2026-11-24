@@ -111,6 +111,11 @@ pushd path/to/workspaceconfig
 popd
 ```
 
+## Agent workflow
+
+This repo uses the shared ganoam agent workflow; binding docs resolve from `~/workspaceconfig/deps/workflows`, falling back to `deps/workflows` in this repo.
+Optional plugin install adds skill wrappers and lifecycle hooks: `devin plugins install --local deps/workflows` (recommended to avoid drift; upstream `devin plugins install ganoam/workflows` snapshots at install time, not recommended).
+
 ## Install
 
 The workspace config is usually cloned into `~/workspaceconfig`.

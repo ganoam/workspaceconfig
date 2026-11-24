@@ -8,6 +8,9 @@ deps/inkscape
 deps/.cache
 envs
 
+# local agent workflow data
+.devin
+
 # config/ is XDG_CONFIG_HOME
 # Whitelist curated configs; ignore everything else.
 config/*
