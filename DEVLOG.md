@@ -138,3 +138,5 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 
 - README gained the canonical agent-workflow onboarding entry (checkout chain + `--local` plugin install); rest of the `agent-setup.md` checklist verified current: AGENTS.md preamble identical to `agents/template.md`, hooks and privacy split active, plugin already `--local`.
 - `.devin/skills/fresh-install-testing/SKILL.md` generated for the repo-local recipe (agent-setup step 5); `.devin/`: local agent workflow data -> private mirror.
+
+## 2026-11-24: bump workflows cc8c0c06...2a941679 (8 commits)
