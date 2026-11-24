@@ -157,3 +157,4 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 - `README.md`: all keymap tables regenerated; `--check` green.
 
 ## 2026-11-24: bump workflows 5de22a4b...3d9cef00 (1 commit)
+## 2026-11-24: bump scripts 5407dd69...0297b399 (3 commits)
