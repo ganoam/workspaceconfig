@@ -27,6 +27,22 @@ return {
     'airblade/vim-gitgutter',
   },
 
+  -- git hunk staging engine; signs stay with gitgutter
+  {
+    'lewis6991/gitsigns.nvim',
+    event = 'BufReadPre',
+    opts = { signcolumn = false },
+    keys = {
+      { '<leader>hl',
+        function()
+          local l1, l2 = vim.fn.line('.'), vim.fn.line('v')
+          require('gitsigns').stage_hunk({ math.min(l1, l2), math.max(l1, l2) })
+        end,
+        mode = 'x',
+        desc = "Stage selected lines" },
+    },
+  },
+
   -- quick grep to quicklist
   {"jremmen/vim-ripgrep"},
 
