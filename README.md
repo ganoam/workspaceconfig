@@ -257,6 +257,7 @@ The OpenBSD sshd man page example does `xauth -q -i merge -` style handling diff
 | `less` | `less -m -N -g -i -J --line-numbers --underline-special` |
 | `more` | `less` |
 | `cdr` | `cd` to the root of the current git repository (no-op outside a repo) |
+| `lg` | `git log --graph` oneline-style, plus author date+time per commit |
 | `tmux` | `tmux -f $CONFIGROOT/tmux/tmux.conf` |
 | `vvfi` | `verible-verilog-format --inplace` |
 | `vvmts` | `vivado -mode tcl -source ` |

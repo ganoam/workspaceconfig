@@ -148,6 +148,8 @@ source $CONFIGROOT/tmux/.tmux-powerlinerc
 
 # Commodities
 alias cdr='cd "$(git rev-parse --show-toplevel 2>/dev/null || echo .)"'
+# git log: graph + abbrev hash + author date-time + ref decorations + subject
+alias lg="git log --graph --pretty=format:'%C(auto)%h%C(reset) %C(blue)%ad%C(reset) %C(auto)%d%C(reset) %s' --date=format:'%Y-%m-%d %H:%M'"
 alias vvfi="verible-verilog-format --inplace"
 
 alias vvmts="vivado -mode tcl -source "

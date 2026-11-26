@@ -158,4 +158,12 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 
 ## 2026-11-24: bump workflows 5de22a4b...3d9cef00 (1 commit)
 ## 2026-11-24: bump scripts 5407dd69...0297b399 (3 commits)
+
 ## 2026-11-26: bump workflows 3d9cef00...c5759814 (1 commit)
+
+## 2026-11-26: `lg` git-log alias + skills regeneration sweep
+
+- `sourceme.sh`: `lg` alias = `git log --graph` with `%h %ad %d %s`; `%C(auto)` keeps the oneline colors, `--date=format:'%Y-%m-%d %H:%M'` adds author date+time.
+  Shell alias rather than git config (repo rule: never edit git config); lives in interactive shells that source `sourceme.sh`.
+- `README.md` Aliases table gained the `lg` row.
+- `generate-skills` `allowed-tools` change (`deps/workflows` `4fc8828`) swept across repos: all existing generated skills already on the new template; missing `.devin/skills/` wrappers created for `hw-commons`' two local recipes; hw-commons' stale in-clone `skills/` resolves via its pending gitlink bump.
