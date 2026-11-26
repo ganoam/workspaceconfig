@@ -19,7 +19,7 @@ sourceme/           # sourceme.sh: env vars, PATH, aliases
 deps/               # fetched dependencies (gitlinks; contents gitignored)
 envs/               # generated: venvs + tool shims (gitignored)
 git-hooks/          # repo-local git hook gates (dispatched via deps/scripts)
-.github/            # CI: bwrap fresh-install + readme-docs gate
+.github/            # CI: bwrap fresh-install (-t and -f legs) + readme-docs gate
 tarballs.yml        # binary tarball manifest (nvim, ripgrep, tmux)
 *-deps.yml          # per-tool apt package manifests
 ```
@@ -126,7 +126,7 @@ Most tools are automatically bootstrapped by the bootstrap.sh script.
 cd path/to/workspaceconfig
 . sourceme/sourceme.sh
 ./bootstrap.sh
-./checkhealth.sh   # verify everything is in place
+./checkhealth.sh   # verify everything is in place (-f: require the wayland tools too)
 ```
 
 `bootstrap.sh` also sets this clone's `core.hooksPath` to `deps/scripts/git-hooks` (git-privacy guards plus any repo-local gates in `git-hooks/`); that writes repo-local git config, nothing user-level.

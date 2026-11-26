@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 # Agent-generated; human reviewed.
-# checkhealth.sh: verify the workspace config is correctly set up.
+# checkhealth.sh [-f|--full]: verify the workspace config is correctly set up.
 # Sources sourceme.sh, then checks env vars, binaries, and versions.
+# -f expects a full desktop install: missing wayland tools fail instead of warn.
 # Exit code: number of failed checks (0 = healthy).
 
 cd -- "$(dirname -- "${BASH_SOURCE[0]}")" || exit 1
 source sourceme/sourceme.sh
+
+# -f/--full: check a full desktop install; wayland tools count as failures.
+FULL=0
+for arg in "$@"; do case "$arg" in -f|--full) FULL=1 ;; esac; done
 
 PASS=0; FAIL=0; WARN=0
 ok()   { echo "  ok    $1"; ((++PASS)); }
@@ -32,9 +37,15 @@ for b in nvim rg tmux nvr fusesoc verilator_bin gtkwave inkscape qutebrowser; do
     command -v "$b" >/dev/null && ok "$b -> $(command -v $b)" || fail "$b not on PATH"
 done
 
-echo "== wayland tools (full install only) =="
+if [ "$FULL" -eq 1 ]; then echo "== wayland tools =="; else echo "== wayland tools (full install only) =="; fi
 for b in dwl waybar mako swaybg wmenu foot wlock; do
-    command -v "$b" >/dev/null && ok "$b -> $(command -v $b)" || warn "$b not on PATH"
+    if command -v "$b" >/dev/null; then
+        ok "$b -> $(command -v $b)"
+    elif [ "$FULL" -eq 1 ]; then
+        fail "$b not on PATH"
+    else
+        warn "$b not on PATH"
+    fi
 done
 
 echo "== versions (runtime check) =="

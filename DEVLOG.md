@@ -167,3 +167,9 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
   Shell alias rather than git config (repo rule: never edit git config); lives in interactive shells that source `sourceme.sh`.
 - `README.md` Aliases table gained the `lg` row.
 - `generate-skills` `allowed-tools` change (`deps/workflows` `4fc8828`) swept across repos: all existing generated skills already on the new template; missing `.devin/skills/` wrappers created for `hw-commons`' two local recipes; hw-commons' stale in-clone `skills/` resolves via its pending gitlink bump.
+
+## 2026-11-26: fresh-install CI gains a `-f` leg
+
+- `checkhealth.sh -f/--full`: wayland tools promote warn -> fail; without it a `-f` install missing all 7 binaries still exited 0.
+- `fresh-install.yml`: `mode: [tools, full]` matrix, MODE passed via bwrap `--setenv`; `g++` added to the harness apt list (waybar is C++); readme-docs gate stays on the tools leg; timeout 150 -> 240 for the extra builds.
+- Scope: proves the `-f` path builds and lands (PATH presence, fake-root sudo steps), not a running compositor; expect first-run findings on foot's subprojects and 26.04 package names.

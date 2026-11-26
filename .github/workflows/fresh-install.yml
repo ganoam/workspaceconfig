@@ -1,10 +1,13 @@
 # Agent-generated; human reviewed.
 # Fresh-install gate, ported from recipes/fresh-install-testing.md:
-# clone HEAD into a bwrap ubuntu-base sandbox, run bootstrap.sh -t and
-# checkhealth.sh, then use that bootstrapped environment as the
-# readme-docs gate (update-docs.sh --check runs with the nvim the
-# bootstrap just installed). A bootstrap failure means the docs check
-# never runs: it is a precondition, not a sibling job.
+# clone HEAD into a bwrap ubuntu-base sandbox, run bootstrap.sh and
+# checkhealth.sh. Matrix: the tools leg runs `-t`, the full leg `-f`
+# (wayland binaries build but cannot launch headless; the check is
+# presence-on-PATH, promoted to FAIL by checkhealth -f).
+# The tools leg additionally serves as the readme-docs gate
+# (update-docs.sh --check runs with the nvim the bootstrap just
+# installed). A bootstrap failure means the docs check never runs:
+# it is a precondition, not a sibling job.
 name: fresh-install
 on:
   push:
@@ -28,8 +31,13 @@ on:
 
 jobs:
   bwrap-fresh-install:
+    name: fresh-install (${{ matrix.mode }})
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [tools, full]
     # public repo only: the file also lands on the private mirror via
     # publish/push, where this job skips without running.
     if: github.repository == 'ganoam/workspaceconfig'
@@ -74,7 +82,7 @@ jobs:
             --bind /tmp/freshtest/rootfs / \
             --dev /dev --proc /proc --tmpfs /dev/shm \
             --ro-bind "$1" /mnt/hostrepo \
-            --clearenv --setenv HOME /root \
+            --clearenv --setenv HOME /root --setenv MODE ${{ matrix.mode }} \
             --setenv PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin \
             --setenv TERM xterm-256color --setenv LANG C.UTF-8 \
             --die-with-parent /bin/bash /mnt/inside-test.sh
@@ -84,9 +92,9 @@ jobs:
           set -x
           # last line: QtWebEngine runtime libs for the qutebrowser
           # --version probe; harness-side until qutebrowser-deps.yml
-          # carries them (repo gap in BACKLOG).
+          # carries them (repo gap in BACKLOG). g++: waybar is C++.
           apt-get update -qq && apt-get install -y --no-install-recommends \
-            git curl ca-certificates gcc python3 python3-venv python3-pip \
+            git curl ca-certificates gcc g++ python3 python3-venv python3-pip \
             tar xz-utils make locales \
             libnspr4 libnss3 libasound2t64 libxkbfile1 libxcb-cursor0 libxkbcommon-x11-0
           # no ssh client/keys in the rootfs: rewrite git@ URLs to https
@@ -94,10 +102,12 @@ jobs:
           # fresh clone of HEAD, never the runner's working tree
           git clone file:///mnt/hostrepo wc && cd wc
           source sourceme/sourceme.sh
-          ./bootstrap.sh -t -y
-          QT_QPA_PLATFORM=offscreen QTWEBENGINE_CHROMIUM_FLAGS=--no-sandbox ./checkhealth.sh
-          # readme-docs gate: uses the nvim this bootstrap installed.
-          ./update-docs.sh --check
+          ./bootstrap.sh -y "$([ "$MODE" = full ] && echo -f || echo -t)"
+          QT_QPA_PLATFORM=offscreen QTWEBENGINE_CHROMIUM_FLAGS=--no-sandbox \
+            ./checkhealth.sh "$([ "$MODE" = full ] && echo -f)"
+          # readme-docs gate (tools leg only): uses the nvim this
+          # bootstrap installed.
+          if [ "$MODE" = tools ]; then ./update-docs.sh --check; fi
           INSIDE
           chmod +x /tmp/freshtest/bwrap-run.sh /tmp/freshtest/rootfs/mnt/inside-test.sh
           /tmp/freshtest/bwrap-run.sh "$GITHUB_WORKSPACE"
