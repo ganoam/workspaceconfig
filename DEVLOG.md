@@ -158,3 +158,4 @@ Entries before 2026-11-18 were seeded retrospectively from `git log` (era-level 
 
 ## 2026-11-24: bump workflows 5de22a4b...3d9cef00 (1 commit)
 ## 2026-11-24: bump scripts 5407dd69...0297b399 (3 commits)
+## 2026-11-26: bump workflows 3d9cef00...c5759814 (1 commit)
