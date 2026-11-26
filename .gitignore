@@ -20,6 +20,7 @@ config/*
 !config/qutebrowser/
 !config/tmux/
 !config/tmux-powerline/
+!config/devin/
 !config/waybar/
 # generated state inside curated dirs
 config/nvim/lazy-lock.json

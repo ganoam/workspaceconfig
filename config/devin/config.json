@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "devin": {
+    "org_id": "org-ca358a4ab2604da28e19c52721574caf"
+  },
+  "shell": {
+    "setup_complete": true
+  },
+  "theme_mode": "dark",
+  "agent": {
+    "model": "swe-2-max",
+    "preferred_family_models": {
+      "swe-2": "swe-2-max"
+    }
+  },
+  "permisions" : {
+    "ask": ["edit", "write(**)"]
+    {
+}
